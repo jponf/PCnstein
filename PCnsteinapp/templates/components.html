@@ -9,7 +9,28 @@
 <head>
 
 <body>
+	{% if cinfo|length > 0 %}
+	<table>
+		<tr>
+			<th>Ref</th>
+			<th>Name</th>
+			<th>Price</th>
+			<th>Category</th>
+		</tr>
+	{% endif %}
 
+	{% for comp in cinfo %}
+		<tr>
+			<td>{{ comp.ref }}</td>
+			<td>{{ comp.name }}</td>
+			<td>{{ comp.avg_price }} €</td>
+			<td>{{ comp.category }}</td>
+		<tr>
+	{% endfor %}
+
+	{% if cinfo|length > 0 %}
+	</table>
+	{% endif %}
 </body>
 
 </html

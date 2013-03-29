@@ -37,6 +37,7 @@ def GetComponents(request):
 				{'components': models.Component.objects.all()}))
 	elif format == 'http':
 		params = { 'titlehead' : "PCnstein - Components"}
+		params['cinfo'] = GetComponentsInfoAsList()
 
 		return render_to_response('components.html', params)
 	else:
