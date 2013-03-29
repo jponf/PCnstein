@@ -36,3 +36,6 @@ nosetests.xml
 
 # Database
 *.db
+
+# Static
+static/*
