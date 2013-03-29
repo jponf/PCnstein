@@ -14,7 +14,8 @@ def GetComponentsInfoAsList():
 
 	for c in models.Component.objects.all():
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'desc' : c.desc, 
-				  'avg_price' : str(c.avg_price), 'category' : c.category }
+				  'avg_price' : str(c.avg_price), 'category' : c.category,
+				  'img' : str(c.img) }
 		cinf.append(cinfo)
 	return cinf
 
@@ -35,7 +36,9 @@ def GetComponents(request):
 		return HttpResponse(render_to_string('components.xml', 
 				{'components': models.Component.objects.all()}))
 	elif format == 'http':
-		return HttpResponse('HTTP')
+		params = { 'titlehead' : "PCnstein - Components"}
+
+		return render_to_response('components.html', params)
 	else:
 		return HttpResponse('Error madafaka')
 
