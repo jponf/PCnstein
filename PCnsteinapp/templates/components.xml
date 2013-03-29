@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<components>
+	{% for c in components %}
+	<component ref="{{ c.ref }}" name="{{ c.name }}" avg_price="{{ c.avg_price }}" category="{{ c.category }}">
+		{{ c.desc }}
+	</component>
+	{% endfor %}
+</components>
