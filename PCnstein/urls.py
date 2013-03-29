@@ -16,7 +16,7 @@ urlpatterns = patterns('',
 
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
-    url(r'^components/', GetComponents),
-    url(r'^components/()', GetComponent),
+    url(r'^components/$', GetComponents),
+    url(r'^components/(\w+)$', GetComponent), # \w only matches alphanumerical chars and underscores. If all but blanks wanted change it for \S.
     
 )
