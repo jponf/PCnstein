@@ -11,7 +11,13 @@ class Manufacturer(models.Model):
 	def __unicode__(self):
 		return self.name
 
+#
+#
+class Category(models.Model):
+	name = models.CharField(max_length=20, primary_key=True)
 
+	def __unicode__(self):
+		return self.name
 #
 #
 class Component(models.Model):
@@ -20,7 +26,8 @@ class Component(models.Model):
 	desc = models.TextField()
 	avg_price = models.DecimalField(max_digits=7, decimal_places=3)
 	img = models.ImageField(upload_to='static/img')
-	category = models.CharField(max_length=25)
+	category = models.ForeignKey(Category, blank=True, null=True,
+													on_delete=models.SET_NULL)
 
 	def __unicode__(self):
 		return self.name + ' - ' + self.ref
@@ -36,8 +43,8 @@ class OperatingSystem(models.Model):
 #
 #
 class SupportedBy(models.Model):
-	component = models.ForeignKey(Component)
-	os = models.ForeignKey(OperatingSystem)
+	component = models.ForeignKey(Component, blank=False)
+	os = models.ForeignKey(OperatingSystem, blank=False)
 	min_version = models.CharField(max_length=20)
 	max_version = models.CharField(max_length=20)
 
@@ -47,8 +54,8 @@ class SupportedBy(models.Model):
 #
 #
 class CMadeBy(models.Model):
-	component = models.ForeignKey(Component)
-	manufacturer = models.ForeignKey(Manufacturer)
+	component = models.ForeignKey(Component, blank=False)
+	manufacturer = models.ForeignKey(Manufacturer, blank=False)
 
 	def __unicode__(self):
 		return str(self.component) + ' made by ' + str(self.manufacturer)

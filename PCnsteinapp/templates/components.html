@@ -1,14 +1,9 @@
+{% extends "base.html" %}
+{% block css %}
 
-<html>
+{% endblock %}
 
-<head>
-
-	<!-- Style sheets -->
-	<link rel="stylesheet" type="text/css" href="./css/gen.css"></link>
-	<title>{{ titlehead }}</title>
-<head>
-
-<body>
+{% block content %}
 	{% if cinfo|length > 0 %}
 	<table>
 		<tr>
@@ -31,6 +26,4 @@
 	{% if cinfo|length > 0 %}
 	</table>
 	{% endif %}
-</body>
-
-</html
+{% endblock %}

@@ -1,0 +1,34 @@
+{% load staticfiles %}
+
+<html>
+
+	<head>
+		<!-- favicon -->
+		<!-- TODO -->
+
+		<!-- Style Sheets -->
+		<link rel="stylesheet" type="text/css" 
+				href="{% static "css/gen.css" %}"/>
+		{% block css %}{% endblock %}
+
+		<!-- Page Title -->
+		<title>{{ pagetitle }} - PCnstein</title>
+	</head>
+
+	<body>
+
+		<!-- Main content wrapper -->
+		<div id="content_wrapper">
+
+			<div id="navbar">
+				<!-- TODO -->
+			</div>
+
+			<div id="content">
+				{% block content %}{% endblock %}
+			</div>
+
+		</div>
+	</body>
+
+</html>

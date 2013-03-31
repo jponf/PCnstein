@@ -2,22 +2,19 @@
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.utils import simplejson
-from django.http import HttpResponse
+from django.http import HttpResponse, HttpResponseBadRequest
 from django.core import serializers
 
 import models
+import datautils
+
 
 #
 #
-def GetComponentsInfoAsList():
-	cinf = []
+def GetMainPage(request):
+	format = request.GET.get('format', 'http')
 
-	for c in models.Component.objects.all():
-		cinfo = { 'ref' : c.ref, 'name' : c.name, 'desc' : c.desc, 
-				  'avg_price' : str(c.avg_price), 'category' : c.category,
-				  'img' : str(c.img) }
-		cinf.append(cinfo)
-	return cinf
+	return render_to_response('mainpage.html')
 
 #
 #
@@ -27,8 +24,9 @@ def GetComponents(request):
 	if format == 'json':
 		#json = serializers.serialize('json', models.Component.objects.all())
 		#return HttpResponse(json, mimetype='application/json')
-		return HttpResponse(simplejson.dumps(GetComponentsInfoAsList()),
-							mimetype='application/json')
+		return HttpResponse(
+			simplejson.dumps( datautils.GetComponentsInfoAsList() ),
+			mimetype='application/json' )
 		
 	elif format == 'xml':
 		# xml = serializers.serialize('xml', models.Component.objects.all())
@@ -36,14 +34,24 @@ def GetComponents(request):
 		return HttpResponse(render_to_string('components.xml', 
 				{'components': models.Component.objects.all()}))
 	elif format == 'http':
-		params = { 'titlehead' : "PCnstein - Components"}
-		params['cinfo'] = GetComponentsInfoAsList()
+		params = { 'pagetitle' : "Components"}
+		params['cinfo'] = datautils.GetComponentsInfoAsList()
 
 		return render_to_response('components.html', params)
 	else:
-		return HttpResponse('Error madafaka')
+		return HttpResponseBadRequest('Bad Format')
 
 #
 #
 def GetComponent(request, ref):
-	return HttpResponse(ref)
+	format = request.GET.get('format', 'http')
+
+	if format == 'json':
+		return HttpResponse(
+			simplejson.dumps( datautils.GetComponentInfo(ref)) )
+	elif format == 'xml':
+		pass # TODO
+	elif format == 'http':
+		pass # TODO
+	else:
+		return HttpResponseBadRequest('Bad Format')
