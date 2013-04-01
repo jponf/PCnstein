@@ -45,6 +45,7 @@ class SupportedBy(models.Model):
 	os = models.ForeignKey(OperatingSystem, blank=False)
 	min_version = models.CharField(max_length=20)
 	max_version = models.CharField(max_length=20)
+	details = models.TextField()
 
 	def __unicode__(self):
 		return str(self.component) + ' supported by ' + str(self.os)
@@ -52,7 +53,7 @@ class SupportedBy(models.Model):
 #
 #
 class CMadeBy(models.Model):
-	component = models.ForeignKey(Component, blank=False)
+	component = models.ForeignKey(Component, blank=False, unique=True)
 	manufacturer = models.ForeignKey(Manufacturer, blank=False)
 
 	def __unicode__(self):
@@ -61,7 +62,7 @@ class CMadeBy(models.Model):
 #
 #
 class OSMadeBy(models.Model):
-	os = models.ForeignKey(OperatingSystem)
+	os = models.ForeignKey(OperatingSystem, unique=True)
 	manufacturer = models.ForeignKey(Manufacturer)
 
 	def __unicode__(self):

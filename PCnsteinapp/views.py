@@ -13,11 +13,19 @@ import datautils
 #
 #
 def GetMainPage(request):
+	"""
+	GetMainPage(request) -> HttpResponse
+	Returns the main page of the application (only html)
+	"""
 	return render_to_response('mainpage.html')
 
 #
 #
 def GetComponents(request):
+	"""
+	GetComponents(request) -> HttpResponse
+	Returns a list with all the components in the specified format
+	"""
 	format = request.GET.get('format', 'html')
 
 	if format == 'json':
@@ -45,6 +53,10 @@ def GetComponents(request):
 #
 #
 def GetComponent(request, ref):
+	"""
+	GetComponent(request) -> HttpResponse
+	Returns a list with all the information of the specified component
+	"""
 	format = request.GET.get('format', 'html')
 
 	if format == 'json':

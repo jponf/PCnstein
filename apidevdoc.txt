@@ -1,0 +1,20 @@
+VERB   URL                     ACTION
+-------------------------------------------------------------------------------------------------
+GET   | /components/          | List all the components and a summary of each one
+GET   | /components/<ref>     | Return all the information related to the specified component
+GET   | /manufacturers/       | List all the manufacturers and a summary of each one 
+      |                       | (With the current model the sumary is all the information)
+GET   | /manufacturers/<name> | Return all the information related to the sepcified manufacturers
+      |                       | (include a list with all the components made by him)
+GET   | /categories/          | List all the categories avaliable
+GET   | /categories/<name>    | List all the components under the specified category
+
+
+PARAM  | O | VERB | URLS                   | DESC
+-------------------------------------------------------------------------------------------------
+format | X | GET  | /components/           | This parameter specify the format in which the data
+       |   |      | /components/<ref>      | must be returned, it can take as value:
+       |   |      | /manufacturers/        |                   [html, xml, json]
+       |   |      | /manufacturers/<name>  | If it is not specified the default value is assumed
+       |   |      | /categories/           | to be html
+       |   |      | /categories/<name>     |
