@@ -1,6 +1,6 @@
 from django.conf.urls import patterns, include, url
 
-from PCnsteinapp.views import GetComponents, GetComponent, GetMainPage
+from PCnsteinapp.views import GetComponents, GetComponent, GetMainPage, GetManufacturers, GetManufacturer 
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -18,7 +18,11 @@ urlpatterns = patterns('',
     url(r'^admin/', include(admin.site.urls)),
 
     url(r'^$', GetMainPage),
+
     url(r'^components/$', GetComponents),
     url(r'^components/(\w+)$', GetComponent), # \w only matches alphanumerical chars and underscores. If all but blanks wanted change it for \S.
+    
+    url(r'^manufacturers/$', GetManufacturers)
+    url(r'^manufacturers/(\w+)$', GetManufacturer)
     
 )
