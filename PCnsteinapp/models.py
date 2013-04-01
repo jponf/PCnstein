@@ -1,11 +1,9 @@
 from django.db import models
 
-# Create your models here.
-
 #
 #
 class Manufacturer(models.Model):
-	name = models.CharField(max_length=35)
+	name = models.CharField(primary_key=True, max_length=35)
 	desc = models.TextField()
 
 	def __unicode__(self):
@@ -25,7 +23,7 @@ class Component(models.Model):
 	name = models.CharField(max_length=75)
 	desc = models.TextField()
 	avg_price = models.DecimalField(max_digits=7, decimal_places=3)
-	img = models.ImageField(upload_to='static/img')
+	img = models.ImageField(upload_to='static/img', blank=True, null=True)
 	category = models.ForeignKey(Category, blank=True, null=True,
 													on_delete=models.SET_NULL)
 

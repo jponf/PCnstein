@@ -8,3 +8,6 @@ API_COMPONENTS = 'components'
 
 # Api manuufacturers entry url
 API_MANUFACTURERS = 'manufacturers'
+
+#
+API_CATEGORIES = 'categories'

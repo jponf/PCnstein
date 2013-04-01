@@ -1,6 +1,11 @@
 from django.conf.urls import patterns, include, url
 
-from PCnsteinapp.views import GetComponents, GetComponent, GetMainPage, GetManufacturers, GetManufacturer 
+from PCnsteinapp.views import GetComponents, GetComponent, GetMainPage, \
+                            GetManufacturers, GetManufacturer, GetCategories, \
+                            GetCategory
+
+from PCnsteinapp.globdata import API_MANUFACTURERS, API_COMPONENTS, \
+                            API_CATEGORIES
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -19,10 +24,12 @@ urlpatterns = patterns('',
 
     url(r'^$', GetMainPage),
 
-    url(r'^components/$', GetComponents),
-    url(r'^components/(\w+)$', GetComponent), # \w only matches alphanumerical chars and underscores. If all but blanks wanted change it for \S.
+    url(r'^%s/$' % API_COMPONENTS, GetComponents),
+    url(r'^%s/(\w+)/$' % API_COMPONENTS, GetComponent), # \w only matches alphanumerical chars and underscores. If all but blanks wanted change it for \S.
     
-    url(r'^manufacturers/$', GetManufacturers)
-    url(r'^manufacturers/(\w+)$', GetManufacturer)
-    
+    url(r'^%s/$' % API_MANUFACTURERS, GetManufacturers),
+    url(r'^%s/(\w+)/$' % API_MANUFACTURERS, GetManufacturer),
+
+    url(r'^%s/$' % API_CATEGORIES, GetCategories),
+    url(r'^%s/(\w+)/$' % API_CATEGORIES, GetCategory),    
 )

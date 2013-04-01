@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<component ref="{{ component.ref }}" name="{{ component.name }}" 
+			 avg_price="{{ component.avg_price }}" category="{{ component.category }}"
+			 img="{{ component.img }}">
+		{{ component.desc }}
+</component>

@@ -27,7 +27,7 @@ def GetComponents(request):
 							)
 		
 	elif format == 'xml':
-		params = { 'components': models.Component.objects.all() }
+		params = { 'components': datautils.GetComponentsInfoAsList() }
 		return HttpResponse ( 
 			render_to_string('components.xml', params), 
 			mimetype='application/xml'
@@ -49,10 +49,14 @@ def GetComponent(request, ref):
 
 	if format == 'json':
 		return HttpResponse(
-			simplejson.dumps( datautils.GetComponentInfo(ref)) )
+			simplejson.dumps(datautils.GetComponentInfo(ref)) )
 
 	elif format == 'xml':
-		return HttpResponse('XML for component ' + ref)
+		params = { 'component' : datautils.GetComponentInfo(ref) }
+		return HttpResponse(
+				render_to_string('component.xml', params),
+				mimetype='application/xml'
+							)
 
 	elif format == 'html':
 		return HttpResponse('HTML for component ' + ref)
@@ -72,13 +76,13 @@ def GetManufacturers(request):
 			mimetype='application/json'
 							)
 	elif format == 'xml':
-		params = { 'manufacturers' : models.Manufacturer.objects.all() }
+		params = { 'manufacturers' : datautils.GetManufacturersInfoAsList() }
 		return HttpResponse (
 			render_to_string('manufacturers.xml', params),
 			mimetype='application/xml'
 							)
 
-	elif format == 'http'
+	elif format == 'html':
 		return HttpResponse("HTML for manufacturers :D")
 
 	else:
@@ -95,23 +99,76 @@ def GetManufacturer(request, name):
 
 		if format == 'json':
 			return HttpResponse (
-				simplejson.dumps(datautils.GetManufacturersInfoAsList() ),
+				simplejson.dumps(datautils.GetManufacturerInfo(name) ),
 				mimetype='application/json'
 								)
 		elif format == 'xml':
-			params = { 'manufacturers' : models.Manufacturer.objects.all() }
+			params = { 'manufacturer' : datautils.GetManufacturerInfo(name)}
 			return HttpResponse (
-				render_to_string('manufacturers.xml', params),
+				render_to_string('manufacturer.xml', params),
 				mimetype='application/xml'
 								)
 
-		elif format == 'http'
+		elif format == 'html':
 			return HttpResponse("HTML for manufacturers :D")
 
 		else:
 			return HttpResponseBadRequest(
 				'Wrong parameter "format" [html, xml, json]')
 
-	except ObjectDoesNotExist, e:
+	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
 			"Manufacturer with name: " + name + ", does not exists")
+
+#
+#
+def GetCategories(request):
+	format = request.GET.get('format', 'html')
+
+	if format == 'json':
+		return HttpResponse(
+			simplejson.dumps(datautils.GetCategoriesInfoAsList()),
+			mimetype='application/json')
+
+	elif format == 'xml':
+		params = { 'categories' : datautils.GetCategoriesInfoAsList() }
+		return HttpResponse(
+			render_to_string('categories.xml', params),
+			mimetype='application/xml')
+
+	elif format == 'html':
+		return HttpResponse("HTML for manufacturers :D")
+
+	else:
+		return HttpResponseBadRequest(
+				'Wrong parameter "format" [html, xml, json]')
+
+#
+#
+def GetCategory(request, name):
+	
+	try:
+
+		format = request.GET.get('format', 'html')
+
+		if format == 'json':
+			return HttpResponse(
+				simplejson.dumps(datautils.GetCategoryComponentsList(name)),
+				mimetype='application/json')
+
+		elif format == 'xml':
+			params = { 'components' : datautils.GetCategoryComponentsList(name)}
+			return HttpResponse(
+				render_to_string('components.xml', params),
+				mimetype='application/xml')
+
+		elif format == 'html':
+			return HttpResponse("HTML for manufacturers :D")
+			
+		else:
+			return HttpResponseBadRequest(
+					'Wrong parameter "format" [html, xml, json]')
+
+	except ObjectDoesNotExist:
+		return HttpResponseNotFound(
+			"Category with name: " + name + ", does not exists")

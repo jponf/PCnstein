@@ -14,7 +14,7 @@ def GetComponentsInfoAsList():
 
 	for c in models.Component.objects.all():
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'desc' : c.desc, 
-				  'avg_price' : str(c.avg_price), 'category' : c.category,
+				  'avg_price' : str(c.avg_price), 'category' : str(c.category),
 				  'img' : str(c.img),
 				  'links' : { 'rel' : 'self', 
 				  			  'href' : '%s/%s/%s' % (globdata.API_URL,
@@ -29,14 +29,13 @@ def GetComponentInfo(ref):
 
 	comp = models.Component.objects.get(pk=ref)
 
-	cinf = [
+	cinf = \
 		{ 	
 			'ref': comp.ref, 'name' : comp.name, 'desc' : comp.desc,
-			'avg_price' : str(comp.avg_price), 'category' : c.category,
+			'avg_price' : str(comp.avg_price), 'category' : str(comp.category),
 			'img' : str(comp.img), 'links' : { 'rel' : 'self' }
 		}
-	]
-
+	
 	return cinf
 
 #
@@ -50,8 +49,10 @@ def GetManufacturersInfoAsList():
 						'name': m.name, 
 						'desc': m.desc, 
 						'links': { 
-									'rel': self, 
-									'href': '%s/%s/%s' % (globdata.API_URL, globdata.API_MANUFACTURERS, m.ref)
+									'rel': 'self', 
+									'href': '%s/%s/%s' % (globdata.API_URL, 
+												globdata.API_MANUFACTURERS,
+												m.name)
 								 }
 					}
 
@@ -61,12 +62,44 @@ def GetManufacturersInfoAsList():
 
 #
 #
-def GetManufacturersInfo(name):
+def GetManufacturerInfo(name):
 
 	manufacturer = models.Manufacturer.objects.get(pk=name)
 
-	manu_info = [{'name': manufacturer.name, 'desc': manufacturer.desc}, 'links': {'rel': 'self'}]
+	manu_info = \
+		{
+			'name': manufacturer.name, 'desc': manufacturer.desc,
+			'links': {'rel': 'self'}
+		}
 
 	return manu_info
 
+#
+#
+def GetCategoriesInfoAsList():
 
+	categories = []
+
+	for cat in models.Category.objects.all():
+		categories.append( { 'name' : cat.name	} )
+
+	return categories
+
+#
+#
+def GetCategoryComponentsList(name):
+
+	category = models.Category.objects.get(pk=name)	
+	components = models.Component.objects.filter(category=category)
+	cinf = []
+
+	for c in components:
+		cinfo = { 'ref' : c.ref, 'name' : c.name, 'desc' : c.desc, 
+				  'avg_price' : str(c.avg_price), 'category' : str(c.category),
+				  'img' : str(c.img),
+				  'links' : { 'rel' : 'self', 
+				  			  'href' : '%s/%s/%s' % (globdata.API_URL,
+				  			  						 globdata.API_COMPONENTS,
+				  			  						 c.ref) } }
+		cinf.append(cinfo)
+	return cinf
