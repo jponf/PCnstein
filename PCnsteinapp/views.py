@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 # Create your views here.
 from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
 from django.core import serializers
@@ -6,9 +7,9 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 
+import sys
 import models
 import datautils
-
 
 #
 #
@@ -29,17 +30,14 @@ def GetComponents(request):
 	format = request.GET.get('format', 'html')
 
 	if format == 'json':
-		return HttpResponse (
-			simplejson.dumps( datautils.GetComponentsInfoAsList() ),
-			mimetype='application/json' 
-							)
+		clinf = datautils.GetComponentsSummaryAsList()
+		return HttpResponse(simplejson.dumps(clinf),
+							 mimetype='application/json')
 		
 	elif format == 'xml':
-		params = { 'components': datautils.GetComponentsInfoAsList() }
-		return HttpResponse ( 
-			render_to_string('components.xml', params), 
-			mimetype='application/xml'
-							)
+		params = { 'components': datautils.GetComponentsSummaryAsList() }
+		return HttpResponse(render_to_string('components.xml', params), 
+							mimetype='application/xml')
 
 	elif format == 'html':
 		params = { 'pagetitle' : "Components"}
@@ -59,24 +57,26 @@ def GetComponent(request, ref):
 	"""
 	format = request.GET.get('format', 'html')
 
-	if format == 'json':
-		return HttpResponse(
-			simplejson.dumps(datautils.GetComponentInfo(ref)) )
+	try:
+		if format == 'json':
+			cinf = datautils.GetComponentInfo(ref)
+			return HttpResponse(simplejson.dumps(cinf),
+								mimetype='application/json')
 
-	elif format == 'xml':
-		params = { 'component' : datautils.GetComponentInfo(ref) }
-		return HttpResponse(
-				render_to_string('component.xml', params),
-				mimetype='application/xml'
-							)
+		elif format == 'xml':
+			params = { 'component' : datautils.GetComponentInfo(ref) }
+			return HttpResponse(render_to_string('component.xml', params),
+								mimetype='application/xml')
 
-	elif format == 'html':
-		return HttpResponse('HTML for component ' + ref)
+		elif format == 'html':
+			return HttpResponse('HTML for component ' + ref)
 
-	else:
-		return HttpResponseBadRequest(
-			'Wrong parameter "format" [html, xml, json]')
+		else:
+			return HttpResponseBadRequest(
+				'Wrong parameter "format" [html, xml, json]')
 
+	except ObjectDoesNotExist, e:
+		return HttpResponseNotFound("Error 404: component: " + ref)
 #
 #
 def GetManufacturers(request):

@@ -1,26 +1,39 @@
 # -*- coding: utf-8 -*-
+from django.core.exceptions import ObjectDoesNotExist
+from urllib import pathname2url
 
+import sys
+ 
 import models
 import globdata
 
+
 #
 #
-def GetComponentsInfoAsList():
+def GetComponentsSummaryAsList():
 	"""
-	GetComponentsInfoAsList() -> Return a list filled with dictionaries
+	GetComponentsSummaryAsList() -> Return a list filled with dictionaries
 								containing component information
 	"""
 	cinf = []
 
 	for c in models.Component.objects.all():
-		cinfo = { 'ref' : c.ref, 'name' : c.name, 'desc' : c.desc, 
-				  'avg_price' : str(c.avg_price), 'category' : str(c.category),
-				  'img' : str(c.img),
+		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
+				  'avgprice' : str(c.avgprice), 'category' : str(c.category),
 				  'links' : { 'rel' : 'self', 
 				  			  'href' : '%s/%s/%s' % (globdata.API_URL,
 				  			  						 globdata.API_COMPONENTS,
-				  			  						 c.ref) } }
+				  			  						 c.ref) },
+				  'manufacturer' : '' }
+
+		# Add manufacturer if it exists
+		manufacturer = GetComponentManufacturer(c)
+		if manufacturer:
+			cinfo['manufacturer'] = manufacturer.name
+
+		# Append info to the list
 		cinf.append(cinfo)
+
 	return cinf
 
 #
@@ -34,25 +47,64 @@ def GetComponentInfo(ref):
 
 	cinf = \
 		{ 	
-			'ref': comp.ref, 'name' : comp.name, 'desc' : comp.desc,
-			'avg_price' : str(comp.avg_price), 'category' : str(comp.category),
-			'img' : str(comp.img), 'manufacturer' : '', 
+			'ref': comp.ref, 'name' : comp.name, 'img' : str(comp.img),
+			'avgprice' : str(comp.avgprice), 'category': str(comp.category),
+			'desc' : comp.desc,
 			'links' : { 'rel' : 'self',
-						'manufacturer' : '' }
+						'manufacturer' : '',
+						'supportedby' : '' }, 
+			'manufacturer' : '',
+			'supportedby' : ''
 		}
 
-	# Try to add information about the manufacturer
+	# Add manufacturer if it exists
+	manufacturer = GetComponentManufacturer(comp)
+	if manufacturer:
+		cinf['manufacturer'] = manufacturer.name
+		cinf['links']['manufacturer'] = '%s/%s/%s' % (globdata.API_URL,
+													globdata.API_MANUFACTURERS,
+													manufacturer.name)
+
+	# Add supported by list if exists (elements separed by ;)
+	supportedby = GetComponentSupportedBy(comp)
+	supportedbystr = ';'.join(s.os.name for s in supportedby)
+	supportedbyhref = ';'.join('%s/%s/%s' % (globdata.API_URL,
+	 		globdata.API_OS, pathname2url(s.os.name)) for s in supportedby)
+	
+	if supportedbystr:
+		cinf['supportedby'] = supportedbystr
+		cinf['links']['supportedby'] = supportedbyhref
+
+	return cinf
+
+#
+#
+def GetComponentManufacturer(comp):
+	"""
+	GetComponentManufacturer(comp)-> Return the manufacturer instance associated
+								with the specified component
+	"""
+
+	# Try get the relation with the manufacturer
 	try:
 		madeby = models.CMadeBy.objects.get(component_id=comp)
-		manu = madeby.manufacturer
-		cinf['manufacturer'] = madeby.manufacturer.name
-		cinf['links']['manufacturer'] = '%s/%s/%s/' % (globdata.API_URL,
-													 globdata.API_MANUFACTURERS,
-													 manu.name)
-	except:
-		pass
+		return madeby.manufacturer
+	except ObjectDoesNotExist:
+		sys.stderr.write('No Made By relationship for component: ' + str(comp))
+		return None
+
+#
+#
+def GetComponentSupportedBy(comp):
+	"""
+	GetComponentSupportedBy(comp) -> Return the OS that support the specified
+								component
+	"""
+
+	# Try to get the supportedby relations
+	return models.SupportedBy.objects.filter(component_id=comp)
 	
-	return cinf
+
 
 #
 #

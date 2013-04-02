@@ -2,10 +2,17 @@
 
 <components>
 	{% for c in components %}
-	<component ref="{{ c.ref }}" name="{{ c.name }}" 
-			 avg_price="{{ c.avg_price }}" category="{{ c.category }}"
-			 img="{{ c.img }}">
-		{{ c.desc }}
+	<component>
+		<ref>{{ c.ref }}</ref>
+		<name>{{ c.name }}</name>
+		<avgprice>{{ c.avgprice }}</avgprice>
+		<category>{{ c.category }}</category>
+		<manufacturer>{{ c.manufacturer }}</manufacturer>
+		<img>{{ c.img }}</img>
+		<links>
+			<rel>{{ c.links.rel }}</rel>
+			<href>{{ c.links.href }}</href>
+		</links>
 	</component>
 	{% endfor %}
 </components>

@@ -1,7 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<component ref="{{ component.ref }}" name="{{ component.name }}" 
-			 avg_price="{{ component.avg_price }}" category="{{ component.category }}" manufacturer="{{ component.manufacturer }}"
-			 img="{{ component.img }}">
-		{{ component.desc }}
+<component>
+	<ref>{{ component.ref }}</ref>
+		<name>{{ component.name }}</name>
+		<avgprice>{{ component.avgprice }}</avgprice>
+		<category>{{ component.category }}</category>
+		<manufacturer>{{ component.manufacturer }}</manufacturer>
+		<supportedby>{{ component.supportedby }}</supportedby>
+		<img>{{ component.img }}</img>
+		<links>
+			<rel>{{ component.links.rel }}</rel>
+			<manufacturer>{{ component.links.manufacturer }}</manufacturer>
+			<supportedby>{{ component.links.supportedby }}</supportedby>
+		</links>
+		<desc>{{ component.desc }}</desc>
 </component>
