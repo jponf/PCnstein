@@ -70,14 +70,14 @@ def GetComponentInfo(ref):
 
 	# Add supported by list if exists (elements separed by ;)
 	supportedby = GetComponentSupportedBy(comp)
-	supportedbystr = ';'.join(s.os.name for s in supportedby)
+	supportedbystr = ';'.join(os.name for os in supportedby)
 		
 	if supportedbystr:
 		cinf['supportedby'] = supportedbystr
-		for s in supportedby:
+		for os in supportedby:
 			cinf['links'].append( { 'rel' : 'supportedby',
-									'href' : GetOperatingSystemURL(s.os.name) })
-			
+									'href' : GetOperatingSystemURL(os.name) })
+
 	return cinf
 
 #
@@ -103,11 +103,7 @@ def GetComponentSupportedBy(comp):
 	GetComponentSupportedBy(comp) -> Return the OS that support the specified
 								component
 	"""
-
-	# Try to get the supportedby relations
-	return models.SupportedBy.objects.filter(component_id=comp)
-	
-
+	return [s.os for s in models.SupportedBy.objects.filter(component_id=comp)]
 
 #
 #
@@ -119,16 +115,11 @@ def GetManufacturersInfoAsList():
 	manu_info = []
 
 	for m in models.Manufacturer.objects.all():
-		single_manu_info = { 
-						'name': m.name, 
-						'desc': m.desc, 
-						'links': { 
-									'rel': 'self', 
-									'href': '%s/%s/%s' % (globdata.API_URL, 
-												globdata.API_MANUFACTURERS,
-												m.name)
-								 }
-					}
+		single_manu_info = { 'name': m.name,  
+							 'links': [ { 'rel': 'self', 
+										 'href': GetManufacturerURL(m.name)}
+								 	  ]
+							}							
 
 		manu_info.append(single_manu_info)
 
@@ -141,17 +132,43 @@ def GetManufacturerInfo(name):
 	GetManufacturerInfo(name) -> Return a dictionary with all the information
 								related to the specified manufacturer
 	"""
-	# TODO add list of made components/operating systems
 	manufacturer = models.Manufacturer.objects.get(pk=name)
 
 	manu_info = \
 		{
 			'name': manufacturer.name, 'desc': manufacturer.desc,
-			'links': {'rel': 'self'}
+			'links': [ { 'rel' : 'self',
+						 'href' : GetManufacturerURL(manufacturer.name) }
+					 ] 
 		}
+
+	# Try to add links of made components
+	components = GetManufacturerComponents(manufacturer)
+
+	for c in components:
+		manu_info['links'].append({ 'rel' : 'makes',
+									'href' : GetComponentURL(c.name) })
+
+	# Try to add links of made operating systems
+	operating_systems = GetManufacturerOperatingSystems(manufacturer)
+
+	for os in operating_systems:
+		manu_info['links'].append({ 'rel' : 'makes',
+									'href' : GetOperatingSystemURL(os.name) })
 
 	return manu_info
 
+#
+#
+def GetManufacturerComponents(manufacturer):
+	return [sb.component for sb in 
+				models.CMadeBy.objects.filter(manufacturer_id=manufacturer)]
+
+#
+#
+def GetManufacturerOperatingSystems(manufacturer):
+	return [osmb.os for osmb in
+				models.OSMadeBy.objects.filter(manufacturer_id=manufacturer)]
 #
 #
 def GetCategoriesInfoAsList():
@@ -159,11 +176,12 @@ def GetCategoriesInfoAsList():
 	GetCategoriesInfoAsList() -> Return a list filled dictionaries containing
 								categories information
 	"""
-	Get
 	categories = []
 
 	for cat in models.Category.objects.all():
-		categories.append( { 'name' : cat.name	} )
+		components = models.Component.objects.filter(category_id=cat)
+		categories.append( { 'name' : cat.name,
+							 'itemcount' : len(components) } )
 
 	return categories
 
@@ -176,16 +194,28 @@ def GetCategoryComponentsList(name):
 								the given category
 	"""
 	category = models.Category.objects.get(pk=name)	
-	components = models.Component.objects.filter(category=category)
+	components = models.Component.objects.filter(category_id=category)
 	cinf = []
 
 	for c in components:
-		cinfo = { 'ref' : c.ref, 'name' : c.name, 'desc' : c.desc, 
-				  'avg_price' : str(c.avg_price), 'category' : str(c.category),
-				  'img' : str(c.img),
-				  'links' : { 'rel' : 'self', 
-				  			  'href' : '%s/%s/%s' % (globdata.API_URL,
-				  			  						 globdata.API_COMPONENTS,
-				  			  						 c.ref) } }
+		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
+				  'avgprice' : str(c.avgprice), 'category' : str(c.category),
+				  'manufacturer' : '',
+				  'links' : [ { 'rel' : 'self', 
+				  			 	'href': GetComponentURL(c.ref) },
+				  			  { 'rel' : 'category',
+				  			  	'href' : GetCategoryURL(c.category.name) },				  			  
+				  			]
+				}
+
+		# Add manufacturer if it exists
+		manufacturer = GetComponentManufacturer(c)
+		if manufacturer:
+			cinfo['manufacturer'] = manufacturer.name
+			cinfo['links'].append({ 'rel' : 'manufacturer',
+								'href' : GetManufacturerURL(manufacturer.name)})
+
+		# Append info to the list
 		cinf.append(cinfo)
+
 	return cinf

@@ -24,8 +24,8 @@ def GetMainPage(request):
 
 #
 #
-def GenerateResponse(request, data, root=None, xmltemplate=None,
-					htmltemplate=None):
+def GenerateResponse(request, data, datatag=None, xmltemplate=None,
+					htmltemplate=None, htmlargs={}):
 	"""
 	TODO
 	"""
@@ -37,17 +37,17 @@ def GenerateResponse(request, data, root=None, xmltemplate=None,
 								mimetype='application/json')		
 
 	elif format == 'xml':
-		if not root:
-			raise Exception("root must be specified to generate an xml response")
+		if not datatag:
+			raise Exception("datatag must be specified to generate an xml response")
 
 		xmlstr = ''
 		if xmltemplate:
-			xmlstr = render_to_string(xmltemplate, { root : data } )
+			xmlstr = render_to_string(xmltemplate, { datatag : data } )
 		else:
 			if isinstance(data, list) or isinstance(data, tuple):
-				xmlstr = dict2xml( { root : data }, root )
+				xmlstr = dict2xml( { datatag : data }, datatag )
 			else:
-				xmlstr = dict2xml(data, root)
+				xmlstr = dict2xml(data, datatag)
 
 		response = HttpResponse(xmlstr, mimetype='application/xml')
 
@@ -55,8 +55,12 @@ def GenerateResponse(request, data, root=None, xmltemplate=None,
 		if not htmltemplate:
 			raise Exception("htmltemplate must be specified to generate an "
 				"html response")
+		if not isinstance(htmlargs, dict):
+			raise Exception("htmlargs must be a dictionary")
 
-		response = render_to_response(htmltemplate, data)
+		htmlargs[datatag] = data
+
+		response = render_to_response(htmltemplate, htmlargs)
 	else:
 		response = HttpResponseBadRequest(
 			'Wrong parameter "format" [html, xml, json]')
@@ -75,7 +79,8 @@ def GetComponents(request):
 					datautils.GetComponentsSummaryAsList(),
 					'components',
 					None,
-					'components.html')		
+					'components.html', 
+					{'pagetitle' : 'Components'})		
 
 #
 #
@@ -96,53 +101,22 @@ def GetComponent(request, ref):
 #
 #
 def GetManufacturers(request):
-	format = request.GET.get('format', 'html')
 
-	if format == 'json':
-		return HttpResponse (
-			simplejson.dumps(datautils.GetManufacturersInfoAsList() ),
-			mimetype='application/json'
-							)
-	elif format == 'xml':
-		params = { 'manufacturers' : datautils.GetManufacturersInfoAsList() }
-		return HttpResponse (
-			render_to_string('manufacturers.xml', params),
-			mimetype='application/xml'
-							)
-
-	elif format == 'html':
-		return HttpResponse("HTML for manufacturers :D")
-
-	else:
-		return HttpResponseBadRequest(
-			'Wrong parameter "format" [html, xml, json]')
-
+	return GenerateResponse(request,
+					datautils.GetManufacturersInfoAsList(),
+					'manufacturers',
+					None,
+					'manufacturers.html')
 
 #
 #
 def GetManufacturer(request, name):
-	format = request.GET.get('format', 'html')
-
 	try:
-
-		if format == 'json':
-			return HttpResponse (
-				simplejson.dumps(datautils.GetManufacturerInfo(name) ),
-				mimetype='application/json'
-								)
-		elif format == 'xml':
-			params = { 'manufacturer' : datautils.GetManufacturerInfo(name)}
-			return HttpResponse (
-				render_to_string('manufacturer.xml', params),
-				mimetype='application/xml'
-								)
-
-		elif format == 'html':
-			return HttpResponse("HTML for manufacturers :D")
-
-		else:
-			return HttpResponseBadRequest(
-				'Wrong parameter "format" [html, xml, json]')
+		return GenerateResponse(request,
+			datautils.GetManufacturerInfo(name),
+			'manufacturer',
+			None,
+			'manufacturer.html')
 
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
@@ -151,52 +125,24 @@ def GetManufacturer(request, name):
 #
 #
 def GetCategories(request):
-	format = request.GET.get('format', 'html')
-
-	if format == 'json':
-		return HttpResponse(
-			simplejson.dumps(datautils.GetCategoriesInfoAsList()),
-			mimetype='application/json')
-
-	elif format == 'xml':
-		params = { 'categories' : datautils.GetCategoriesInfoAsList() }
-		return HttpResponse(
-			render_to_string('categories.xml', params),
-			mimetype='application/xml')
-
-	elif format == 'html':
-		return HttpResponse("HTML for manufacturers :D")
-
-	else:
-		return HttpResponseBadRequest(
-				'Wrong parameter "format" [html, xml, json]')
+	return GenerateResponse(request,
+		datautils.GetCategoriesInfoAsList(),
+		'categories',
+		None,
+		'categories.html')
 
 #
 #
 def GetCategory(request, name):
 	
 	try:
-
-		format = request.GET.get('format', 'html')
-
-		if format == 'json':
-			return HttpResponse(
-				simplejson.dumps(datautils.GetCategoryComponentsList(name)),
-				mimetype='application/json')
-
-		elif format == 'xml':
-			params = { 'components' : datautils.GetCategoryComponentsList(name)}
-			return HttpResponse(
-				render_to_string('components.xml', params),
-				mimetype='application/xml')
-
-		elif format == 'html':
-			return HttpResponse("HTML for manufacturers :D")
-			
-		else:
-			return HttpResponseBadRequest(
-					'Wrong parameter "format" [html, xml, json]')
-
+		return GenerateResponse(request,
+			datautils.GetCategoryComponentsList(name),
+			'components',
+			None,
+			'components.html',
+			{ 'pagetitle' : '[%s] Components' % name } )
+		
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
 			"Category with name: " + name + ", does not exists")
