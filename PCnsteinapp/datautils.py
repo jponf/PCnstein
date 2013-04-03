@@ -1,9 +1,9 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ObjectDoesNotExist
-from urllib import pathname2url
+from urlutils import GetComponentURL, GetManufacturerURL, GetCategoryURL, \
+					GetOperatingSystemURL
 
 import sys
- 
 import models
 import globdata
 
@@ -20,16 +20,20 @@ def GetComponentsSummaryAsList():
 	for c in models.Component.objects.all():
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
 				  'avgprice' : str(c.avgprice), 'category' : str(c.category),
-				  'links' : { 'rel' : 'self', 
-				  			  'href' : '%s/%s/%s' % (globdata.API_URL,
-				  			  						 globdata.API_COMPONENTS,
-				  			  						 c.ref) },
-				  'manufacturer' : '' }
+				  'manufacturer' : '',
+				  'links' : [ { 'rel' : 'self', 
+				  			 	'href': GetComponentURL(c.ref) },
+				  			  { 'rel' : 'category',
+				  			  	'href' : GetCategoryURL(c.category.name) },				  			  
+				  			]
+				}
 
 		# Add manufacturer if it exists
 		manufacturer = GetComponentManufacturer(c)
 		if manufacturer:
 			cinfo['manufacturer'] = manufacturer.name
+			cinfo['links'].append({ 'rel' : 'manufacturer',
+								'href' : GetManufacturerURL(manufacturer.name)})
 
 		# Append info to the list
 		cinf.append(cinfo)
@@ -50,31 +54,30 @@ def GetComponentInfo(ref):
 			'ref': comp.ref, 'name' : comp.name, 'img' : str(comp.img),
 			'avgprice' : str(comp.avgprice), 'category': str(comp.category),
 			'desc' : comp.desc,
-			'links' : { 'rel' : 'self',
-						'manufacturer' : '',
-						'supportedby' : '' }, 
 			'manufacturer' : '',
-			'supportedby' : ''
+			'supportedby' : '',
+			'links' : [ { 'rel' : 'self',
+						  'href' : GetComponentURL(comp.ref) }
+					  ]
 		}
 
 	# Add manufacturer if it exists
 	manufacturer = GetComponentManufacturer(comp)
 	if manufacturer:
 		cinf['manufacturer'] = manufacturer.name
-		cinf['links']['manufacturer'] = '%s/%s/%s' % (globdata.API_URL,
-													globdata.API_MANUFACTURERS,
-													manufacturer.name)
+		cinf['links'].append({ 'rel' : 'manufacturer',
+							'href' : GetManufacturerURL(manufacturer.name)})
 
 	# Add supported by list if exists (elements separed by ;)
 	supportedby = GetComponentSupportedBy(comp)
 	supportedbystr = ';'.join(s.os.name for s in supportedby)
-	supportedbyhref = ';'.join('%s/%s/%s' % (globdata.API_URL,
-	 		globdata.API_OS, pathname2url(s.os.name)) for s in supportedby)
-	
+		
 	if supportedbystr:
 		cinf['supportedby'] = supportedbystr
-		cinf['links']['supportedby'] = supportedbyhref
-
+		for s in supportedby:
+			cinf['links'].append( { 'rel' : 'supportedby',
+									'href' : GetOperatingSystemURL(s.os.name) })
+			
 	return cinf
 
 #

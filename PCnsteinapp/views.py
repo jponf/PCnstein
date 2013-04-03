@@ -7,6 +7,8 @@ from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
 
+from dict2xml import dict2xml
+
 import sys
 import models
 import datautils
@@ -22,31 +24,58 @@ def GetMainPage(request):
 
 #
 #
+def GenerateResponse(request, data, root=None, xmltemplate=None,
+					htmltemplate=None):
+	"""
+	TODO
+	"""
+	response = None
+	format = request.GET.get('format', 'html')
+
+	if format == 'json':
+		response = HttpResponse(simplejson.dumps(data),
+								mimetype='application/json')		
+
+	elif format == 'xml':
+		if not root:
+			raise Exception("root must be specified to generate an xml response")
+
+		xmlstr = ''
+		if xmltemplate:
+			xmlstr = render_to_string(xmltemplate, { root : data } )
+		else:
+			if isinstance(data, list) or isinstance(data, tuple):
+				xmlstr = dict2xml( { root : data }, root )
+			else:
+				xmlstr = dict2xml(data, root)
+
+		response = HttpResponse(xmlstr, mimetype='application/xml')
+
+	elif format == 'html':
+		if not htmltemplate:
+			raise Exception("htmltemplate must be specified to generate an "
+				"html response")
+
+		response = render_to_response(htmltemplate, data)
+	else:
+		response = HttpResponseBadRequest(
+			'Wrong parameter "format" [html, xml, json]')
+
+	return response
+
+
+#
+#
 def GetComponents(request):
 	"""
 	GetComponents(request) -> HttpResponse
 	Returns a list with all the components in the specified format
 	"""
-	format = request.GET.get('format', 'html')
-
-	if format == 'json':
-		clinf = datautils.GetComponentsSummaryAsList()
-		return HttpResponse(simplejson.dumps(clinf),
-							 mimetype='application/json')
-		
-	elif format == 'xml':
-		params = { 'components': datautils.GetComponentsSummaryAsList() }
-		return HttpResponse(render_to_string('components.xml', params), 
-							mimetype='application/xml')
-
-	elif format == 'html':
-		params = { 'pagetitle' : "Components"}
-		params['cinfo'] = datautils.GetComponentsInfoAsList()
-		return render_to_response('components.html', params)
-
-	else:
-		return HttpResponseBadRequest(
-			'Wrong parameter "format" [html, xml, json]')
+	return GenerateResponse(request,
+					datautils.GetComponentsSummaryAsList(),
+					'components',
+					None,
+					'components.html')		
 
 #
 #
@@ -55,25 +84,12 @@ def GetComponent(request, ref):
 	GetComponent(request) -> HttpResponse
 	Returns a list with all the information of the specified component
 	"""
-	format = request.GET.get('format', 'html')
-
 	try:
-		if format == 'json':
-			cinf = datautils.GetComponentInfo(ref)
-			return HttpResponse(simplejson.dumps(cinf),
-								mimetype='application/json')
-
-		elif format == 'xml':
-			params = { 'component' : datautils.GetComponentInfo(ref) }
-			return HttpResponse(render_to_string('component.xml', params),
-								mimetype='application/xml')
-
-		elif format == 'html':
-			return HttpResponse('HTML for component ' + ref)
-
-		else:
-			return HttpResponseBadRequest(
-				'Wrong parameter "format" [html, xml, json]')
+		return GenerateResponse(request,
+			datautils.GetComponentInfo(ref),
+			'component',
+			None,
+			'component.html')
 
 	except ObjectDoesNotExist, e:
 		return HttpResponseNotFound("Error 404: component: " + ref)
