@@ -159,7 +159,7 @@ def GetOSes(request):
 		datautils.GetOSInfoAsList(),
 		'os',
 		None,
-		'os.html')
+		'oses.html')
 
 #
 #
