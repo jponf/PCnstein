@@ -2,10 +2,10 @@ from django.conf.urls import patterns, include, url
 
 from PCnsteinapp.views import GetComponents, GetComponent, GetMainPage, \
                             GetManufacturers, GetManufacturer, GetCategories, \
-                            GetCategory
+                            GetCategory, GetOSes, GetOS
 
 from PCnsteinapp.globdata import API_MANUFACTURERS, API_COMPONENTS, \
-                            API_CATEGORIES
+                            API_CATEGORIES, API_OS
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
@@ -31,5 +31,10 @@ urlpatterns = patterns('',
     url(r'^%s/(\w+)/$' % API_MANUFACTURERS, GetManufacturer),
 
     url(r'^%s/$' % API_CATEGORIES, GetCategories),
-    url(r'^%s/(\w+)/$' % API_CATEGORIES, GetCategory),    
+    url(r'^%s/(\w+)/$' % API_CATEGORIES, GetCategory),   
+
+    url(r'^%s/$' % API_OS, GetOSes),
+    url(r'^%s/(\w+)/$' % API_OS, GetOS),   
+
+
 )

@@ -120,7 +120,7 @@ def GetManufacturer(request, name):
 
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
-			"Manufacturer with name: " + name + ", does not exists")
+			"Manufacturer with name '" + name + "' does not exist")
 
 #
 #
@@ -145,4 +145,28 @@ def GetCategory(request, name):
 		
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
-			"Category with name: " + name + ", does not exists")
+			"Category with name '" + name + "' does not exist")
+
+#
+#
+def GetOSes(request):
+	return GenerateResponse(request,
+		datautils.GetOSInfoAsList(),
+		'os',
+		None,
+		'os.html')
+
+#
+#
+def GetOS(request, name):
+
+	try:
+		return GenerateResponse(request,
+			datautils.GetOSInfo(name),
+			'os',
+			None,
+			'os.html')
+		
+	except ObjectDoesNotExist:
+		return HttpResponseNotFound(
+			"Operating system with name '" + name + "' does not exist")

@@ -219,3 +219,56 @@ def GetCategoryComponentsList(name):
 		cinf.append(cinfo)
 
 	return cinf
+
+#
+#
+def GetOSInfoAsList():
+	os_info = []
+
+	for os in models.OperatingSystem.objects.all():
+		os = { 'name': os.name,
+			   'links': [ 
+			   				{ 
+			   					'rel': 'self',
+			   					'href': GetOperatingSystemURL(os.name)
+			   				}
+			   			]
+			 }
+
+		os_info.append(os)
+
+	return os_info
+
+#
+#
+def GetOSInfo(name):
+	print name
+	os = models.OperatingSystem.objects.get(pk=name)
+	os_info = { 'name' : os.name, 
+		 		'manufacturer' : '',
+				'links' : [ 
+							{ 
+							  'rel' : 'self', 
+		  		   		 	  'href': GetOperatingSystemURL(os.name) 
+		  		   		 	}			  			  
+		  				  ]
+			  }
+
+	manufacturer = GetOSManufacturer(os)
+	if manufacturer:
+		os_info['manufacturer'] = manufacturer.name
+		os_info['links'].append({ 
+								'rel' : 'manufacturer',
+								'href' : GetManufacturerURL(manufacturer.name)
+								})
+
+
+	return os_info
+
+def GetOSManufacturer(os):
+	try:
+		madeby = models.OSMadeBy.objects.get(os_id=os)
+		return madeby.manufacturer
+	except ObjectDoesNotExist:
+		sys.stderr.write('No Made By relationship for operating system: ' + str(os))
+		return None
