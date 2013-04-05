@@ -150,6 +150,11 @@ def GetCategory(request, name):
 #
 #
 def GetOSes(request):
+	"""
+	GetOSes(request) -> HttpResponse
+	Returns a list with all the OS in the specified format
+	"""
+
 	return GenerateResponse(request,
 		datautils.GetOSInfoAsList(),
 		'os',
@@ -159,6 +164,10 @@ def GetOSes(request):
 #
 #
 def GetOS(request, name):
+	"""
+	GetOS(request) -> HttpResponse
+	Returns a list with all the information of the specified OS
+	"""
 
 	try:
 		return GenerateResponse(request,

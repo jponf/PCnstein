@@ -223,6 +223,11 @@ def GetCategoryComponentsList(name):
 #
 #
 def GetOSInfoAsList():
+	"""
+	GetManufacturersInfoAsList() -> Return a list filled with dictionaries
+								containing OS information
+	"""
+
 	os_info = []
 
 	for os in models.OperatingSystem.objects.all():
@@ -242,6 +247,11 @@ def GetOSInfoAsList():
 #
 #
 def GetOSInfo(name):
+	"""
+	GetOSInfo(name) -> Return a dictionary with all the information
+							of the specified OS
+	"""
+
 	print name
 	os = models.OperatingSystem.objects.get(pk=name)
 	os_info = { 'name' : os.name, 
@@ -266,6 +276,11 @@ def GetOSInfo(name):
 	return os_info
 
 def GetOSManufacturer(os):
+	"""
+	GetOSManufacturer(os)-> Return the manufacturer instance associated
+								with the specified OS
+	"""
+
 	try:
 		madeby = models.OSMadeBy.objects.get(os_id=os)
 		return madeby.manufacturer
