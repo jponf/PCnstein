@@ -20,7 +20,11 @@ def GetMainPage(request):
 	GetMainPage(request) -> HttpResponse
 	Returns the main page of the application (only html)
 	"""
-	return render_to_response('mainpage.html')
+	context = {
+		'user' : request.user
+	}
+
+	return render_to_response('mainpage.html', context)
 
 #
 #
@@ -59,6 +63,7 @@ def GenerateResponse(request, data, datatag=None, xmltemplate=None,
 			raise Exception("htmlargs must be a dictionary")
 
 		htmlargs[datatag] = data
+		htmlargs['user'] = request.user
 
 		response = render_to_response(htmltemplate, htmlargs)
 	else:

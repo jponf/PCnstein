@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+{% block css %}
+
+{% endblock %}
+
+{% block content %}
+	<h1>User Login</h1>
+
+	{% if form.has_errors %}
+	<p>Error validating user.</p>
+	{% endif %}
+
+	<form method="post" action=".">
+		<p><label for="id_username">User:&nbsp;&nbsp;</label>{{ form.username }}</p>
+		<p><label for="id_password">Pass:&nbsp;&nbsp;</label>{{ form.password }}</p>
+		<input type="hidden" name="next" value="/" />
+		<input type="submit" value="login" />
+		{% csrf_token %}
+	</form>
+{% endblock %}

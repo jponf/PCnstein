@@ -66,18 +66,18 @@ def GetComponentInfo(ref):
 	if manufacturer:
 		cinf['manufacturer'] = manufacturer.name
 		cinf['links'].append({ 'rel' : 'manufacturer',
-							'href' : GetManufacturerURL(manufacturer.name)})
+						'href' : GetManufacturerURL(manufacturer.name)})
+	
 
 	# Add supported by list if exists (elements separed by ;)
 	supportedby = GetComponentSupportedBy(comp)
-	supportedbystr = ';'.join(os.name for os in supportedby)
-		
-	if supportedbystr:
+	print supportedby
+	if supportedby:
+		supportedbystr = ';'.join(os.name for os in supportedby)
 		cinf['supportedby'] = supportedbystr
 		for os in supportedby:
 			cinf['links'].append( { 'rel' : 'supportedby',
 									'href' : GetOperatingSystemURL(os.name) })
-
 	return cinf
 
 #
@@ -103,7 +103,11 @@ def GetComponentSupportedBy(comp):
 	GetComponentSupportedBy(comp) -> Return the OS that support the specified
 								component
 	"""
-	return [s.os for s in models.SupportedBy.objects.filter(component_id=comp)]
+	try:
+		return [s.os for s in models.SupportedBy.objects.filter(
+															component_id=comp)]
+	except ObjectDoesNotExist:
+		return None
 
 #
 #
@@ -255,7 +259,7 @@ def GetOSInfo(name):
 	print name
 	os = models.OperatingSystem.objects.get(pk=name)
 	os_info = { 'name' : os.name, 
-		 		'manufacturer' : '',
+				'manufacturer' : '',
 				'links' : [ 
 							{ 
 							  'rel' : 'self', 

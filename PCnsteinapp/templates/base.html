@@ -12,10 +12,38 @@
 		{% block css %}{% endblock %}
 
 		<!-- Page Title -->
+		{% if pagetitle %}
 		<title>{{ pagetitle }} - PCnstein</title>
+		{% else %}
+		<title>PCnstein</title>
+		{% endif %}
+		
 	</head>
 
 	<body>
+
+		<div id="head_wrapper">
+			<div id="head_user">
+				<div id="head_username">
+					{% if user.username %}
+					{{ user.username }}
+					{% else %}
+					Login or Register
+					{% endif %}
+				</div>
+
+				<div id="head_userlogin">
+					{% if user.username %}
+					<a href="/logout">Logout</a>
+					{% else %}
+					<ul>
+						<li><a href="/login">Login</a></li>
+						<li><a href="#">Register</a></li>
+					</ul>
+					{% endif %}
+				</div>
+			</div>
+		</div>
 
 		<!-- Main content wrapper -->
 		<div id="content_wrapper">

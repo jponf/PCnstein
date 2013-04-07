@@ -22,6 +22,10 @@ urlpatterns = patterns('',
     # Uncomment the next line to enable the admin:
     url(r'^admin/', include(admin.site.urls)),
 
+    url(r'^login/$', 'django.contrib.auth.views.login'),
+    url(r'^logout/$', 'django.contrib.auth.views.logout',
+                     { 'next_page' : '/'}),
+
     url(r'^$', GetMainPage),
 
     url(r'^%s/$' % API_COMPONENTS, GetComponents),
@@ -34,7 +38,5 @@ urlpatterns = patterns('',
     url(r'^%s/(\w+)/$' % API_CATEGORIES, GetCategory),   
 
     url(r'^%s/$' % API_OS, GetOSes),
-    url(r'^%s/(\w+)/$' % API_OS, GetOS),   
-
-
+    url(r'^%s/([\w\s]+)/$' % API_OS, GetOS),
 )
