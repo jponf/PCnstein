@@ -1,24 +1,57 @@
 {% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block js %}
+<script type="text/javascript" src="{% static "js/sorttable.js" %}"></script>
+{% endblock %}
+
+
 {% block css %}
+<style type="text/css">
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+tr {
+	text-align: center;
+	border-bottom: 1px solid black;
+}
+
+.imgsl {
+	max-width: 56px;
+	max-height: 56px;
+}
+
+</style>
+
 
 {% endblock %}
 
 {% block content %}
+	
+
 	{% if cinfo|length > 0 %}
-	<table>
+	<table class="sortable">
 		<tr>
+			<th></th> <!-- Img -->
 			<th>Ref</th>
 			<th>Name</th>
 			<th>Price</th>
+			<th>Manufacturer</th>
 			<th>Category</th>
 		</tr>
 	{% endif %}
 
-	{% for comp in cinfo %}
+	{% for comp in components %}
 		<tr>
+			<td><img class="imgsl" src="../{{ comp.img }}" max-with/></td>
 			<td>{{ comp.ref }}</td>
 			<td>{{ comp.name }}</td>
-			<td>{{ comp.avg_price }} €</td>
+			<td>{{ comp.avgprice }} €</td>
+			<td>{{ comp.manufacturer }}</td>
 			<td>{{ comp.category }}</td>
 		<tr>
 	{% endfor %}
@@ -26,4 +59,5 @@
 	{% if cinfo|length > 0 %}
 	</table>
 	{% endif %}
+
 {% endblock %}

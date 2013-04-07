@@ -6,6 +6,9 @@
 		<!-- favicon -->
 		<!-- TODO -->
 
+		<!-- JS -->
+		{% block js %}{% endblock %}
+
 		<!-- Style Sheets -->
 		<link rel="stylesheet" type="text/css" 
 				href="{% static "css/gen.css" %}"/>
@@ -49,7 +52,14 @@
 		<div id="content_wrapper">
 
 			<div id="navbar">
-				<!-- TODO -->
+				<div id="navbar_list_wrapper">
+					<ul>
+						<li><a href="/components">COMPONENTS</a></li>
+						<li><a href="/manufacturers">MANUFACTURERS</a></li>
+						<li><a href="/categories">CATEGORIES</a></li>
+						<li><a href="/os">OPERATING SYSTEMS</a></li>
+					</ul>
+				</div>
 			</div>
 
 			<div id="content">

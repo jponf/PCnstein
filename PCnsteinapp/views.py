@@ -62,7 +62,9 @@ def GenerateResponse(request, data, datatag=None, xmltemplate=None,
 		if not isinstance(htmlargs, dict):
 			raise Exception("htmlargs must be a dictionary")
 
+		# Add query info to html render args
 		htmlargs[datatag] = data
+		# Add user info to html render args
 		htmlargs['user'] = request.user
 
 		response = render_to_response(htmltemplate, htmlargs)

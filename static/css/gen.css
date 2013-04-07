@@ -20,6 +20,8 @@ body {
 a:link { color: #00FFEF; }
 a:visited { color: #00FF22; }
 
+/* Page fixed header */
+
 #head_wrapper {
 	position: fixed;
 	left: 0px;
@@ -65,6 +67,8 @@ a:visited { color: #00FF22; }
 	padding-right: 0px;
 }
 
+/* Centers navbar and content */
+
 #content_wrapper {
 	background-color: transparent;
 	position: relative;
@@ -74,11 +78,57 @@ a:visited { color: #00FF22; }
 	height: 100%;
 }
 
+/* Navigation bar */
+
 #navbar {
 	position: relative;
 	margin-top: 5px;
 	width: 100%;
-	overflow: hidden;
-	background-repeat: no-repeat;
+	height: 56px;
 
+	background-image: url("../img/nav_bar_bckg.png");
+	background-repeat: no-repeat;
+	background-size: 100% auto;
+
+	overflow: hidden;
+}
+
+#navbar_list_wrapper {
+	background-color: transparent;
+	float: left;
+	margin: 0 0 0 1em;
+	height: 100%;
+}
+
+#navbar_list_wrapper ul {
+	list-style-image: none;
+	list-style-type: none;
+	margin: 0;
+	padding: 0;
+	text-align: center;
+}
+
+#navbar_list_wrapper li {
+	float: left;
+	display: inline-block;	
+	height: 100%;
+}
+
+#navbar_list_wrapper a {
+	display: block;
+	font-size: 16px;
+	font-weight: bold;
+	padding: 19px 12px 18px;
+}
+
+#navbar_list_wrapper a:link { color: #FFF; text-decoration: none; }
+#navbar_list_wrapper a:visited { color: #FFF; text-decoration: none; }
+#navbar_list_wrapper a:hover { 
+	color: #FF6600;
+	background-color: rgba(77,72,72,0.3);
+}
+
+/* Page content */
+#content {
+	margin: 5px 2px 0px 2px;
 }
