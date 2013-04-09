@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block js %}
+<script type="text/javascript" src="{% static "js/sorttable.js" %}"></script>
+{% endblock %}
+
+
+{% block css %}
+<style type="text/css">
+
+table {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+tr {
+	text-align: center;
+	border-bottom: 1px solid black;
+}
+
+</style>
+
+
+{% endblock %}
+
+{% block content %}
+	
+
+	{% if os_info|length > 0 %}
+	<table class="sortable">
+		<tr>
+			<th>Name</th>
+		</tr>
+	{% endif %}
+
+	{% for os in oses %}
+		<tr> 
+			{% for link in os.links %}
+				{% if link.rel == 'self' %}
+				<td>
+					<a href="{{ link.href }}">{{ os.name }}</a>
+				</td>
+				{% endif %}
+			{% endfor %}
+		<tr>
+	{% endfor %}
+
+	{% if os_info|length > 0 %}
+	</table>
+	{% endif %}
+
+{% endblock %}

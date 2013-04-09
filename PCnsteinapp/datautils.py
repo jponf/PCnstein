@@ -228,7 +228,7 @@ def GetCategoryComponentsList(name):
 #
 def GetOSInfoAsList():
 	"""
-	GetManufacturersInfoAsList() -> Return a list filled with dictionaries
+	GetOSInfoAsList() -> Return a list filled with dictionaries
 								containing OS information
 	"""
 

@@ -113,7 +113,8 @@ def GetManufacturers(request):
 					datautils.GetManufacturersInfoAsList(),
 					'manufacturers',
 					None,
-					'manufacturers.html')
+					'manufacturers.html',
+					{'pagetitle' : 'Manufacturers'})
 
 #
 #
@@ -136,7 +137,8 @@ def GetCategories(request):
 		datautils.GetCategoriesInfoAsList(),
 		'categories',
 		None,
-		'categories.html')
+		'categories.html',
+		{'pagetitle' : 'Categories'})
 
 #
 #
@@ -164,9 +166,10 @@ def GetOSes(request):
 
 	return GenerateResponse(request,
 		datautils.GetOSInfoAsList(),
-		'os',
+		'oses',
 		None,
-		'oses.html')
+		'oses.html',
+		{'pagetitle' : 'OS'})
 
 #
 #
