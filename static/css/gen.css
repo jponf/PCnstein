@@ -89,6 +89,8 @@ a:visited { color: #00FF22; }
 	background-image: url("../img/nav_bar_bckg.png");
 	background-repeat: no-repeat;
 	background-size: 100% auto;
+	background-color: #999;
+	border-radius: 5px;
 
 	overflow: hidden;
 }

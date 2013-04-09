@@ -63,7 +63,11 @@ tr {
 			{% endfor %}
 			<td>{{ comp.name }}</td>
 			<td>{{ comp.avgprice }} €</td>
-			<td>{{ comp.manufacturer }}</td>
+			{% for link in comp.links %}
+				{% if link.rel == 'manufacturer' %}
+			<td><a href="{{ link.href }}">{{ comp.manufacturer }}</a></td>
+				{% endif %}
+			{% endfor %}
 			<td>{{ comp.category }}</td>
 		<tr>
 	{% endfor %}
