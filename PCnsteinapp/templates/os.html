@@ -6,29 +6,16 @@
 <script type="text/javascript" src="{% static "js/sorttable.js" %}"></script>
 {% endblock %}
 
-
 {% block css %}
-<style type="text/css">
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-tr {
-	text-align: center;
-	border-bottom: 1px solid black;
-}
-</style>
-
-
+<link rel="stylesheet" type="text/css" 
+				href="{% static "css/tablelist.css" %}"/>
 {% endblock %}
 
 {% block content %}
 	
 
 	{% if os_info|length > 0 %}
-	<table class="sortable">
+	<table class="tablelist sortable">
 		<tr>
 			<th>Name</th>
 			<th>Manufacturer</th>

@@ -6,43 +6,15 @@
 <script type="text/javascript" src="{% static "js/sorttable.js" %}"></script>
 {% endblock %}
 
-
 {% block css %}
-<style type="text/css">
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-tr {
-	text-align: center;
-	border-bottom: 1px solid black;
-}
-
-#table a:link {
-	color: #FFF;
-}
-
-#table a:visited {
-	color: #FFF;
-}
-
-.imgsl {
-	max-width: 56px;
-	max-height: 56px;
-}
-
-</style>
-
-
+<link rel="stylesheet" type="text/css" 
+				href="{% static "css/tablelist.css" %}"/>
 {% endblock %}
 
 {% block content %}
 	
-
 	{% if cinfo|length > 0 %}
-	<table id="table" class="sortable">
+	<table class="tablelist sortable">
 		<tr>
 			<th></th> <!-- Img -->
 			<th>Ref</th>
@@ -55,7 +27,7 @@ tr {
 
 	{% for comp in components %}
 		<tr>
-			<td><img class="imgsl" src="../{{ comp.img }}" max-with/></td>
+			<td><img src="/{{ comp.img }}"/></td>
 			{% for link in comp.links %}
 				{% if link.rel == 'self' %}
 			<td><a href="{{ link.href }}">{{ comp.ref }}</a></td>

@@ -1,39 +1,51 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
 {% block js %}
 <script type="text/javascript" src="{% static "js/sorttable.js" %}"></script>
 {% endblock %}
 
-
 {% block css %}
-<style type="text/css">
-
-table {
-	width: 100%;
-	border-collapse: collapse;
-}
-
-tr {
-	text-align: center;
-	border-bottom: 1px solid black;
-}
-
-#table a:link {
-	color: #FFF;
-}
-
-#table a:visited {
-	color: #FFF;
-}
-
-.imgsl {
-	max-width: 56px;
-	max-height: 56px;
-}
-
-</style>
-
+<link rel="stylesheet" type="text/css" 
+				href="{% static "css/component.css" %}"/>
 {% endblock %}
 
 {% block content %}
 	
+<div id="component_head">
+
+	<div id="component_img">
+		<img src="/{{ component.img }}"/>
+	</div>
+
+	<div id="component_ref">
+		<p>
+			Ref: {{ component.ref }} 
+			<br/>
+			Name: {{ component.name }}
+		</p>
+	</div>
+
+</div>
+
+<div id="component_desc">
+	<ul>
+		<li><span>Category: {{ component.category }}</span></li>
+		<li><span>Manufacturer: {{ component.manufacturer }}</span></li>
+		<li><span>Average Price: {{ component.avgprice }} €</span></li>
+		<li><span>Supported By:</span></li>
+			<ul>
+				{% for os in component.supportedby %}
+				<li><span>{{ os }}</span></li>
+				{% endfor %}
+			</ul>
+
+		<li><span>Description:</span></li>
+			<ul>
+				{{ component.desc }}
+			</ul>
+	</ul>
+</div>
 
 {% endblock %}

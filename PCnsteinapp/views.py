@@ -63,9 +63,11 @@ def GenerateResponse(request, data, datatag=None, xmltemplate=None,
 			raise Exception("htmlargs must be a dictionary")
 
 		# Add query info to html render args
-		htmlargs[datatag] = data
+		if datatag:
+			htmlargs[datatag] = data
 		# Add user info to html render args
 		htmlargs['user'] = request.user
+		print htmlargs[datatag]
 
 		response = render_to_response(htmltemplate, htmlargs)
 	else:
@@ -102,7 +104,7 @@ def GetComponent(request, ref):
 			'component',
 			None,
 			'component.html',
-			{ 'pagetitle' : '[%s] Components' % name })
+			{ 'pagetitle' : '[%s] Components' % ref })
 
 	except ObjectDoesNotExist, e:
 		return HttpResponseNotFound("Error 404: component: " + ref)
@@ -186,7 +188,8 @@ def GetOS(request, name):
 			datautils.GetOSInfo(name),
 			'os',
 			None,
-			'os.html')
+			'os.html',
+			{'pagetitle' : '[%s] OS' % name })
 		
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(

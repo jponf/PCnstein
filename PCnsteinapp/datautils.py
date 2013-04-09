@@ -73,7 +73,8 @@ def GetComponentInfo(ref):
 	supportedby = GetComponentSupportedBy(comp)
 	print supportedby
 	if supportedby:
-		supportedbystr = ';'.join(os.name for os in supportedby)
+		supportedbystr = [os.name for os in supportedby]
+		#';'.join(os.name for os in supportedby)
 		cinf['supportedby'] = supportedbystr
 		for os in supportedby:
 			cinf['links'].append( { 'rel' : 'supportedby',

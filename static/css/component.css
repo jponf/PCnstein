@@ -1,0 +1,51 @@
+@charset "UTF-8";
+
+#component_head {
+	width: 100%;
+	height: 300px;
+	overflow: hidden;
+	margin: 10px 0px 10px 0px;
+}
+
+#component_img {
+	position: relative;
+	float: left;
+	width: 32%;
+	height: 98%;
+	margin: 5px 5px 5px 5px;
+}
+
+#component_img img {
+	width: 100%;
+	height: 100%;
+	border-radius: 10px;
+}
+
+#component_ref {
+	float: right;
+	width: 66%;
+	height: 100%;
+	display: table;
+}
+
+#component_desc {
+	font-size: 1.2em;
+	background-color: #666;
+	border-radius: 15px;
+	padding: 0.1em 0em 0.1em 0em;
+}
+
+#component_ref p {
+	display: table-cell;
+	vertical-align: middle;
+	font-size: 1.5em;
+}
+
+#component_desc li {
+	margin: 1px 0px 1px 0px;
+	color: #FF6600;
+}
+
+#component_desc span {
+	color: #FFF;
+}

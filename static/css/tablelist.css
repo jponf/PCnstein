@@ -1,0 +1,24 @@
+@charset "UTF-8";
+
+.tablelist {
+	width: 100%;
+	border-collapse: collapse;
+}
+
+.tablelist tr{
+	text-align: center;
+	border-bottom: 1px solid black;
+}
+
+.tablelist a:link {
+	color: #FFF;
+}
+
+.tablelist a:visited {
+	color: #FFF;
+}
+
+.tablelist img {
+	max-width: 56px;
+	max-height: 56px;
+}

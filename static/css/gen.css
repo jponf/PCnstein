@@ -86,11 +86,11 @@ a:visited { color: #00FF22; }
 	width: 100%;
 	height: 56px;
 
-	background-image: url("../img/nav_bar_bckg.png");
+	/*background-image: url("../img/nav_bar_bckg.png");*/
 	background-repeat: no-repeat;
 	background-size: 100% auto;
-	background-color: #999;
-	border-radius: 5px;
+	background-color: #666;
+	border-radius: 15px;
 
 	overflow: hidden;
 }
@@ -114,6 +114,11 @@ a:visited { color: #00FF22; }
 	float: left;
 	display: inline-block;	
 	height: 100%;
+	border-left: 1px solid black;
+}
+
+#navbar_list_wrapper li:last-child {
+	border-right: 1px solid black;
 }
 
 #navbar_list_wrapper a {
@@ -131,6 +136,14 @@ a:visited { color: #00FF22; }
 }
 
 /* Page content */
+
 #content {
 	margin: 5px 2px 0px 2px;
+}
+
+/* Individual element classes to modify elements such as:
+   font-weight, size, etc that should not be defined on the html */
+
+.bold_text {
+	font-weight: bold;
 }
