@@ -28,28 +28,26 @@ tr {
 {% block content %}
 	
 
-	{% if c_info|length > 0 %}
+	{% if m_info|length > 0 %}
 	<table class="sortable">
 		<tr>
 			<th>Name</th>
-			<th>Items</th>
 		</tr>
 	{% endif %}
 
-	{% for c in categories %}
+	{% for m in manufacturers %}
 		<tr> 
-			{% for link in c.links %}
+			{% for link in m.links %}
 				{% if link.rel == 'self' %}
 				<td>
-					<a href="{{ link.href }}">{{ c.name }}</a>
+					<a href="{{ link.href }}">{{ m.name }}</a>
 				</td>
 				{% endif %}
 			{% endfor %}
-				<td>{{ c.itemcount }}</td>
 		<tr>
 	{% endfor %}
 
-	{% if c_info|length > 0 %}
+	{% if m_info|length > 0 %}
 	</table>
 	{% endif %}
 

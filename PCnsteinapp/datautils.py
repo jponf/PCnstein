@@ -185,7 +185,14 @@ def GetCategoriesInfoAsList():
 	for cat in models.Category.objects.all():
 		components = models.Component.objects.filter(category_id=cat)
 		categories.append( { 'name' : cat.name,
-							 'itemcount' : len(components) } )
+							 'itemcount' : len(components), 
+							 'links' : [ 
+							 				{ 
+							 					'rel' : 'self',
+							 					'href': GetCategoryURL(cat.name) 
+							 				}
+							 		   ]
+						   } )
 
 	return categories
 

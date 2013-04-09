@@ -101,7 +101,8 @@ def GetComponent(request, ref):
 			datautils.GetComponentInfo(ref),
 			'component',
 			None,
-			'component.html')
+			'component.html',
+			{ 'pagetitle' : '[%s] Components' % name })
 
 	except ObjectDoesNotExist, e:
 		return HttpResponseNotFound("Error 404: component: " + ref)
@@ -124,7 +125,8 @@ def GetManufacturer(request, name):
 			datautils.GetManufacturerInfo(name),
 			'manufacturer',
 			None,
-			'manufacturer.html')
+			'manufacturer.html',
+			{ 'pagetitle' : '[%s] Manufacturers' % name })
 
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
