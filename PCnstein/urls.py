@@ -29,13 +29,13 @@ urlpatterns = patterns('',
     url(r'^$', GetMainPage),
 
     url(r'^%s/$' % API_COMPONENTS, GetComponents),
-    url(r'^%s/(\w+)/$' % API_COMPONENTS, GetComponent), # \w only matches alphanumerical chars and underscores. If all but blanks wanted change it for \S.
+    url(r'^%s/([\w\s]+)/$' % API_COMPONENTS, GetComponent), # \w only matches alphanumerical chars and underscores. If all but blanks wanted change it for \S.
     
     url(r'^%s/$' % API_MANUFACTURERS, GetManufacturers),
-    url(r'^%s/(\w+)/$' % API_MANUFACTURERS, GetManufacturer),
+    url(r'^%s/([\w\s]+)/$' % API_MANUFACTURERS, GetManufacturer),
 
     url(r'^%s/$' % API_CATEGORIES, GetCategories),
-    url(r'^%s/(\w+)/$' % API_CATEGORIES, GetCategory),   
+    url(r'^%s/([\w\s]+)/$' % API_CATEGORIES, GetCategory),   
 
     url(r'^%s/$' % API_OS, GetOSes),
     url(r'^%s/([\w\s]+)/$' % API_OS, GetOS),
