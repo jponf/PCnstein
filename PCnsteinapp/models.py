@@ -90,7 +90,7 @@ class HardDisk(models.Model):
 	interface = models.CharField(max_length=10)
 	buffer_size = models.IntegerField()
 	transfer_speed = models.DecimalField(max_digits=3, decimal_places=1)
-	size = models.DecimalField(max_digits=2, decimal_places=1)
+	size = models.DecimalField(max_digits=4, decimal_places=1)
 
 	def __unicode__(self):
 		return str(self.ref)
