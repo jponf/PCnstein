@@ -29,7 +29,7 @@
 			<div id="head_user">
 				<div id="head_username">
 					{% if user.username %}
-					{{ user.username }}
+					Connected as: {{ user.username }}
 					{% else %}
 					Login or Register
 					{% endif %}
@@ -41,7 +41,7 @@
 					{% else %}
 					<ul>
 						<li><a href="/login">Login</a></li>
-						<li><a href="#">Register</a></li>
+						<li><a href="/register">Register</a></li>
 					</ul>
 					{% endif %}
 				</div>

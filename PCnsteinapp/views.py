@@ -1,11 +1,20 @@
 # -*- coding: utf-8 -*-
+
 # Create your views here.
-from django.http import HttpResponse, HttpResponseBadRequest, HttpResponseNotFound
+from django import forms
 from django.core import serializers
 from django.utils import simplejson
+from django.template import RequestContext
 from django.shortcuts import render_to_response
 from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth.models import User
+from django.views.decorators.http import require_http_methods
+
+from django.http import HttpResponse, HttpResponseBadRequest, \
+		HttpResponseNotFound, HttpResponseRedirect
+
 
 from dict2xml import dict2xml
 
@@ -193,3 +202,26 @@ def GetOS(request, name):
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
 			"Operating system with name '" + name + "' does not exist")
+
+#
+#
+def RegisterUser(request):
+	"""
+	TODO
+	"""
+
+	if request.method == 'POST':
+		form = UserCreationForm(request.POST)
+		if form.is_valid():
+			new_user = form.save()
+			return HttpResponseRedirect("/")
+		else:
+			return HttpResponse("TEST: Error creating user")
+
+	elif request.method == 'GET':
+		form = UserCreationForm()
+		print 'get'
+		return render_to_response('registration/register.html',
+								{'pagetitle' : 'Register New User',
+								'form' : form},
+								context_instance=RequestContext(request))
