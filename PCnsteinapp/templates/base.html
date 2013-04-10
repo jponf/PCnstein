@@ -58,6 +58,9 @@
 						<li><a href="/manufacturers">MANUFACTURERS</a></li>
 						<li><a href="/categories">CATEGORIES</a></li>
 						<li><a href="/os">OPERATING SYSTEMS</a></li>
+						{% if user.is_staff %}
+						<li><a href="/admin">MODIFY DATABASE</a></li>
+						{% endif %}
 					</ul>
 				</div>
 			</div>
