@@ -3,7 +3,7 @@
 {% load staticfiles %}
 
 {% block js %}
-<script type="text/javascript" src="{% static "js/sorttable.js" %}"></script>
+
 {% endblock %}
 
 {% block css %}
@@ -36,8 +36,12 @@
 		<li><span>Average Price: {{ component.avgprice }} €</span></li>
 		<li><span>Supported By:</span></li>
 			<ul>
-				{% for os in component.supportedby %}
-				<li><span>{{ os }}</span></li>
+				{% for sb in component.supportedby %}
+				<li><span>{{ sb.name }} 
+						  </br>
+						  From version: {{ sb.minversion }} 
+						  to: {{ sb.maxversion }}
+				</span></li>
 				{% endfor %}
 			</ul>
 

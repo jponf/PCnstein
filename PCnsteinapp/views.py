@@ -67,7 +67,6 @@ def GenerateResponse(request, data, datatag=None, xmltemplate=None,
 			htmlargs[datatag] = data
 		# Add user info to html render args
 		htmlargs['user'] = request.user
-		print htmlargs[datatag]
 
 		response = render_to_response(htmltemplate, htmlargs)
 	else:

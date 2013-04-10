@@ -1,0 +1,24 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block js %}
+
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" 
+				href="{% static "css/manufacturer.css" %}"/>
+{% endblock %}
+
+{% block content %}
+	
+<div id="manufacturer_title">
+	<span><h1>{{ manufacturer.name }}<h1><span>
+</div>
+
+<div id="manufacturer_desc">
+	<p>{{ manufacturer.desc }}</p>
+</div>
+
+{% endblock %}

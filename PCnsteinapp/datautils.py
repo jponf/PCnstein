@@ -73,14 +73,17 @@ def GetComponentInfo(ref):
 
 	# Add supported by list if exists (elements separed by ;)
 	supportedby = GetComponentSupportedBy(comp)
-	print supportedby
+
 	if supportedby:
-		supportedbystr = [os.name for os in supportedby]
-		#';'.join(os.name for os in supportedby)
-		cinf['supportedby'] = supportedbystr
-		for os in supportedby:
+		# supportedbystr = [(	s['os'],
+		# 				 	s['minversion'],
+		# 				 	s['maxversion']) 
+		# 				  for s in supportedby]
+		cinf['supportedby'] = supportedby
+		
+		for sb in supportedby:
 			cinf['links'].append( { 'rel' : 'supportedby',
-									'href' : GetOperatingSystemURL(os.name) })
+									'href' : GetOperatingSystemURL(sb['name'])})
 	return cinf
 
 #
@@ -107,8 +110,10 @@ def GetComponentSupportedBy(comp):
 								component
 	"""
 	try:
-		return [s.os for s in models.SupportedBy.objects.filter(
-															component_id=comp)]
+		return [ {'name': s.os.name, 
+				  'minversion' : s.minversion if s.minversion else '',
+				  'maxversion' : s.maxversion if s.maxversion else ''} 
+				for s in models.SupportedBy.objects.filter(component_id=comp) ]
 	except ObjectDoesNotExist:
 		return None
 
