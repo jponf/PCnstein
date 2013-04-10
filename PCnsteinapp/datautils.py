@@ -19,15 +19,17 @@ def GetComponentsSummaryAsList():
 
 	for c in models.Component.objects.all():
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
-				  'avgprice' : str(c.avgprice), 'category' : str(c.category),
+				  'avgprice' : str(c.avgprice), 'category' : str(c.category) if c.category else '',
 				  'manufacturer' : '',
 				  'links' : [ { 'rel' : 'self', 
 				  			 	'href': GetComponentURL(c.ref) },
-				  			  { 'rel' : 'category',
-				  			  	'href' : GetCategoryURL(c.category.name) },				  			  
+				  			  			  			  
 				  			]
 				}
 
+		if c.category:
+			cinfo['links'].append({ 'rel' : 'category',
+				  			  	'href' : GetCategoryURL(c.category.name) })
 		# Add manufacturer if it exists
 		manufacturer = GetComponentManufacturer(c)
 		if manufacturer:
