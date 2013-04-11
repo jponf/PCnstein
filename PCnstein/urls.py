@@ -2,7 +2,7 @@ from django.conf.urls import patterns, include, url
 
 from PCnsteinapp.views import GetComponents, GetComponent, GetMainPage, \
                             GetManufacturers, GetManufacturer, GetCategories, \
-                            GetCategory, GetOSes, GetOS, RegisterUser
+                            GetCategory, GetOSes, GetOS
 
 from PCnsteinapp.globdata import API_MANUFACTURERS, API_COMPONENTS, \
                             API_CATEGORIES, API_OS
@@ -25,7 +25,7 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout',
                      { 'next_page' : '/'}),
-    url(r'^register/$', RegisterUser),
+    #url(r'^register/$', RegisterUser),
 
     url(r'^$', GetMainPage),
 

@@ -1,13 +1,22 @@
 {% extends "base.html" %}
+
 {% block css %}
+
+<style type="text/css">
+
+.error_msg {
+	color: red;
+}
+
+</style>
 
 {% endblock %}
 
 {% block content %}
 	<h1>User Login</h1>
 
-	{% if form.has_errors %}
-	<p>Error validating user.</p>
+	{% if form.errors %}
+	<p class="error_msg">Error validating user.</p>
 	{% endif %}
 
 	<form method="post" action=".">

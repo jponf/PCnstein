@@ -202,26 +202,3 @@ def GetOS(request, name):
 	except ObjectDoesNotExist:
 		return HttpResponseNotFound(
 			"Operating system with name '" + name + "' does not exist")
-
-#
-#
-def RegisterUser(request):
-	"""
-	TODO
-	"""
-
-	if request.method == 'POST':
-		form = UserCreationForm(request.POST)
-		if form.is_valid():
-			new_user = form.save()
-			return HttpResponseRedirect("/")
-		else:
-			return HttpResponse("TEST: Error creating user")
-
-	elif request.method == 'GET':
-		form = UserCreationForm()
-		print 'get'
-		return render_to_response('registration/register.html',
-								{'pagetitle' : 'Register New User',
-								'form' : form},
-								context_instance=RequestContext(request))
