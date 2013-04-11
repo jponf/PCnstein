@@ -10,7 +10,9 @@ GET   | /categories/          | List all the categories avaliable
 GET   | /categories/<name>    | List all the components under the specified category
 GET   | /os/                  | List all the operating systems avaliable
 GET   | /os/<name>            | Return all the information related to the specified operating system
-
+GET   | /login                | Returns an html page with a form to allow user to login into the app
+POST  | /login                | Reads the introduced data and tries to authenticate the user
+GET   | /logout               | Logout the current logged in user
 
 PARAM  | O | VERB | URLS                   | DESC
 -------------------------------------------------------------------------------------------------
