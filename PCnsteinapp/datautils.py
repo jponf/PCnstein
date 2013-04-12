@@ -51,7 +51,9 @@ def GetComponentInfo(ref):
 	cinf = \
 		{ 	
 			'ref': comp.ref, 'name' : comp.name, 'img' : str(comp.img),
-			'avgprice' : str(comp.avgprice), 'category': str(comp.category) if comp.category else '',
+			'avgprice' : str(comp.avgprice), 
+			'category' : { 'name' : comp.category, 
+				    	   'link' : GetCategoryURL(comp.category.name)}  if comp.category else '',
 			'desc' : comp.desc,
 			'manufacturer' : '',
 			'supportedby' : [],
