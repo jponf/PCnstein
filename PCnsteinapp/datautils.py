@@ -20,7 +20,7 @@ def GetComponentsSummaryAsList():
 	for c in models.Component.objects.all():
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
 				  'avgprice' : str(c.avgprice), 
-				  'category' : { 'name' : c.category, 
+				  'category' : { 'name' : str(c.category),
 				  				 'link' : GetCategoryURL(c.category.name)}  if c.category else '',
 				  'manufacturer' : {},
 				  'link' : { 'rel' : 'self', 
@@ -52,7 +52,7 @@ def GetComponentInfo(ref):
 		{ 	
 			'ref': comp.ref, 'name' : comp.name, 'img' : str(comp.img),
 			'avgprice' : str(comp.avgprice), 
-			'category' : { 'name' : comp.category, 
+			'category' : { 'name' : str(comp.category), 
 				    	   'link' : GetCategoryURL(comp.category.name)}  if comp.category else '',
 			'desc' : comp.desc,
 			'manufacturer' : '',
@@ -217,7 +217,7 @@ def GetCategoryComponentsList(name):
 	for c in components:
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
 				  'avgprice' : str(c.avgprice), 
-				  'category' : { 'name' : c.category, 
+				  'category' : { 'name' : str(c.category), 
 				  				 'link' : GetCategoryURL(c.category.name)},
 				  'manufacturer' : '',
 				  'link' : { 'rel' : 'self', 

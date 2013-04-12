@@ -49,3 +49,6 @@
 #component_desc span {
 	color: #FFF;
 }
+
+#component_desc a:link { color: #FFF; }
+#component_desc a:visited { color:#FFF; }
