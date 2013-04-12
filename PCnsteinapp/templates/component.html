@@ -32,13 +32,13 @@
 <div id="component_desc">
 	<ul>
 		<li><span>Category: {{ component.category }}</span></li>
-		<li><span>Manufacturer: {{ component.manufacturer }}</span></li>
+		<li><span>Manufacturer: {{ component.manufacturer.name }}</span></li>
 		<li><span>Average Price: {{ component.avgprice }} €</span></li>
 		<li><span>Supported By:</span></li>
 			<ul>
 				{% for sb in component.supportedby %}
 				<li><span>
-						  {{ sb.name }}
+						  <a href="{{ sb.link }}">{{ sb.name }}</a>
 						  </br>
 						  From version: {{ sb.minversion }} 
 						  to: {{ sb.maxversion }}

@@ -24,13 +24,7 @@
 
 	<tr> 
 		<td>{{ os.name }}</td>
-		{% for link in os.links %}
-			{% if link.rel == 'manufacturer' %}
-			<td>
-				<a href="{{ link.href }}">{{ os.manufacturer }}</a>
-			</td>
-			{% endif %}
-		{% endfor %}
+		<td><a href="{{ os.manufacturer.link }}">{{ os.manufacturer.name }}</a>	</td>
 	<tr>
 
 	{% if os_info|length > 0 %}

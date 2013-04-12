@@ -28,28 +28,18 @@
 	{% for comp in components %}
 		<tr>
 			<td><img src="/{{ comp.img }}"/></td>
-			<td>
-			{% for link in comp.links %}
-				{% if link.rel == 'self' %}
-			<a href="{{ link.href }}">{{ comp.ref }}</a>
-				{% endif %}
-			{% endfor %}
-			</td>
+			<td><a href="{{ comp.link.href }}">{{ comp.ref }}</a></td>
 			<td>{{ comp.name }}</td>
 			<td>{{ comp.avgprice }} €</td>
 			<td>
-				{% for link in comp.links %}
-					{% if link.rel == 'manufacturer' %}
-				<a href="{{ link.href }}">{{ comp.manufacturer }}</a>
-					{% endif %}
-				{% endfor %}
+			{% if comp.manufacturer %}
+				<a href="{{ comp.manufacturer.link }}">{{ comp.manufacturer.name }}</a>
+			{% endif %}
 			</td>
 			<td>
-				{% for link in comp.links %}
-					{% if link.rel == 'category' %}
-				<a href="{{ link.href }}">{{ comp.category }}</a>
-					{% endif %}
-				{% endfor %}
+			{% if comp.category %}
+				<a href="{{ comp.category.link }}">{{ comp.category.name }}</a>
+			{% endif %}
 			</td>
 		<tr>
 	{% endfor %}

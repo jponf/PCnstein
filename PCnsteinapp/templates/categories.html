@@ -24,14 +24,8 @@
 
 	{% for c in categories %}
 		<tr> 
-			{% for link in c.links %}
-				{% if link.rel == 'self' %}
-				<td>
-					<a href="{{ link.href }}">{{ c.name }}</a>
-				</td>
-				{% endif %}
-			{% endfor %}
-				<td>{{ c.itemcount }}</td>
+			<td><a href="{{ c.link.href }}">{{ c.name }}</a></td>
+			<td>{{ c.itemcount }}</td>
 		<tr>
 	{% endfor %}
 

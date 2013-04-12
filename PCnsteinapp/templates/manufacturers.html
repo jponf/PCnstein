@@ -23,13 +23,7 @@
 
 	{% for m in manufacturers %}
 		<tr> 
-			{% for link in m.links %}
-				{% if link.rel == 'self' %}
-				<td>
-					<a href="{{ link.href }}">{{ m.name }}</a>
-				</td>
-				{% endif %}
-			{% endfor %}
+			<td><a href="{{ m.link.href }}">{{ m.name }}</a></td>
 		<tr>
 	{% endfor %}
 
