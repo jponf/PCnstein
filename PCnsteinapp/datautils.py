@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from django.core.exceptions import ObjectDoesNotExist
-from urlutils import GetComponentURL, GetManufacturerURL, GetCategoryURL, \
-					GetOperatingSystemURL
+from urlutils import getComponentURL, getManufacturerURL, getCategoryURL, \
+					getOperatingSystemURL
 
 import sys
 import models
@@ -10,9 +10,9 @@ import globdata
 
 #
 #
-def GetComponentsSummaryAsList():
+def getComponentsSummaryAsList():
 	"""
-	GetComponentsSummaryAsList() -> Return a list filled with dictionaries
+	getComponentsSummaryAsList() -> Return a list filled with dictionaries
 								containing component information
 	"""
 	cinf = []
@@ -21,18 +21,18 @@ def GetComponentsSummaryAsList():
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
 				  'avgprice' : str(c.avgprice), 
 				  'category' : { 'name' : str(c.category),
-				  				 'link' : GetCategoryURL(c.category.name)}  if c.category else '',
+				  				 'link' : getCategoryURL(c.category.name)}  if c.category else '',
 				  'manufacturer' : {},
 				  'link' : { 'rel' : 'self', 
-				  			 'href': GetComponentURL(c.ref) },			  			  
+				  			 'href': getComponentURL(c.ref) },			  			  
 				  			
 				}
 
 		# Add manufacturer if it exists
-		manufacturer = GetComponentManufacturer(c)
+		manufacturer = getComponentManufacturer(c)
 		if manufacturer:
 			cinfo['manufacturer'] =  { 'name' :  manufacturer.name, 
-									   'link' :  GetManufacturerURL(manufacturer.name) }
+									   'link' :  getManufacturerURL(manufacturer.name) }
 
 		# Append info to the list
 		cinf.append(cinfo)
@@ -41,9 +41,9 @@ def GetComponentsSummaryAsList():
 
 #	
 #
-def GetComponentInfo(ref):
+def getComponentInfo(ref):
 	"""
-	GetComponentInfo(ref) -> Return a dictionary with all the information
+	getComponentInfo(ref) -> Return a dictionary with all the information
 							of the specified component
 	"""
 	comp = models.Component.objects.get(pk=ref)
@@ -53,24 +53,24 @@ def GetComponentInfo(ref):
 			'ref': comp.ref, 'name' : comp.name, 'img' : str(comp.img),
 			'avgprice' : str(comp.avgprice), 
 			'category' : { 'name' : str(comp.category), 
-				    	   'link' : GetCategoryURL(comp.category.name)}  if comp.category else '',
+				    	   'link' : getCategoryURL(comp.category.name)}  if comp.category else '',
 			'desc' : comp.desc,
 			'manufacturer' : '',
 			'supportedby' : [],
 			'link' : { 'rel' : 'self',
-					   'href' : GetComponentURL(comp.ref) }
+					   'href' : getComponentURL(comp.ref) }
 					  
 		}
 
 	# Add manufacturer if it exists
-	manufacturer = GetComponentManufacturer(comp)
+	manufacturer = getComponentManufacturer(comp)
 	if manufacturer:
 		cinf['manufacturer'] =  { 'name' :  manufacturer.name, 
-								  'link' :  GetManufacturerURL(manufacturer.name) }
+								  'link' :  getManufacturerURL(manufacturer.name) }
 	
 
 	# Add supported by list if exists (elements separed by ;)
-	supportedby = GetComponentSupportedBy(comp)
+	supportedby = getComponentSupportedBy(comp)
 
 	if supportedby:
 		# supportedbystr = [(	s['os'],
@@ -81,16 +81,16 @@ def GetComponentInfo(ref):
 		
 		for sb in supportedby:
 			cinf['supportedby'].append({ 'name' : sb['name'],
-										 'link' : GetOperatingSystemURL(sb['name']),
+										 'link' : getOperatingSystemURL(sb['name']),
 										 'minversion' : sb['minversion'],
 										 'maxversion' : sb['maxversion']})
 	return cinf
 
 #
 #
-def GetComponentManufacturer(comp):
+def getComponentManufacturer(comp):
 	"""
-	GetComponentManufacturer(comp)-> Return the manufacturer instance associated
+	getComponentManufacturer(comp)-> Return the manufacturer instance associated
 								with the specified component
 	"""
 
@@ -98,15 +98,16 @@ def GetComponentManufacturer(comp):
 	try:
 		madeby = models.CMadeBy.objects.get(component_id=comp)
 		return madeby.manufacturer
-	except ObjectDoesNotExist:
-		sys.stderr.write('No Made By relationship for component: ' + str(comp))
+	except ObjectDoesNotExist,e:
+		# sys.stderr.write('%s: No "Made By" relation for component: %s' % (
+		# 					e.__class__.__name__, str(comp)) )
 		return None
 
 #
 #
-def GetComponentSupportedBy(comp):
+def getComponentSupportedBy(comp):
 	"""
-	GetComponentSupportedBy(comp) -> Return the OS that support the specified
+	getComponentSupportedBy(comp) -> Return the OS that support the specified
 								component
 	"""
 	try:
@@ -119,9 +120,9 @@ def GetComponentSupportedBy(comp):
 
 #
 #
-def GetManufacturersInfoAsList():
+def getManufacturersInfoAsList():
 	"""
-	GetManufacturersInfoAsList() -> Return a list filled with dictionaries
+	getManufacturersInfoAsList() -> Return a list filled with dictionaries
 								containing manufacturers information
 	"""
 	manu_info = []
@@ -129,7 +130,7 @@ def GetManufacturersInfoAsList():
 	for m in models.Manufacturer.objects.all():
 		single_manu_info = { 'name': m.name,  
 							 'link': { 'rel': 'self', 
-									   'href': GetManufacturerURL(m.name)}
+									   'href': getManufacturerURL(m.name)}
 								 	
 							}						
 
@@ -139,9 +140,9 @@ def GetManufacturersInfoAsList():
 
 #
 #
-def GetManufacturerInfo(name):
+def getManufacturerInfo(name):
 	"""
-	GetManufacturerInfo(name) -> Return a dictionary with all the information
+	getManufacturerInfo(name) -> Return a dictionary with all the information
 								related to the specified manufacturer
 	"""
 	manufacturer = models.Manufacturer.objects.get(pk=name)
@@ -150,42 +151,42 @@ def GetManufacturerInfo(name):
 		{
 			'name': manufacturer.name, 'desc': manufacturer.desc,
 			'link': { 'rel' : 'self',
-					  'href' : GetManufacturerURL(manufacturer.name) },
+					  'href' : getManufacturerURL(manufacturer.name) },
 			'makes' : []
 		}
 
 	# Try to add links of made components
-	components = GetManufacturerComponents(manufacturer)
+	components = getManufacturerComponents(manufacturer)
 
 	for c in components:
 		manu_info['makes'].append({ 'name' : c.name,
-									'link' : GetComponentURL(c.name) })
+									'link' : getComponentURL(c.name) })
 
 	# Try to add links of made operating systems
-	operating_systems = GetManufacturerOperatingSystems(manufacturer)
+	operating_systems = getManufacturerOperatingSystems(manufacturer)
 
 	for os in operating_systems:
 		manu_info['makes'].append({ 'name' : os.name,
-									'link' : GetOperatingSystemURL(os.name) })
+									'link' : getOperatingSystemURL(os.name) })
 
 	return manu_info
 
 #
 #
-def GetManufacturerComponents(manufacturer):
+def getManufacturerComponents(manufacturer):
 	return [sb.component for sb in 
 				models.CMadeBy.objects.filter(manufacturer_id=manufacturer)]
 
 #
 #
-def GetManufacturerOperatingSystems(manufacturer):
+def getManufacturerOperatingSystems(manufacturer):
 	return [osmb.os for osmb in
 				models.OSMadeBy.objects.filter(manufacturer_id=manufacturer)]
 #
 #
-def GetCategoriesInfoAsList():
+def getCategoriesInfoAsList():
 	"""
-	GetCategoriesInfoAsList() -> Return a list filled dictionaries containing
+	getCategoriesInfoAsList() -> Return a list filled dictionaries containing
 								categories information
 	"""
 	categories = []
@@ -196,7 +197,7 @@ def GetCategoriesInfoAsList():
 							 'itemcount' : len(components), 
 							 'link' : { 
 							 					'rel' : 'self',
-							 					'href': GetCategoryURL(cat.name) 
+							 					'href': getCategoryURL(cat.name) 
 							 		  }
 						   } )
 
@@ -204,9 +205,9 @@ def GetCategoriesInfoAsList():
 
 #
 #
-def GetCategoryComponentsList(name):
+def getCategoryComponentsList(name):
 	"""
-	GetCategoryComponentsList(name) -> Return a list filled with dictionaries 
+	getCategoryComponentsList(name) -> Return a list filled with dictionaries 
 								with information of all components under 
 								the given category
 	"""
@@ -218,17 +219,17 @@ def GetCategoryComponentsList(name):
 		cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
 				  'avgprice' : str(c.avgprice), 
 				  'category' : { 'name' : str(c.category), 
-				  				 'link' : GetCategoryURL(c.category.name)},
+				  				 'link' : getCategoryURL(c.category.name)},
 				  'manufacturer' : '',
 				  'link' : { 'rel' : 'self', 
-				  			 'href': GetComponentURL(c.ref) }			  			  
+				  			 'href': getComponentURL(c.ref) }			  			  
 				}
 
 		# Add manufacturer if it exists
-		manufacturer = GetComponentManufacturer(c)
+		manufacturer = getComponentManufacturer(c)
 		if manufacturer:
 			cinfo['manufacturer'] =  { 'name' :  manufacturer.name, 
-									   'link' :  GetManufacturerURL(manufacturer.name) }
+									   'link' :  getManufacturerURL(manufacturer.name) }
 
 		# Append info to the list
 		cinf.append(cinfo)
@@ -237,9 +238,9 @@ def GetCategoryComponentsList(name):
 
 #
 #
-def GetOSInfoAsList():
+def getOSsInfoAsList():
 	"""
-	GetOSInfoAsList() -> Return a list filled with dictionaries
+	getOSInfoAsList() -> Return a list filled with dictionaries
 								containing OS information
 	"""
 
@@ -248,7 +249,7 @@ def GetOSInfoAsList():
 	for os in models.OperatingSystem.objects.all():
 		os = { 'name': os.name,
 			   'link': { 'rel': 'self',
-			   					'href': GetOperatingSystemURL(os.name) }
+			   					'href': getOperatingSystemURL(os.name) }
 			 }
 
 		os_info.append(os)
@@ -257,9 +258,9 @@ def GetOSInfoAsList():
 
 #
 #
-def GetOSInfo(name):
+def getOSInfo(name):
 	"""
-	GetOSInfo(name) -> Return a dictionary with all the information
+	getOSInfo(name) -> Return a dictionary with all the information
 							of the specified OS
 	"""
 
@@ -269,21 +270,21 @@ def GetOSInfo(name):
 				'manufacturer' : '',
 				'link' :   { 
 							  'rel' : 'self', 
-		  		   		 	  'href': GetOperatingSystemURL(os.name) 
+		  		   		 	  'href': getOperatingSystemURL(os.name) 
 		  		   		 	}			  			  
 			  }
 
-	manufacturer = GetOSManufacturer(os)
+	manufacturer = getOSManufacturer(os)
 	if manufacturer:
 		os_info['manufacturer'] =  { 'name' :  manufacturer.name, 
-								     'link' :  GetManufacturerURL(manufacturer.name) }
+								     'link' :  getManufacturerURL(manufacturer.name) }
 
 
 	return os_info
 
-def GetOSManufacturer(os):
+def getOSManufacturer(os):
 	"""
-	GetOSManufacturer(os)-> Return the manufacturer instance associated
+	getOSManufacturer(os)-> Return the manufacturer instance associated
 								with the specified OS
 	"""
 

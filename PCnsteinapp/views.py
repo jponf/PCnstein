@@ -15,6 +15,7 @@ from django.views.decorators.http import require_http_methods
 from django.http import HttpResponse, HttpResponseBadRequest, \
 		HttpResponseNotFound, HttpResponseRedirect
 
+from django.views.generic.base import TemplateView
 
 from dict2xml import dict2xml
 
@@ -24,181 +25,251 @@ import datautils
 
 #
 #
-def GetMainPage(request):
-	"""
-	GetMainPage(request) -> HttpResponse
-	Returns the main page of the application (only html)
-	"""
-	context = {
-		'user' : request.user
-	}
+class JSONResponseMixin(object):
 
-	return render_to_response('mainpage.html', context)
+	#
+	#
+	def render_to_response(self, context, **response_kwargs):
+		"""
+		"""
+		response_kwargs['content_type'] = 'application/json'
+		return HttpResponse(self.convertContextToJSON(context),
+							**response_kwargs)	
 
-#
-#
-def GenerateResponse(request, data, datatag=None, xmltemplate=None,
-					htmltemplate=None, htmlargs={}):
-	"""
-	TODO
-	"""
-	response = None
-	format = request.GET.get('format', 'html')
-
-	if format == 'json':
-		response = HttpResponse(simplejson.dumps(data),
-								mimetype='application/json')		
-
-	elif format == 'xml':
-		if not datatag:
-			raise Exception("datatag must be specified to generate an xml response")
-
-		xmlstr = ''
-		if xmltemplate:
-			xmlstr = render_to_string(xmltemplate, { datatag : data } )
-		else:
-			if isinstance(data, list) or isinstance(data, tuple):
-				xmlstr = dict2xml( { datatag : data }, datatag )
-			else:
-				xmlstr = dict2xml(data, datatag)
-
-		response = HttpResponse(xmlstr, mimetype='application/xml')
-
-	elif format == 'html':
-		if not htmltemplate:
-			raise Exception("htmltemplate must be specified to generate an "
-				"html response")
-		if not isinstance(htmlargs, dict):
-			raise Exception("htmlargs must be a dictionary")
-
-		# Add query info to html render args
-		if datatag:
-			htmlargs[datatag] = data
-		# Add user info to html render args
-		htmlargs['user'] = request.user
-
-		response = render_to_response(htmltemplate, htmlargs)
-	else:
-		response = HttpResponseBadRequest(
-			'Wrong parameter "format" [html, xml, json]')
-
-	return response
-
+	#
+	#
+	def convertContextToJSON(self, context):
+		return simplejson.dumps(context)
 
 #
 #
-def GetComponents(request):
-	"""
-	GetComponents(request) -> HttpResponse
-	Returns a list with all the components in the specified format
-	"""
-	return GenerateResponse(request,
-					datautils.GetComponentsSummaryAsList(),
-					'components',
-					None,
-					'components.html', 
-					{'pagetitle' : 'Components'})		
+class XMLResponseMixin:
 
-#
-#
-def GetComponent(request, ref):
-	"""
-	GetComponent(request) -> HttpResponse
-	Returns a list with all the information of the specified component
-	"""
-	try:
-		return GenerateResponse(request,
-			datautils.GetComponentInfo(ref),
-			'component',
-			None,
-			'component.html',
-			{ 'pagetitle' : '[%s] Components' % ref })
+	context_root = None
 
-	except ObjectDoesNotExist, e:
-		return HttpResponseNotFound("Error 404: component: " + ref)
-#
-#
-def GetManufacturers(request):
-
-	return GenerateResponse(request,
-					datautils.GetManufacturersInfoAsList(),
-					'manufacturers',
-					None,
-					'manufacturers.html',
-					{'pagetitle' : 'Manufacturers'})
-
-#
-#
-def GetManufacturer(request, name):
-	try:
-		return GenerateResponse(request,
-			datautils.GetManufacturerInfo(name),
-			'manufacturer',
-			None,
-			'manufacturer.html',
-			{ 'pagetitle' : '[%s] Manufacturers' % name })
-
-	except ObjectDoesNotExist:
-		return HttpResponseNotFound(
-			"Manufacturer with name '" + name + "' does not exist")
-
-#
-#
-def GetCategories(request):
-	return GenerateResponse(request,
-		datautils.GetCategoriesInfoAsList(),
-		'categories',
-		None,
-		'categories.html',
-		{'pagetitle' : 'Categories'})
-
-#
-#
-def GetCategory(request, name):
+	#
+	#
+	def render_to_response(self, context, **response_kwargs):
+		"""
+		Generates a response in XML with the given context
+		"""
+		response_kwargs['content_type'] = 'application/xml'
+		return HttpResponse(self.convertToXML(context),
+							**response_kwargs)
 	
-	try:
-		return GenerateResponse(request,
-			datautils.GetCategoryComponentsList(name),
-			'components',
-			None,
-			'components.html',
-			{ 'pagetitle' : '[%s] Components' % name } )
-		
-	except ObjectDoesNotExist:
-		return HttpResponseNotFound(
-			"Category with name '" + name + "' does not exist")
+	#
+	#
+	def convertToXML(self, context):
+		"""
+		Returns the xml representation of the given data
+		"""
+		if self.context_root is None:
+			raise ImproperlyConfigured(
+                "XMLResponseMixin requires a definition of 'xml_context_root'")
+
+		if isinstance(context, list) or isinstance(context, tuple):
+			xmlstr = dict2xml( { self.context_root : context }, 
+				self.context_root)
+		else:
+			xmlstr = dict2xml(context, self.context_root)
+
+		return xmlstr
 
 #
 #
-def GetOSes(request):
-	"""
-	GetOSes(request) -> HttpResponse
-	Returns a list with all the OS in the specified format
-	"""
+class TemplateResponseMixin(TemplateView, XMLResponseMixin, JSONResponseMixin):
 
-	return GenerateResponse(request,
-		datautils.GetOSInfoAsList(),
-		'oses',
-		None,
-		'oses.html',
-		{'pagetitle' : 'OS'})
+	#
+	#
+	def render_to_response(self, context):
+		format = self.request.GET.get('format', 'html')
+
+		if format.lower() == 'json':
+			return JSONResponseMixin.render_to_response(self, context)
+		elif format.lower() == 'xml':
+			return XMLResponseMixin.render_to_response(self, context)
+		elif format.lower() == 'html':
+			return TemplateView.render_to_response(self, context)
+		else:
+			return HttpResponseBadRequest()
 
 #
 #
-def GetOS(request, name):
+class MainPageView(TemplateView):
 	"""
-	GetOS(request) -> HttpResponse
-	Returns a list with all the information of the specified OS
+	Handles he generation of the main page
 	"""
+	template_name = 'mainpage.html'
 
-	try:
-		return GenerateResponse(request,
-			datautils.GetOSInfo(name),
-			'os',
-			None,
-			'os.html',
-			{'pagetitle' : '[%s] OS' % name })
-		
-	except ObjectDoesNotExist:
-		return HttpResponseNotFound(
-			"Operating system with name '" + name + "' does not exist")
+	def get_context_data(self, **kwargs):
+		"""
+		Return the context used to generate the main page
+		"""
+		return { 'user' : self.request.user }
+
+
+#
+#
+class ComponentsView(TemplateResponseMixin):
+	"""
+	Handles the generatioin of the components view
+	"""
+	template_name = 'components.html'
+	context_root = 'components'
+
+	#
+	# Overrides get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		return { 'pagetitle' : 'Components',
+				  self.context_root : datautils.getComponentsSummaryAsList()
+				}
+
+#
+#
+class ComponentView(TemplateResponseMixin):
+	"""
+	Handles the generation of a view for an specific manufacturer
+	"""
+	template_name = 'component.html'
+	context_root = 'component'
+
+	#
+	# Overrides the get method from TemplateView
+	def get(self, request, *args, **kwargs):
+		try:
+			context = self.get_context_data(**kwargs)
+			return self.render_to_response(context)
+		except ObjectDoesNotExist, e:
+			return HttpResponseNotFound("Component %s does not exists" %
+										kwargs['ref'])
+
+	#
+	# Overrides the get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		ref = kwargs['ref']
+		return { 'pagetitle' : ref,
+				  self.context_root : datautils.getComponentInfo(ref) }
+
+#
+#
+class ManufacturersView(TemplateResponseMixin):
+	"""
+	Handles the generation of the manufacturers view
+	"""
+	template_name = 'manufacturers.html'
+	context_root = 'manufacturers'
+
+	#
+	# Overrides the get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		return { 'pagetitle' : 'Manufacturers',
+				  self.context_root : datautils.getManufacturersInfoAsList() }
+
+#
+#
+class ManufacturerView(TemplateResponseMixin):
+	"""
+	Handles the generation of a view for an specific manufacturer
+	"""
+	template_name = 'manufacturer.html'
+	context_root = 'manufacturer'
+
+	#
+	# Overrides the get method from TemplateView
+	def get(self, request, *args, **kwargs):
+		try:
+			context = self.get_context_data(**kwargs)
+			return self.render_to_response(context)
+		except ObjectDoesNotExist, e:
+			return HttpResponseNotFound("Component %s does not exists" %
+										kwargs['name'])
+
+	#
+	# Overrides the get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		name = kwargs['name']
+		return { 'pagetitle' : name,
+				  self.context_root : datautils.getManufacturerInfo(name) }
+
+#
+#
+class CategoriesView(TemplateResponseMixin):
+	"""
+	Handles the generation of the manufacturers view
+	"""
+	template_name = 'categories.html'
+	context_root = 'categories'
+
+	#
+	# Overrides the get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		return { 'pagetitle' : 'Categories',
+				  self.context_root : datautils.getCategoriesInfoAsList() }
+
+#
+#
+class CategoryView(TemplateResponseMixin):
+	"""
+	Handles the generation of a view for an specific category
+	"""
+	template_name = 'components.html'
+	context_root = 'components'
+
+	#
+	# Overrides the get method from TemplateView
+	def get(self, request, *args, **kwargs):
+		try:
+			context = self.get_context_data(**kwargs)
+			return self.render_to_response(context)
+		except ObjectDoesNotExist, e:
+			return HttpResponseNotFound("Component %s does not exists" %
+										kwargs['name'])
+
+	#
+	# Overrides the get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		name = kwargs['name']
+		return { 'pagetitle' : '[%s] Components' % name,
+				  self.context_root : datautils.getCategoryComponentsList(name)}
+
+#
+#
+class OperatingSystemsView(TemplateResponseMixin):
+	"""
+	Handles the generation of the operating systems view
+	"""
+	template_name = 'oss.html'
+	context_root = 'oss'
+
+	#
+	# Overrides the get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		return { 'pagetitle' : 'Operating Systems',
+				  self.context_root : datautils.getOSsInfoAsList() }
+
+
+#
+#
+class OperatingSystemView(TemplateResponseMixin):
+	"""
+	Handles the generation of a view for an specific operating system
+	"""
+	template_name = 'os.html'
+	context_root = 'os'
+
+	#
+	# Overrides the get method from TemplateView
+	def get(self, request, *args, **kwargs):
+		try:
+			context = self.get_context_data(**kwargs)
+			return self.render_to_response(context)
+		except ObjectDoesNotExist, e:
+			return HttpResponseNotFound("Operating system %s does not exists" %
+										kwargs['name'])
+
+	#
+	# Overrides the get_context_data method from TemplateView
+	def get_context_data(self, **kwargs):
+		name = kwargs['name']
+		return { 'pagetitle' : '[%s] Operating System' % name,
+				  self.context_root : datautils.getOSInfo(name)}

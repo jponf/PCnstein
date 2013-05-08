@@ -5,37 +5,37 @@ from urllib import pathname2url
 
 #
 #
-def GetComponentURL(ref):
+def getComponentURL(ref):
 	if ref:
-		return GetApiURL(globdata.API_COMPONENTS, pathname2url(ref))
+		return getApiURL(globdata.API_COMPONENTS, pathname2url(ref))
 	else:
 		return ''
 
 #
 #
-def GetManufacturerURL(name):
+def getManufacturerURL(name):
 	if name:
-		return GetApiURL(globdata.API_MANUFACTURERS, pathname2url(name))
+		return getApiURL(globdata.API_MANUFACTURERS, pathname2url(name))
 	else:
 		return ''
 
 #
 #
-def GetCategoryURL(name):
+def getCategoryURL(name):
 	if name:
-		return GetApiURL(globdata.API_CATEGORIES, pathname2url(name))
+		return getApiURL(globdata.API_CATEGORIES, pathname2url(name))
 	else:
 		return ''
 
 #
 #
-def GetOperatingSystemURL(name):
+def getOperatingSystemURL(name):
 	if name:
-		return GetApiURL(globdata.API_OS, pathname2url(name))
+		return getApiURL(globdata.API_OS, pathname2url(name))
 	else:
 		return ''
 
 #
 #
-def GetApiURL(*args):
+def getApiURL(*args):
 	return globdata.API_URL + '/' + "/".join(args)

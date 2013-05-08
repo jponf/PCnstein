@@ -1,8 +1,8 @@
 from django.conf.urls import patterns, include, url
 
-from PCnsteinapp.views import GetComponents, GetComponent, GetMainPage, \
-                            GetManufacturers, GetManufacturer, GetCategories, \
-                            GetCategory, GetOSes, GetOS
+from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
+                        ManufacturersView, ManufacturerView, CategoriesView, \
+                        CategoryView, OperatingSystemsView, OperatingSystemView
 
 from PCnsteinapp.globdata import API_MANUFACTURERS, API_COMPONENTS, \
                             API_CATEGORIES, API_OS
@@ -27,17 +27,18 @@ urlpatterns = patterns('',
                      { 'next_page' : '/'}),
     #url(r'^register/$', RegisterUser),
 
-    url(r'^$', GetMainPage),
+    url(r'^$', MainPageView.as_view()),
 
-    url(r'^%s/$' % API_COMPONENTS, GetComponents),
-    url(r'^%s/([\w\s]+)/$' % API_COMPONENTS, GetComponent), # \w only matches alphanumerical chars and underscores. If all but blanks wanted change it for \S.
+    url(r'^%s/$' % API_COMPONENTS, ComponentsView.as_view()),
+    url(r'^%s/(?P<ref>[\w\s]+)/$' % API_COMPONENTS, ComponentView.as_view()),
     
-    url(r'^%s/$' % API_MANUFACTURERS, GetManufacturers),
-    url(r'^%s/([\w\s]+)/$' % API_MANUFACTURERS, GetManufacturer),
+    url(r'^%s/$' % API_MANUFACTURERS, ManufacturersView.as_view()),
+    url( r'^%s/(?P<name>[\w\s]+)/$' % API_MANUFACTURERS, 
+         ManufacturerView.as_view() ),
 
-    url(r'^%s/$' % API_CATEGORIES, GetCategories),
-    url(r'^%s/([\w\s]+)/$' % API_CATEGORIES, GetCategory),   
+    url(r'^%s/$' % API_CATEGORIES, CategoriesView.as_view()),
+    url(r'^%s/(?P<name>[\w\s]+)/$' % API_CATEGORIES, CategoryView.as_view()),   
 
-    url(r'^%s/$' % API_OS, GetOSes),
-    url(r'^%s/([\w\s]+)/$' % API_OS, GetOS),
+    url(r'^%s/$' % API_OS, OperatingSystemsView.as_view()),
+    url(r'^%s/(?P<name>[\w\s]+)/$' % API_OS, OperatingSystemView.as_view()),
 )
