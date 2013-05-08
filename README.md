@@ -1,4 +1,6 @@
 PCnstein
 ========
 
-An attempt of Restful application using django
+Web technologies assignment.
+
+An attempt of a CRUD application with a Rest API using django
