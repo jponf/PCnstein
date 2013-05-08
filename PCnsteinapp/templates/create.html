@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block content %}
+<h1>INSERT TO DB</h1>
+
+
+<form method="post" action="">
+	{{ form.as_p }}
+	<input type="submit" value="Create">
+	{% csrf_token %}
+</form>
+
+
+
+{% endblock %}

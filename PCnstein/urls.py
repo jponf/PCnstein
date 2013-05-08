@@ -2,7 +2,8 @@ from django.conf.urls import patterns, include, url
 
 from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
-                        CategoryView, OperatingSystemsView, OperatingSystemView
+                        CategoryView, OperatingSystemsView, OperatingSystemView, \
+                        ManufacturerCreateView, ComponentCreateView
 
 from PCnsteinapp.globdata import API_MANUFACTURERS, API_COMPONENTS, \
                             API_CATEGORIES, API_OS
@@ -41,4 +42,7 @@ urlpatterns = patterns('',
 
     url(r'^%s/$' % API_OS, OperatingSystemsView.as_view()),
     url(r'^%s/(?P<name>[\w\s]+)/$' % API_OS, OperatingSystemView.as_view()),
+
+    url(r'^%s/$' % 'create_manufacturer', ManufacturerCreateView.as_view()),
+    url(r'^%s/$' % 'create_component', ComponentCreateView.as_view())
 )

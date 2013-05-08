@@ -16,7 +16,11 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
 		HttpResponseNotFound, HttpResponseRedirect
 
 from django.views.generic.base import TemplateView
+from django.views.generic.edit import CreateView
 
+from models import Manufacturer, Component
+from PCnsteinapp.globdata import API_MANUFACTURERS, API_COMPONENTS, \
+                            API_CATEGORIES, API_OS
 from dict2xml import dict2xml
 
 import sys
@@ -273,3 +277,17 @@ class OperatingSystemView(TemplateResponseMixin):
 		name = kwargs['name']
 		return { 'pagetitle' : '[%s] Operating System' % name,
 				  self.context_root : datautils.getOSInfo(name)}
+
+#
+#
+class ManufacturerCreateView(CreateView):
+	template_name = 'create.html'
+	model=Manufacturer
+	success_url='/%s' % API_MANUFACTURERS
+
+#
+#
+class ComponentCreateView(CreateView):
+	template_name = 'create.html'
+	model=Component
+	success_url='/%s' % API_COMPONENTS
