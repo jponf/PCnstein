@@ -22,6 +22,7 @@
 			<th>Price</th>
 			<th>Manufacturer</th>
 			<th>Category</th>
+			<th />
 		</tr>
 	{% endif %}
 
@@ -41,6 +42,7 @@
 				<a href="{{ comp.category.link }}">{{ comp.category.name }}</a>
 			{% endif %}
 			</td>
+			<td><a href="/{{ modify_url }}/{{ comp.ref }}">MODIFY</a></td>
 		<tr>
 	{% endfor %}
 

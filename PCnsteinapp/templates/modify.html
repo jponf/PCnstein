@@ -1,17 +1,19 @@
 {% extends "base.html" %}
 {% block content %}
 
-<h1>INSERT TO DB</h1>
+<h1>MODIFY ELEMENT</h1>
+
+<h4>Choose what to modify.<h4>
 
 <form method="post" action="">
 	{% csrf_token %}
     {% for field in form %}
         {{ field.label_tag }}: <br>
         	{{ field }} 
-        {% for error in field.errors %}&nbsp;*{{error}}&nbsp;&nbsp;{% endfor %}
+        {% for error in field.errors %}&nbsp;*{{error}}&nbsp; {% endfor %}
         <br><br>
     {% endfor %}
-    <p><input type="submit" value="Create" /></p>
+    <p><input type="submit" value="Update" /></p>
 </form>
 
 {% endblock %}

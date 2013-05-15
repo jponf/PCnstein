@@ -18,12 +18,14 @@
 	<table class="sortable tablelist">
 		<tr>
 			<th>Name</th>
+			<th />
 		</tr>
 	{% endif %}
 
 	{% for m in manufacturers %}
 		<tr> 
 			<td><a href="{{ m.link.href }}">{{ m.name }}</a></td>
+			<td><a href="/{{ modify_url }}/{{ m.name }}">MODIFY</a></td>
 		<tr>
 	{% endfor %}
 

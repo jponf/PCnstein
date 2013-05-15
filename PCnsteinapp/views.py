@@ -7,9 +7,10 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
                         HttpResponseNotFound, HttpResponseNotAllowed
 
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView
+from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django import forms
 
 from PCnsteinapp import globdata
 import responseutils
@@ -130,6 +131,7 @@ class ComponentsView(TemplateResponseMixin):
         context = super(ComponentsView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Components'
         context['create_url'] = globdata.API_CREATE_COMPONENT
+        context['modify_url'] = globdata.API_MODIFY_COMPONENT
         context[self.context_key] = datautils.getComponentsSummaryAsList()
         return context
 
@@ -177,6 +179,7 @@ class ManufacturersView(TemplateResponseMixin):
         context = super(ManufacturersView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Manufacturers'
         context['create_url'] = globdata.API_CREATE_MANUFACTURER
+        context['modify_url'] = globdata.API_MODIFY_MANUFACTURER
         context[self.context_key] = datautils.getManufacturersInfoAsList()
         return context
 
@@ -317,13 +320,32 @@ class CreateViewGroupRestriction(CreateView):
                     'Creation forbidden', reason)
 
         return super(CreateViewGroupRestriction, self).form_valid(form)     
-  
+
+#
+#
+class UpdateViewGroupRestriction(UpdateView):
+
+    groups=None
+
+    def form_valid(self, form):
+        if self.groups is None:
+            raise ImproperlyConfigured(
+                "UpdateViewGroupRestriction requires 'groups' to be a list of "
+                "group names")
+
+        for g in self.groups:
+            if not permscheck.isUserInGroup(self.request.user, g):
+                reason = 'User must be member of group: %s' % g
+                return responseutils.getHttpResponseForbiddenHTML(
+                    'Creation forbidden', reason)
+
+        return super(UpdateViewGroupRestriction, self).form_valid(form) 
 #
 #
 class ManufacturerCreateView(CreateViewGroupRestriction):
     template_name = 'create.html'
     model = models.Manufacturer
-    success_url='/%s' % globdata.API_MANUFACTURERS
+    success_url = '/%s' % globdata.API_MANUFACTURERS
     groups = ['Vendor']
 
 #
@@ -331,11 +353,44 @@ class ManufacturerCreateView(CreateViewGroupRestriction):
 class ComponentCreateView(CreateViewGroupRestriction):
     template_name = 'create.html'
     model = models.Component
-    success_url='/%s' % globdata.API_COMPONENTS
+    success_url = '/%s' % globdata.API_COMPONENTS
+    groups = ['Vendor']
+
+#
+#
+class ManufacturerForm(forms.ModelForm):
+    class Meta:
+        model = models.Manufacturer
+        exclude = 'name'
+
+#
+#
+class ManufacturerModifyView(UpdateViewGroupRestriction):
+    template_name = 'modify.html'
+    model = models.Manufacturer
+    form_class = ManufacturerForm  
+    success_url = '/%s' % globdata.API_MANUFACTURERS
+    groups = ['Vendor']
+
+#
+#
+class ComponentForm(forms.ModelForm):
+    class Meta:
+        model = models.Component
+        exclude = 'ref'
+
+#
+#
+class ComponentModifyView(UpdateViewGroupRestriction):
+    template_name = 'modify.html'
+    model = models.Component
+    form_class = ComponentForm  
+    success_url = '/%s' % globdata.API_COMPONENTS
     groups = ['Vendor']
 
 #
 #
 class UserCreateView(CreateView):
     template_name = 'registration/register.html'
-    form_class= UserCreationForm
+    form_class = UserCreationForm
+    success_url = '/'
