@@ -1,0 +1,34 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" 
+				href="{% static "css/error_pages.css" %}"/>
+<style type="text/css">
+
+p.italic {
+	font-style: italic;
+}
+
+
+</style>
+{% endblock %}
+
+{% block content %}
+
+<h1>404 Not Found</h1>
+
+<p class="italic">
+	Resource: {{ resource }}	
+</p>
+
+<p class="italic">
+	URL: <a href={{ url }}>{{ url }}</a>
+</p>
+
+<p>
+	We could not find the specified resource on our servers. 	
+</p>
+
+{% endblock %}

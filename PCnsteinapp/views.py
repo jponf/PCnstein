@@ -12,9 +12,10 @@ from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
 from PCnsteinapp import globdata
-import utilresponses
+import responseutils
 import permscheck
 import datautils
+import urlutils
 
 import models
 
@@ -147,9 +148,12 @@ class ComponentView(TemplateResponseMixin):
         try:
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
-        except ObjectDoesNotExist, e:
-            return HttpResponseNotFound("Component %s does not exists" %
-                                        kwargs['ref'])
+        except ObjectDoesNotExist:
+            ref = kwargs['ref']
+            return responseutils.getHttpResponseNotFoundHTML(
+                                                '%s Not Found' % ref,
+                                                ref,
+                                                urlutils.getComponentURL(ref))
 
     #
     # Overrides the get_context_data method from TemplateView
@@ -191,9 +195,12 @@ class ManufacturerView(TemplateResponseMixin):
         try: 
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
-        except ObjectDoesNotExist, e:
-            return HttpResponseNotFound("Component %s does not exists" %
-                                        kwargs['name'])
+        except ObjectDoesNotExist:
+            name = kwargs['name']
+            return responseutils.getHttpResponseNotFoundHTML(
+                                            '%s Not Found' % name,
+                                            name,
+                                            urlutils.getManufacturerURL(name))
 
     #
     # Overrides the get_context_data method from TemplateView
@@ -233,8 +240,11 @@ class CategoryView(TemplateResponseMixin):
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
         except ObjectDoesNotExist, e:
-            return HttpResponseNotFound("Component %s does not exists" %
-                                        kwargs['name'])
+            name = kwargs['name']
+            return responseutils.getHttpResponseNotFoundHTML(
+                                            '%s Not Found' % name,
+                                            name,
+                                            urlutils.getCategoryURL(name))
 
     #
     # Overrides the get_context_data method from TemplateView
@@ -275,8 +285,11 @@ class OperatingSystemView(TemplateResponseMixin):
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
         except ObjectDoesNotExist, e:
-            return HttpResponseNotFound("Operating system %s does not exists" %
-                                        kwargs['name'])
+            name = kwargs['name']
+            return responseutils.getHttpResponseNotFoundHTML(
+                                        '%s Not Found' % name,
+                                        name,
+                                        urlutils.getOperatingSystemURL(name))
 
     #
     # Overrides the get_context_data method from TemplateView
@@ -300,7 +313,7 @@ class CreateViewGroupRestriction(CreateView):
         for g in self.groups:
             if not permscheck.isUserInGroup(self.request.user, g):
                 reason = 'User must be member of group: %s' % g
-                return utilresponses.HttpResponseForbiddenHTML(
+                return responseutils.getHttpResponseForbiddenHTML(
                     'Creation forbidden', reason)
 
         return super(CreateViewGroupRestriction, self).form_valid(form)     
