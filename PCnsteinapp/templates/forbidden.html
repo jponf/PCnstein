@@ -1,0 +1,18 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" 
+				href="{% static "css/forbidden.css" %}"/>
+{% endblock %}
+
+{% block content %}
+
+<h1>403 Forbidden</h1>
+<h3>Why?</h3>
+<p>
+	{{ reason }}
+</p>
+
+{% endblock %}

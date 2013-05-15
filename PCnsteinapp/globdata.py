@@ -14,3 +14,9 @@ API_CATEGORIES = 'categories'
 
 # Api operating systems entry url
 API_OS = 'os'
+
+# Api create manufacturer url
+API_CREATE_MANUFACTURER = 'create/%s' % API_MANUFACTURERS
+
+# Api create component url
+API_CREATE_COMPONENT = 'create/%s' % API_COMPONENTS
