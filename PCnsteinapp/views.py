@@ -10,15 +10,14 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
-from django import forms
 
 from PCnsteinapp import globdata
 import responseutils
 import permscheck
 import datautils
 import urlutils
-
 import models
+import forms
 
 #
 #
@@ -154,6 +153,7 @@ class ComponentView(TemplateResponseMixin):
             ref = kwargs['ref']
             return responseutils.getHttpResponseNotFoundHTML(
                                                 '%s Not Found' % ref,
+                                                request.user,
                                                 ref,
                                                 urlutils.getComponentURL(ref))
 
@@ -202,6 +202,7 @@ class ManufacturerView(TemplateResponseMixin):
             name = kwargs['name']
             return responseutils.getHttpResponseNotFoundHTML(
                                             '%s Not Found' % name,
+                                            request.user,
                                             name,
                                             urlutils.getManufacturerURL(name))
 
@@ -250,6 +251,7 @@ class CategoryView(TemplateResponseMixin):
             name = kwargs['name']
             return responseutils.getHttpResponseNotFoundHTML(
                                             '%s Not Found' % name,
+                                            request.user,
                                             name,
                                             urlutils.getCategoryURL(name))
 
@@ -299,6 +301,7 @@ class OperatingSystemView(TemplateResponseMixin):
             name = kwargs['name']
             return responseutils.getHttpResponseNotFoundHTML(
                                         '%s Not Found' % name,
+                                        request.user,
                                         name,
                                         urlutils.getOperatingSystemURL(name))
 
@@ -325,7 +328,7 @@ class CreateViewGroupRestriction(CreateView):
             if not permscheck.isUserInGroup(self.request.user, g):
                 reason = 'User must be member of group: %s' % g
                 return responseutils.getHttpResponseForbiddenHTML(
-                    'Creation forbidden', reason)
+                    'Creation forbidden', self.request.user, reason)
 
         return super(CreateViewGroupRestriction, self).form_valid(form)     
 
@@ -345,7 +348,7 @@ class UpdateViewGroupRestriction(UpdateView):
             if not permscheck.isUserInGroup(self.request.user, g):
                 reason = 'User must be member of group: %s' % g
                 return responseutils.getHttpResponseForbiddenHTML(
-                    'Creation forbidden', reason)
+                    'Creation forbidden', self.request.user, reason)
 
         return super(UpdateViewGroupRestriction, self).form_valid(form) 
 #
@@ -382,33 +385,19 @@ class OSCreateView(CreateViewGroupRestriction):
 
 #
 #
-class ManufacturerForm(forms.ModelForm):
-    class Meta:
-        model = models.Manufacturer
-        exclude = 'name'
-
-#
-#
 class ManufacturerModifyView(UpdateViewGroupRestriction):
     template_name = 'modify.html'
     model = models.Manufacturer
-    form_class = ManufacturerForm  
+    form_class = forms.ModifyManufacturerForm  
     success_url = '/%s' % globdata.API_MANUFACTURERS
     groups = ['Vendor']
-
-#
-#
-class ComponentForm(forms.ModelForm):
-    class Meta:
-        model = models.Component
-        exclude = 'ref'
 
 #
 #
 class ComponentModifyView(UpdateViewGroupRestriction):
     template_name = 'modify.html'
     model = models.Component
-    form_class = ComponentForm  
+    form_class = forms.ModifyComponentForm  
     success_url = '/%s' % globdata.API_COMPONENTS
     groups = ['Vendor']
 
