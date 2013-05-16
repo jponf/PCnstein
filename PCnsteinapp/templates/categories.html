@@ -8,29 +8,37 @@
 
 {% block css %}
 <link rel="stylesheet" type="text/css" 
-				href="{% static "css/tablelist.css" %}"/>
+                href="{% static "css/tablelist.css" %}"/>
 {% endblock %}
 
 {% block content %}
-	
+    
 
-	{% if c_info|length > 0 %}
-	<table class="sortable tablelist">
-		<tr>
-			<th>Name</th>
-			<th>Items</th>
-		</tr>
-	{% endif %}
+    {% if c_info|length > 0 %}
+    <table class="sortable tablelist">
+        <tr>
+            <th>Name</th>
+            <th>Items</th>
+            <th />
+        </tr>
+    {% endif %}
 
-	{% for c in categories %}
-		<tr> 
-			<td><a href="{{ c.link.href }}">{{ c.name }}</a></td>
-			<td>{{ c.itemcount }}</td>
-		<tr>
-	{% endfor %}
+    {% for c in categories %}
+        <tr> 
+            <td><a href="{{ c.link.href }}">{{ c.name }}</a></td>
+            <td>{{ c.itemcount }}</td>
+            <td><a href="/{{ modify_url }}/{{ c.name }}">MODIFY</a></td>
+        <tr>
+    {% endfor %}
 
-	{% if c_info|length > 0 %}
-	</table>
-	{% endif %}
+    {% if c_info|length > 0 %}
+    </table>
+    {% endif %}
+
+    {% if user.username %}
+    <br>
+    <a href="/{{ create_url }}"> CREATE CATEGORY</a>
+    {% endif %}
+
 
 {% endblock %}

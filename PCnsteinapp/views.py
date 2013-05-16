@@ -224,8 +224,12 @@ class CategoriesView(TemplateResponseMixin):
     #
     # Overrides the get_context_data method from TemplateView
     def get_context_data(self, **kwargs):
-        return { 'pagetitle' : 'Categories',
-                  self.context_key : datautils.getCategoriesInfoAsList() }
+        context = super(CategoriesView, self).get_context_data(**kwargs)
+        context['pagetitle'] = 'Categories'
+        context['create_url'] = globdata.API_CREATE_CATEGORY
+        context['modify_url'] = globdata.API_MODIFY_CATEGORY
+        context[self.context_key] = datautils.getCategoriesInfoAsList()
+        return context
 
 #
 #
@@ -268,8 +272,12 @@ class OperatingSystemsView(TemplateResponseMixin):
     #
     # Overrides the get_context_data method from TemplateView
     def get_context_data(self, **kwargs):
-        return { 'pagetitle' : 'Operating Systems',
-                  self.context_key : datautils.getOSsInfoAsList() }
+        context = super(OperatingSystemsView, self).get_context_data(**kwargs)
+        context['pagetitle'] = 'Operating systems'
+        context['create_url'] = globdata.API_CREATE_OS
+        context['modify_url'] = globdata.API_MODIFY_OS
+        context[self.context_key] = datautils.getOSsInfoAsList()
+        return context
 
 
 #
@@ -358,6 +366,22 @@ class ComponentCreateView(CreateViewGroupRestriction):
 
 #
 #
+class CategoryCreateView(CreateViewGroupRestriction):
+    template_name = 'create.html'
+    model = models.Category
+    success_url = '/%s' % globdata.API_CATEGORIES
+    groups = ['Vendor']
+
+#
+#
+class OSCreateView(CreateViewGroupRestriction):
+    template_name = 'create.html'
+    model = models.OperatingSystem
+    success_url = '/%s' % globdata.API_OS
+    groups = ['Vendor']
+
+#
+#
 class ManufacturerForm(forms.ModelForm):
     class Meta:
         model = models.Manufacturer
@@ -386,6 +410,22 @@ class ComponentModifyView(UpdateViewGroupRestriction):
     model = models.Component
     form_class = ComponentForm  
     success_url = '/%s' % globdata.API_COMPONENTS
+    groups = ['Vendor']
+
+#
+#
+class CategoryModifyView(UpdateViewGroupRestriction):
+    template_name = 'modify.html'
+    model = models.Category 
+    success_url = '/%s' % globdata.API_CATEGORIES
+    groups = ['Vendor']
+
+#
+#
+class OSModifyView(UpdateViewGroupRestriction):
+    template_name = 'modify.html'
+    model = models.OperatingSystem
+    success_url = '/%s' % globdata.API_OS
     groups = ['Vendor']
 
 #

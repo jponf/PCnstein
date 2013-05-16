@@ -4,7 +4,9 @@ from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
                         CategoryView, OperatingSystemsView, OperatingSystemView,\
                         ManufacturerCreateView, ComponentCreateView, \
-                        UserCreateView, ManufacturerModifyView, ComponentModifyView
+                        UserCreateView, ManufacturerModifyView, ComponentModifyView, \
+                        CategoryCreateView, OSCreateView, CategoryModifyView, \
+                        OSModifyView
 
 from PCnsteinapp import globdata
 
@@ -52,9 +54,21 @@ urlpatterns = patterns('',
     url(r'^%s/$' % globdata.API_CREATE_COMPONENT,
         ComponentCreateView.as_view()),
 
+    url(r'^%s/$' % globdata.API_CREATE_CATEGORY,
+        CategoryCreateView.as_view()),
+
+    url(r'^%s/$' % globdata.API_CREATE_OS,
+        OSCreateView.as_view()),
+
     url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_MODIFY_MANUFACTURER,
         ManufacturerModifyView.as_view()),
 
     url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_MODIFY_COMPONENT,
-        ComponentModifyView.as_view())
+        ComponentModifyView.as_view()),
+
+    url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_MODIFY_CATEGORY,
+        CategoryModifyView.as_view()),
+
+    url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_MODIFY_OS,
+        OSModifyView.as_view())
 )
