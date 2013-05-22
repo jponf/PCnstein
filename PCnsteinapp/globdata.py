@@ -21,26 +21,8 @@ API_CREATE = 'create'
 # Api element modification entry point
 API_MODIFY = 'modify'
 
-# Api create manufacturer url
-API_CREATE_MANUFACTURER = '%s/%s' % (API_CREATE, API_MANUFACTURERS)
-
 # Api create component url
 API_CREATE_COMPONENT = '%s/%s' % (API_CREATE, API_COMPONENTS)
 
-# Api create category url
-API_CREATE_CATEGORY = '%s/%s' % (API_CREATE, API_CATEGORIES)
-
-# Api create OS url
-API_CREATE_OS = '%s/%s' % (API_CREATE, API_OS)
-
-# Api modify manufacturer url
-API_MODIFY_MANUFACTURER = '%s/%s' % (API_MODIFY, API_MANUFACTURERS)
-
 # Api modify component url
 API_MODIFY_COMPONENT = '%s/%s' % (API_MODIFY, API_COMPONENTS)
-
-# Api modify category url
-API_MODIFY_CATEGORY = '%s/%s' % (API_MODIFY, API_CATEGORIES)
-
-# Api modify OS url
-API_MODIFY_OS = '%s/%s' % (API_MODIFY, API_OS)

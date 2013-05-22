@@ -178,8 +178,6 @@ class ManufacturersView(TemplateResponseMixin):
     def get_context_data(self, **kwargs):
         context = super(ManufacturersView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Manufacturers'
-        context['create_url'] = globdata.API_CREATE_MANUFACTURER
-        context['modify_url'] = globdata.API_MODIFY_MANUFACTURER
         context[self.context_key] = datautils.getManufacturersInfoAsList()
         return context
 
@@ -227,8 +225,6 @@ class CategoriesView(TemplateResponseMixin):
     def get_context_data(self, **kwargs):
         context = super(CategoriesView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Categories'
-        context['create_url'] = globdata.API_CREATE_CATEGORY
-        context['modify_url'] = globdata.API_MODIFY_CATEGORY
         context[self.context_key] = datautils.getCategoriesInfoAsList()
         return context
 
@@ -276,8 +272,6 @@ class OperatingSystemsView(TemplateResponseMixin):
     def get_context_data(self, **kwargs):
         context = super(OperatingSystemsView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Operating systems'
-        context['create_url'] = globdata.API_CREATE_OS
-        context['modify_url'] = globdata.API_MODIFY_OS
         context[self.context_key] = datautils.getOSsInfoAsList()
         return context
 
@@ -351,13 +345,6 @@ class UpdateViewGroupRestriction(UpdateView):
                     'Creation forbidden', self.request.user, reason)
 
         return super(UpdateViewGroupRestriction, self).form_valid(form) 
-#
-#
-class ManufacturerCreateView(CreateViewGroupRestriction):
-    template_name = 'create.html'
-    model = models.Manufacturer
-    success_url = '/%s' % globdata.API_MANUFACTURERS
-    groups = ['Vendor']
 
 #
 #
@@ -369,52 +356,11 @@ class ComponentCreateView(CreateViewGroupRestriction):
 
 #
 #
-class CategoryCreateView(CreateViewGroupRestriction):
-    template_name = 'create.html'
-    model = models.Category
-    success_url = '/%s' % globdata.API_CATEGORIES
-    groups = ['Vendor']
-
-#
-#
-class OSCreateView(CreateViewGroupRestriction):
-    template_name = 'create.html'
-    model = models.OperatingSystem
-    success_url = '/%s' % globdata.API_OS
-    groups = ['Vendor']
-
-#
-#
-class ManufacturerModifyView(UpdateViewGroupRestriction):
-    template_name = 'modify.html'
-    model = models.Manufacturer
-    form_class = forms.ModifyManufacturerForm  
-    success_url = '/%s' % globdata.API_MANUFACTURERS
-    groups = ['Vendor']
-
-#
-#
 class ComponentModifyView(UpdateViewGroupRestriction):
     template_name = 'modify.html'
     model = models.Component
     form_class = forms.ModifyComponentForm  
     success_url = '/%s' % globdata.API_COMPONENTS
-    groups = ['Vendor']
-
-#
-#
-class CategoryModifyView(UpdateViewGroupRestriction):
-    template_name = 'modify.html'
-    model = models.Category 
-    success_url = '/%s' % globdata.API_CATEGORIES
-    groups = ['Vendor']
-
-#
-#
-class OSModifyView(UpdateViewGroupRestriction):
-    template_name = 'modify.html'
-    model = models.OperatingSystem
-    success_url = '/%s' % globdata.API_OS
     groups = ['Vendor']
 
 #
