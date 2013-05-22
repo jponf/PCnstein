@@ -56,7 +56,7 @@ def getComponentInfo(ref):
             'desc' : comp.desc,
             'manufacturer' : '',
             'supportedby' : [],
-            'createdby' : str(comp.creator),
+            'createdby' : str(comp.createdby),
             'link' : { 'rel' : 'self',
                        'href' : getComponentURL(comp.ref) } 
         }

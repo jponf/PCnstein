@@ -338,11 +338,16 @@ class UpdateViewGroupRestriction(UpdateView):
                 "UpdateViewGroupRestriction requires 'groups' to be a list of "
                 "group names")
 
+        if not self.request.user.is_authenticated():
+            reason = 'User must be logged in'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Update forbidden', self.request.user, reason)
+
         for g in self.groups:
             if not permscheck.isUserInGroup(self.request.user, g):
                 reason = 'User must be member of group: %s' % g
                 return responseutils.getHttpResponseForbiddenHTML(
-                    'Creation forbidden', self.request.user, reason)
+                    'Update forbidden', self.request.user, reason)
 
         return super(UpdateViewGroupRestriction, self).form_valid(form) 
 
@@ -351,8 +356,13 @@ class UpdateViewGroupRestriction(UpdateView):
 class ComponentCreateView(CreateViewGroupRestriction):
     template_name = 'create.html'
     model = models.Component
+    form_class = forms.CreateComponentForm
     success_url = '/%s' % globdata.API_COMPONENTS
     groups = ['Vendor']
+
+    def form_valid(self, form):
+        form.instance.createdby = self.request.user
+        return super(CreateViewGroupRestriction, self).form_valid(form)
 
 #
 #

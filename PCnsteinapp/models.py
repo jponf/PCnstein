@@ -29,7 +29,7 @@ class Component(models.Model):
 	img = models.ImageField(upload_to='static/img', blank=True, null=True)
 	category = models.ForeignKey(Category, blank=True, null=True,
 													on_delete=models.SET_NULL)
-	creator = models.ForeignKey(User, blank=True, null=True, 
+	createdby = models.ForeignKey(User, blank=True, null=True, 
 													on_delete=models.SET_NULL)
 
 	def __unicode__(self):

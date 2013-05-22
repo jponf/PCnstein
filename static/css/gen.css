@@ -147,3 +147,8 @@ a:visited { color: #00FF22; }
 .bold_text {
 	font-weight: bold;
 }
+
+.modify_icon {
+	width: 32px;
+	height: 32px;
+}

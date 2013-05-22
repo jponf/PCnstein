@@ -9,12 +9,19 @@ import models
 class ModifyComponentForm(forms.ModelForm):
     class Meta:
         model = models.Component
-        exclude = 'ref'
+        exclude = ['ref', 'createdby']
 
 #
 #
 class ModifyManufacturerForm(forms.ModelForm):
     class Meta:
         model = models.Manufacturer
-        exclude = 'name'
+        exclude = ['name']
+
+#
+#
+class CreateComponentForm(forms.ModelForm):
+	class Meta:
+		model = models.Component
+		exclude = ['createdby']
 

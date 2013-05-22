@@ -16,7 +16,7 @@
 <div id="component_head">
 
 	<div id="component_img">
-		<img src="/{{ component.img }}"/>
+		<img src="{% static "img/{{ component.img }}" %}"/>
 	</div>
 
 	<div id="component_ref">
@@ -24,7 +24,11 @@
 			Ref: {{ component.ref }} 
 			<br/>
 			Name: {{ component.name }}
+			<br/>			
+			<img class="modify_icon" src="{% static "icons/edit.png" %}" alt="Delete component"/>		
+			<img class="modify_icon" src="{% static "icons/delete.png" %}" alt="Edit component"/>
 		</p>
+		
 	</div>
 
 </div>
