@@ -26,3 +26,6 @@ API_CREATE_COMPONENT = '%s/%s' % (API_CREATE, API_COMPONENTS)
 
 # Api modify component url
 API_MODIFY_COMPONENT = '%s/%s' % (API_MODIFY, API_COMPONENTS)
+
+# Api create component review
+API_CREATE_COMPONENT_REVIEW = '%s/review' % (API_CREATE)

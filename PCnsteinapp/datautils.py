@@ -72,17 +72,15 @@ def getComponentInfo(ref):
     supportedby = getComponentSupportedBy(comp)
 
     if supportedby:
-        # supportedbystr = [(   s['os'],
-        #                   s['minversion'],
-        #                   s['maxversion']) 
-        #                 for s in supportedby]
-        #cinf['supportedby'] = supportedby
-        
         for sb in supportedby:
             cinf['supportedby'].append({ 'name' : sb['name'],
                                          'link' : getOperatingSystemURL(sb['name']),
                                          'minversion' : sb['minversion'],
                                          'maxversion' : sb['maxversion']})
+
+    # Add reviews
+    cinf['reviews'] = getComponentReviews(comp)
+
     return cinf
 
 #
@@ -295,3 +293,45 @@ def getOSManufacturer(os):
     except ObjectDoesNotExist:
         sys.stderr.write('No Made By relationship for operating system: ' + str(os))
         return None
+
+#
+#
+def getComponentReviews(comp):
+    """
+    getComponentReviews(comp) -> Return a list filled with all the reviews of
+                                    of the specified component
+    """
+
+    reviews = []
+    try:
+        
+        for r in models.ComponentReview.objects.filter(component_id=comp):
+            review = {  'rating' : r.rating,
+                        'comment' : r.comment,
+                        'date' : str(r.date),
+                        'user' : str(r.user)
+            }
+            reviews.append( review )
+
+    except ObjectDoesNotExist:
+        print 'Component has no reviews'
+
+    return reviews
+
+#
+#
+def createComponentReview(ref, user, form_rating, form_comment):
+    """
+    createComponentReview(ref, user, form_rating, form_comment) ->
+        Creates a review instace associated to the specified component and user
+
+    Throws ObjectDoesNotExist if the given reference does not exist
+    """
+    
+    component = models.Component.objects.get(pk=ref)
+    review = models.ComponentReview(rating=form_rating,
+                                    comment=form_comment,
+                                    component=component,
+                                    user=user)
+    review.save()
+        

@@ -37,5 +37,26 @@ def getOperatingSystemURL(name):
 
 #
 #
+def getCreateComponentURL():
+	return getApiURL(globdata.API_CREATE_COMPONENT)
+
+#
+#
+def getModifyComponentURL(ref):
+	if ref:
+		return getApiURL(globdata.API_MODIFY_COMPONENT, pathname2url(ref))
+	else:
+		return ''
+
+#
+#
+def getCreateComponentReviewURL(ref):
+	if ref:
+		return getApiURL(globdata.API_CREATE_COMPONENT_REVIEW, ref)
+	else:
+		return ''
+
+#
+#
 def getApiURL(*args):
 	return globdata.API_URL + '/' + "/".join(args)

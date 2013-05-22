@@ -4,7 +4,7 @@ from dict2xml import dict2xml
 from django.utils import simplejson
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseBadRequest, \
-                        HttpResponseNotFound, HttpResponseNotAllowed
+                        HttpResponseRedirect
 
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView
@@ -129,8 +129,7 @@ class ComponentsView(TemplateResponseMixin):
     def get_context_data(self, **kwargs):
         context = super(ComponentsView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Components'
-        context['create_url'] = globdata.API_CREATE_COMPONENT
-        context['modify_url'] = globdata.API_MODIFY_COMPONENT
+        context['create_url'] = urlutils.getCreateComponentURL()
         context[self.context_key] = datautils.getComponentsSummaryAsList()
         return context
 
@@ -147,8 +146,10 @@ class ComponentView(TemplateResponseMixin):
     # Overrides the get method from TemplateView
     def get(self, request, *args, **kwargs):
         try:
+            print 'hi'
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
+
         except ObjectDoesNotExist:
             ref = kwargs['ref']
             return responseutils.getHttpResponseNotFoundHTML(
@@ -161,8 +162,17 @@ class ComponentView(TemplateResponseMixin):
     # Overrides the get_context_data method from TemplateView
     def get_context_data(self, **kwargs):
         ref = kwargs['ref']
-        return { 'pagetitle' : ref,
-                  self.context_key : datautils.getComponentInfo(ref) }
+        cinfo = datautils.getComponentInfo(ref)
+
+        context = super(ComponentView, self).get_context_data(**kwargs)
+        context['pagetitle'] = 'Components'
+        context['modify_url'] = urlutils.getModifyComponentURL(ref)
+        context['is_creator'] = cinfo['createdby'] == str(self.request.user)
+        context['RATING_CHOICES'] = models.Review.RATING_CHOICES
+        context['create_review_url'] = urlutils.getCreateComponentReviewURL(ref)
+        context[self.context_key] = cinfo
+        
+        return context
 
 #
 #
@@ -379,3 +389,22 @@ class UserCreateView(CreateView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
     success_url = '/'
+
+
+#
+# TEMPORAL
+#
+def createReview(request, ref):
+    
+    try:
+        datautils.createComponentReview(ref, 
+                                    request.user,
+                                    request.POST['rating'],
+                                    request.POST['comment'])
+
+        return HttpResponseRedirect(urlutils.getComponentURL(ref))
+    except ObjectDoesNotExist:    
+        return responseutils.getHttpResponseNotFoundHTML('%s Not Found' % ref,
+                                                request.user,
+                                                ref,
+                                                urlutils.getComponentURL(ref))

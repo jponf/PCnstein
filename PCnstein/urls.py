@@ -3,7 +3,9 @@ from django.conf.urls import patterns, include, url
 from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
                         CategoryView, OperatingSystemsView, OperatingSystemView,\
-                        ComponentCreateView, UserCreateView, ComponentModifyView
+                        ComponentCreateView, UserCreateView, ComponentModifyView,\
+                        createReview
+
 
 from PCnsteinapp import globdata
 
@@ -49,5 +51,8 @@ urlpatterns = patterns('',
         ComponentCreateView.as_view()),
 
     url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_MODIFY_COMPONENT,
-        ComponentModifyView.as_view())
+        ComponentModifyView.as_view()),
+
+    url(r'^%s/(?P<ref>[\w\s]+)$' % globdata.API_CREATE_COMPONENT_REVIEW,
+        createReview)
 )

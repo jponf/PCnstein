@@ -5,7 +5,7 @@
 
 <h4>Choose what to modify.<h4>
 
-<form method="post" action="">
+<form method="post" action="" enctype="multipart/form-data">
 	{% csrf_token %}
     {% for field in form %}
         {{ field.label_tag }}: <br>

@@ -13,15 +13,14 @@ class ModifyComponentForm(forms.ModelForm):
 
 #
 #
-class ModifyManufacturerForm(forms.ModelForm):
-    class Meta:
-        model = models.Manufacturer
-        exclude = ['name']
-
-#
-#
 class CreateComponentForm(forms.ModelForm):
 	class Meta:
 		model = models.Component
 		exclude = ['createdby']
 
+#
+#
+class CreateReviewForm(forms.ModelForm):
+	class Meta:
+		model = models.ComponentReview
+		exclude = ['user', 'component']

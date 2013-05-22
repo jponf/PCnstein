@@ -16,7 +16,7 @@
 <div id="component_head">
 
 	<div id="component_img">
-		<img src="{% static "img/{{ component.img }}" %}"/>
+		<img src="/{{ component.img }}"/>
 	</div>
 
 	<div id="component_ref">
@@ -24,9 +24,11 @@
 			Ref: {{ component.ref }} 
 			<br/>
 			Name: {{ component.name }}
-			<br/>			
-			<img class="modify_icon" src="{% static "icons/edit.png" %}" alt="Delete component"/>		
-			<img class="modify_icon" src="{% static "icons/delete.png" %}" alt="Edit component"/>
+			<br/>
+			{% if is_creator %}
+			<a href="{{ modify_url }}"><img class="modify_icon" src="{% static "icons/edit.png" %}" alt="Delete component"/></a>
+			<a href="{{ delete_url }}"><img class="modify_icon" src="{% static "icons/delete.png" %}" alt="Edit component"/></a>
+			{% endif %}
 		</p>
 		
 	</div>
@@ -55,6 +57,42 @@
 				{{ component.desc }}
 			</ul>
 	</ul>
+</div>
+
+<div id="component_reviews">
+
+	<!-- Existend reviews -->
+	{% for review in component.reviews %}
+	<div id="component_review">
+		<p id="review_user">{{ review.user }}</p>
+		<p>Rating: {{ review.rating }}</p>
+		<p>{{ review.comment }}</p>
+	</div>
+	{% endfor %}
+
+
+	<!-- Reviews form -->
+	{% if user.username %}
+	<form action="{{ create_review_url }}" method="post">
+		{% csrf_token %}
+		<p>Rating:</p>
+		<div id="component_rating">
+			{% for rate in RATING_CHOICES %}
+
+				{% if forloop.counter == 3 %}
+			<input type="radio" name="rating" id="rating{{ forloop.counter }}" value="{{ rate.0 }}" checked="checked"/>
+				{% else %}
+			<input type="radio" name="rating" id="rating{{ forloop.counter }}" value="{{ rate.0 }}"/>
+				{% endif %}
+
+			<label for="choice{{ forloop.counter }}">{{ rate.1 }} star{{ rate.0|pluralize }}</label>
+			{% endfor %}
+		</div>		
+		<p>Comment:</p>
+		<textarea name="comment" id="comment" rows="5"></textarea>
+		<input type="submit" value="Send Review"/>
+	</form>
+	{% endif %}
 </div>
 
 {% endblock %}

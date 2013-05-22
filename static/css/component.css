@@ -52,3 +52,30 @@
 
 #component_desc a:link { color: #FFF; }
 #component_desc a:visited { color:#FFF; }
+
+#component_reviews {
+	margin-top: 25px;
+}
+
+#component_review {
+	background-color: #999;
+	border-radius: 15px;
+	padding: 3px 3px 3px 10px;
+	margin: 10px 0px 10px 0px;
+}
+
+#component_reviews textarea { width: 100%; margin-bottom: 10px;}
+
+#component_rating {
+	padding: 3px 10px 10px 3px;
+}
+
+#component_rating.label {
+	display:inline;
+	position:relative;
+}
+
+#component_rating.input.radio {
+	display:inline;
+	position:relative;
+}
