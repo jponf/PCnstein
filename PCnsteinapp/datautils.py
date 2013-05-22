@@ -25,7 +25,6 @@ def getComponentsSummaryAsList():
                   'manufacturer' : {},
                   'link' : { 'rel' : 'self', 
                              'href': getComponentURL(c.ref) },                        
-                            
                 }
 
         # Add manufacturer if it exists
@@ -57,9 +56,9 @@ def getComponentInfo(ref):
             'desc' : comp.desc,
             'manufacturer' : '',
             'supportedby' : [],
+            'createdby' : str(comp.creator),
             'link' : { 'rel' : 'self',
-                       'href' : getComponentURL(comp.ref) }
-                      
+                       'href' : getComponentURL(comp.ref) } 
         }
 
     # Add manufacturer if it exists

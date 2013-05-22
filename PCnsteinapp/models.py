@@ -29,6 +29,8 @@ class Component(models.Model):
 	img = models.ImageField(upload_to='static/img', blank=True, null=True)
 	category = models.ForeignKey(Category, blank=True, null=True,
 													on_delete=models.SET_NULL)
+	creator = models.ForeignKey(User, blank=True, null=True, 
+													on_delete=models.SET_NULL)
 
 	def __unicode__(self):
 		return self.name + ' - ' + self.ref
@@ -53,7 +55,7 @@ class ComponentReview(Review):
 	component = models.ForeignKey(Component)
 
 	def __unicode__():
-		return str(component) + " - " + str(user)
+		return str(component) + " - " + str(user) + " : " + str(rating)
 
 #
 #
@@ -92,30 +94,3 @@ class OSMadeBy(models.Model):
 
 	def __unicode__(self):
 		return str(self.os) + ' made by ' + str(self.manufacturer)
-
-#
-#
-class CPU(models.Model):
-	ref = models.ForeignKey(Component)
-	family = models.CharField(max_length=25)
-	socket = models.CharField(max_length=15)
-	arch = models.IntegerField()				# in bits
-	cores = models.IntegerField()				
-	clockspeed = models.FloatField()			# in Ghz
-	lithograpy = models.IntegerField()			# in nm
-
-	def __unicode__(self):
-		return str(self.ref)
-
-#
-#
-class HardDisk(models.Model):
-	ref = models.ForeignKey(Component)
-	rpm = models.IntegerField()
-	interface = models.CharField(max_length=10)
-	buffer_size = models.IntegerField()
-	transfer_speed = models.DecimalField(max_digits=3, decimal_places=1)
-	size = models.DecimalField(max_digits=4, decimal_places=1)
-
-	def __unicode__(self):
-		return str(self.ref)
