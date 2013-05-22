@@ -18,24 +18,17 @@
 	<table class="sortable tablelist">
 		<tr>
 			<th>Name</th>
-			<th />
 		</tr>
 	{% endif %}
 
 	{% for m in manufacturers %}
 		<tr> 
 			<td><a href="{{ m.link.href }}">{{ m.name }}</a></td>
-			<td><a href="/{{ modify_url }}/{{ m.name }}">MODIFY</a></td>
 		<tr>
 	{% endfor %}
 
 	{% if m_info|length > 0 %}
 	</table>
-	{% endif %}
-
-	{% if user.username %}
-	<br>
-	<a href="/{{ create_url }}"> CREATE MANUFACTURER</a>
 	{% endif %}
 
 {% endblock %}
