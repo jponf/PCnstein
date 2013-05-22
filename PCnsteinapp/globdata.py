@@ -21,11 +21,17 @@ API_CREATE = 'create'
 # Api element modification entry point
 API_MODIFY = 'modify'
 
+# Api element deletion entry point
+API_DELETE = 'delete'
+
 # Api create component url
 API_CREATE_COMPONENT = '%s/%s' % (API_CREATE, API_COMPONENTS)
 
 # Api modify component url
 API_MODIFY_COMPONENT = '%s/%s' % (API_MODIFY, API_COMPONENTS)
+
+# Api delete component url
+API_DELETE_COMPONENT = '%s/%s' % (API_DELETE, API_COMPONENTS)
 
 # Api create component review
 API_CREATE_COMPONENT_REVIEW = '%s/review' % (API_CREATE)

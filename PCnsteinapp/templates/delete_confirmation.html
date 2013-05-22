@@ -1,0 +1,13 @@
+{% extends "base.html" %}
+{% block content %}
+
+<h1>DELETE ELEMENT: ARE YOU SURE?</h1>
+
+<h4>This will be permanent.<h4>
+
+<form method="post" action="" enctype="multipart/form-data">
+	{% csrf_token %}
+    <p><input type="submit" value="YES, I want to kill that bugger with fire!" /></p>
+</form>
+
+{% endblock %}

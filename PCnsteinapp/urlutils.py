@@ -50,6 +50,14 @@ def getModifyComponentURL(ref):
 
 #
 #
+def getDeleteComponentURL(ref):
+	if ref:
+		return getApiURL(globdata.API_DELETE_COMPONENT, pathname2url(ref))
+	else:
+		return ''
+
+#
+#
 def getCreateComponentReviewURL(ref):
 	if ref:
 		return getApiURL(globdata.API_CREATE_COMPONENT_REVIEW, ref)

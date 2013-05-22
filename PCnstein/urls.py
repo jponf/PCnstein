@@ -4,7 +4,7 @@ from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
                         CategoryView, OperatingSystemsView, OperatingSystemView,\
                         ComponentCreateView, UserCreateView, ComponentModifyView,\
-                        createReview
+                        createReview, ComponentDeleteView
 
 
 from PCnsteinapp import globdata
@@ -52,6 +52,9 @@ urlpatterns = patterns('',
 
     url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_MODIFY_COMPONENT,
         ComponentModifyView.as_view()),
+
+    url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_DELETE_COMPONENT,
+        ComponentDeleteView.as_view()),
 
     url(r'^%s/(?P<ref>[\w\s]+)$' % globdata.API_CREATE_COMPONENT_REVIEW,
         createReview)

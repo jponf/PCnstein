@@ -7,7 +7,7 @@ from django.http import HttpResponse, HttpResponseBadRequest, \
                         HttpResponseRedirect
 
 from django.views.generic.base import TemplateView
-from django.views.generic.edit import CreateView, UpdateView
+from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -167,6 +167,7 @@ class ComponentView(TemplateResponseMixin):
         context = super(ComponentView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Components'
         context['modify_url'] = urlutils.getModifyComponentURL(ref)
+        context['delete_url'] = urlutils.getDeleteComponentURL(ref)
         context['is_creator'] = cinfo['createdby'] == str(self.request.user)
         context['RATING_CHOICES'] = models.Review.RATING_CHOICES
         context['create_review_url'] = urlutils.getCreateComponentReviewURL(ref)
@@ -363,6 +364,31 @@ class UpdateViewGroupRestriction(UpdateView):
 
 #
 #
+class DeleteViewGroupRestriction(DeleteView):
+
+    groups=None
+
+    def form_valid(self, form):
+        if self.groups is None:
+            raise ImproperlyConfigured(
+                "DeleteViewGroupRestriction requires 'groups' to be a list of "
+                "group names")
+
+        if not self.request.user.is_authenticated():
+            reason = 'User must be logged in'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Deletion forbidden', self.request.user, reason)
+
+        for g in self.groups:
+            if not permscheck.isUserInGroup(self.request.user, g):
+                reason = 'User must be member of group: %s' % g
+                return responseutils.getHttpResponseForbiddenHTML(
+                    'Deletion forbidden', self.request.user, reason)
+
+        return super(DeleteViewGroupRestriction, self).form_valid(form) 
+
+#
+#
 class ComponentCreateView(CreateViewGroupRestriction):
     template_name = 'create.html'
     model = models.Component
@@ -385,11 +411,17 @@ class ComponentModifyView(UpdateViewGroupRestriction):
 
 #
 #
+class ComponentDeleteView(DeleteViewGroupRestriction):
+    template_name = 'delete_confirmation.html'
+    model = models.Component
+    success_url = '/%s' % globdata.API_COMPONENTS
+
+#
+#
 class UserCreateView(CreateView):
     template_name = 'registration/register.html'
     form_class = UserCreationForm
-    success_url = '/'
-
+    success_url = urlutils.getApiURL()
 
 #
 # TEMPORAL
