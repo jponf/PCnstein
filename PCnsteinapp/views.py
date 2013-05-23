@@ -4,7 +4,7 @@ from dict2xml import dict2xml
 from django.utils import simplejson
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseBadRequest, \
-                        HttpResponseRedirect
+                        HttpResponseRedirect, Http404
 
 from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
@@ -415,7 +415,24 @@ class ComponentDeleteView(DeleteViewGroupRestriction):
     template_name = 'delete_confirmation.html'
     model = models.Component
     success_url = '/%s' % globdata.API_COMPONENTS
+    groups = ['Vendor']
 
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and then
+        redirects to the success URL.
+        """
+        self.object = self.get_object()
+
+        if not self.object.createdby == self.request.user:
+            reason = 'User must be the create of the component to delete it'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Deletion forbidden', self.request.user, reason)
+
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+        
 #
 #
 class UserCreateView(CreateView):
