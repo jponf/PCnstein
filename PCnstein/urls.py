@@ -32,30 +32,30 @@ urlpatterns = patterns('',
     url(r'^$', MainPageView.as_view()),
 
     url(r'^%s/$' % globdata.API_COMPONENTS, ComponentsView.as_view()),
-    url(r'^%s/(?P<ref>[\w\s]+)/$' % globdata.API_COMPONENTS,
+    url(r'^%s/(?P<ref>[\w\s\.]+)/$' % globdata.API_COMPONENTS,
         ComponentView.as_view()),
     
     url(r'^%s/$' % globdata.API_MANUFACTURERS, ManufacturersView.as_view()),
-    url( r'^%s/(?P<name>[\w\s]+)/$' % globdata.API_MANUFACTURERS, 
+    url( r'^%s/(?P<name>[\w\s\.]+)/$' % globdata.API_MANUFACTURERS, 
          ManufacturerView.as_view() ),
 
     url(r'^%s/$' % globdata.API_CATEGORIES, CategoriesView.as_view()),
-    url(r'^%s/(?P<name>[\w\s]+)/$' % globdata.API_CATEGORIES,
+    url(r'^%s/(?P<name>[\w\s\.]+)/$' % globdata.API_CATEGORIES,
         CategoryView.as_view()),   
 
     url(r'^%s/$' % globdata.API_OS, OperatingSystemsView.as_view()),
-    url(r'^%s/(?P<name>[\w\s]+)/$' % globdata.API_OS,
+    url(r'^%s/(?P<name>[\w\s\.]+)/$' % globdata.API_OS,
         OperatingSystemView.as_view()),
 
     url(r'^%s/$' % globdata.API_CREATE_COMPONENT,
         ComponentCreateView.as_view()),
 
-    url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_MODIFY_COMPONENT,
+    url(r'^%s/(?P<pk>[\w\s\.]+)/$' % globdata.API_MODIFY_COMPONENT,
         ComponentModifyView.as_view()),
 
-    url(r'^%s/(?P<pk>[\w\s]+)/$' % globdata.API_DELETE_COMPONENT,
+    url(r'^%s/(?P<pk>[\w\s\.]+)/$' % globdata.API_DELETE_COMPONENT,
         ComponentDeleteView.as_view()),
 
-    url(r'^%s/(?P<ref>[\w\s]+)$' % globdata.API_CREATE_COMPONENT_REVIEW,
+    url(r'^%s/(?P<ref>[\w\s\.]+)$' % globdata.API_CREATE_COMPONENT_REVIEW,
         createReview)
 )
