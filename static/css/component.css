@@ -86,3 +86,8 @@
 	display:inline;
 	position:relative;
 }
+
+#review_user {
+	text-decoration: underline;
+	font-weight: bolder;
+}

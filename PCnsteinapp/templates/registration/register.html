@@ -3,35 +3,56 @@
 {% load staticfiles %}
 
 {% block js %}
-<script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
-<script type="text/javascript" src="{% static "js/jautocomplete.js" %}"></script>
+<script src="http://code.jquery.com/jquery-1.9.1.js"></script>
+<script src="http://code.jquery.com/ui/1.10.3/jquery-ui.js"></script>
+
+<script type="text/javascript">
+	$(document).ready(
+		function() {
+			var countries = [
+				"Spain",
+				"España",
+				"LAPAO",
+				"United States",
+				"Patata",
+				"Col",
+				"Nap"
+			];
+
+			$("#id_userprofile-country").autocomplete( {source : countries});
+		}
+	);
+</script>
+
 {% endblock %}
 
 {% block css %}
+<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
 {% endblock %}
 
 {% block content %}
-
-<form method="POST" action="" enctype="multipart/form-data">
-	{% csrf_token %}
-	{% for field in userform %}
-		{{ field.label_tag }}:<br/>
-		{{ field }}
-		{% for error in field.errors %}
-		<span class="error_msg">*{{ error }}</span>
+<div class="ui-widget">
+	<form method="POST" action="" enctype="multipart/form-data">
+		{% csrf_token %}
+		{% for field in userform %}
+			{{ field.label_tag }}:<br/>
+			{{ field }}
+			{% for error in field.errors %}
+			<span class="error_msg">*{{ error }}</span>
+			{% endfor %}
+			<br/><br/>
 		{% endfor %}
-		<br/><br/>
-	{% endfor %}
 
-	{% for field in userprofileform %}
-		{{ field.label_tag }}:<br/>
-		{{ field }}
-		{% for error in field.errors %}
-		<span class="error_msg">*{{ error }}</span>
+		{% for field in userprofileform %}
+			{{ field.label_tag }}:<br/>
+			{{ field }}
+			{% for error in field.errors %}
+			<span class="error_msg">*{{ error }}</span>
+			{% endfor %}
+			<br/><br/>
 		{% endfor %}
-		<br/><br/>
-	{% endfor %}
-	<input type="submit" value="Create the account">	
-</form>
+		<input type="submit" value="Create the account">	
+	</form>
+</div>
 
 {% endblock %}
