@@ -415,12 +415,6 @@ class ComponentDeleteView(DeleteView):
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
-# #
-# #
-# class UserCreateView(CreateView):
-#     template_name = 'registration/register.html'
-#     form_class = [forms.UserForm, forms.UserProfileForm]
-#     success_url = urlutils.getApiURL()
 
 #
 # TEMPORAL
@@ -444,10 +438,13 @@ def createReview(request, ref):
 #
 def registerUser(request):
 
+    #print datautils.getClientIP(request)
+
     if request.method == 'POST':
 
         uf = UserCreationForm(request.POST, prefix='user')
         upf = forms.UserProfileForm(request.POST, prefix='userprofile')
+
         if uf.is_valid() and upf.is_valid():
             user = uf.save()
             userprofile = upf.save(commit=False)
@@ -456,10 +453,10 @@ def registerUser(request):
             return HttpResponseRedirect(urlutils.getApiURL())
         else:
             context = {
-            'pagetitle' : 'New User Registration',
-            'userform' : uf,
-            'userprofileform' : upf,
-            'csrf_token' : csrf.get_token(request)
+                'pagetitle' : 'New User Registration',
+                'userform' : uf,
+                'userprofileform' : upf,
+                'csrf_token' : csrf.get_token(request)
             }
             response_str = render_to_string('registration/register.html', context)
             return HttpResponse(response_str, content_type='text/html')
