@@ -3,13 +3,11 @@
 {% load staticfiles %}
 
 {% block css %}
-<link rel="stylesheet" type="text/css" 
-				href="{% static "css/error_pages.css" %}"/>
 {% endblock %}
 
 {% block content %}
 
-<h1>403 Forbidden</h1>
+<h1 class="error_msg">403 Forbidden</h1>
 <h3>Why?</h3>
 <p>
 	{{ reason }}

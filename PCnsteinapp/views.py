@@ -2,6 +2,7 @@
 
 from dict2xml import dict2xml
 from django.utils import simplejson
+from django.template.loader import render_to_string
 from django.core.exceptions import ObjectDoesNotExist, ImproperlyConfigured
 from django.http import HttpResponse, HttpResponseBadRequest, \
                         HttpResponseRedirect, Http404
@@ -10,6 +11,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.middleware import csrf
 
 from PCnsteinapp import globdata
 import responseutils
@@ -413,12 +415,12 @@ class ComponentDeleteView(DeleteView):
         self.object.delete()
         return HttpResponseRedirect(success_url)
 
-#
-#
-class UserCreateView(CreateView):
-    template_name = 'registration/register.html'
-    form_class = UserCreationForm
-    success_url = urlutils.getApiURL()
+# #
+# #
+# class UserCreateView(CreateView):
+#     template_name = 'registration/register.html'
+#     form_class = [forms.UserForm, forms.UserProfileForm]
+#     success_url = urlutils.getApiURL()
 
 #
 # TEMPORAL
@@ -437,3 +439,45 @@ def createReview(request, ref):
                                                 request.user,
                                                 ref,
                                                 urlutils.getComponentURL(ref))
+
+#
+#
+def registerUser(request):
+
+    if request.method == 'POST':
+
+        uf = UserCreationForm(request.POST, prefix='user')
+        upf = forms.UserProfileForm(request.POST, prefix='userprofile')
+        if uf.is_valid() and upf.is_valid():
+            user = uf.save()
+            userprofile = upf.save(commit=False)
+            userprofile.user = user
+            userprofile.save()
+            return HttpResponseRedirect(urlutils.getApiURL())
+        else:
+            context = {
+            'pagetitle' : 'New User Registration',
+            'userform' : uf,
+            'userprofileform' : upf,
+            'csrf_token' : csrf.get_token(request)
+            }
+            response_str = render_to_string('registration/register.html', context)
+            return HttpResponse(response_str, content_type='text/html')
+
+    elif request.method == 'GET':
+
+        uf = UserCreationForm(prefix='user')
+        upf = forms.UserProfileForm(prefix='userprofile')
+        context = {
+            'pagetitle' : 'New User Registration',
+            'userform' : uf,
+            'userprofileform' : upf,
+            'csrf_token' : csrf.get_token(request)
+        }
+
+        response_str = render_to_string('registration/register.html', context)
+        return HttpResponse(response_str, content_type='text/html')
+
+    else:
+        return responseutils.getHttpResponseNotFoundHTML('WTF', request.user, 
+                                                        'YOU', 'JERK')

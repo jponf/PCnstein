@@ -1,6 +1,7 @@
 from django.db import models
 from django.contrib.auth.models import User
 
+from django.db.models import signals
 import datetime
 
 #
@@ -94,3 +95,24 @@ class OSMadeBy(models.Model):
 
 	def __unicode__(self):
 		return str(self.os) + ' made by ' + str(self.manufacturer)
+
+
+#######################
+# CUSTOM USER PROFILE #
+#######################
+
+#
+#
+class UserProfile(models.Model):
+	user = models.OneToOneField(User, unique=True, primary_key=True)
+	country = models.CharField(max_length=45)
+
+#
+# The following instructions will automatically create a new user profile
+# when a user it's created
+#
+def createUserProfile(sender, instance, created, **kwargs):
+	if created:
+		profile, created = UserProfile.objects.get_or_create(user=instance)
+
+signals.post_save.connect(createUserProfile, sender=User, dispatch_uid="users-profilecreation-signal")

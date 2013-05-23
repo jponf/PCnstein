@@ -3,8 +3,8 @@ from django.conf.urls import patterns, include, url
 from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
                         CategoryView, OperatingSystemsView, OperatingSystemView,\
-                        ComponentCreateView, UserCreateView, ComponentModifyView,\
-                        createReview, ComponentDeleteView
+                        ComponentCreateView, ComponentModifyView, ComponentDeleteView,\
+                        createReview, registerUser
 
 
 from PCnsteinapp import globdata
@@ -27,7 +27,8 @@ urlpatterns = patterns('',
     url(r'^login/$', 'django.contrib.auth.views.login'),
     url(r'^logout/$', 'django.contrib.auth.views.logout',
                      { 'next_page' : '/'}),
-    url(r'^register/$', UserCreateView.as_view() ),
+
+    url(r'^register/$', registerUser ),
 
     url(r'^$', MainPageView.as_view()),
 

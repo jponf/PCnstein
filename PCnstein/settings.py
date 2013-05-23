@@ -159,3 +159,7 @@ LOGGING = {
         },
     }
 }
+
+#
+#
+AUTH_PROFILE_MODULE = 'PCnsteinapp.UserProfile'

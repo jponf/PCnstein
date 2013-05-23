@@ -3,6 +3,8 @@
 {% load staticfiles %}
 
 {% block js %}
+<script type="text/javascript" src="{% static "js/jquery.js" %}"></script>
+<script type="text/javascript" src="{% static "js/jautocomplete.js" %}"></script>
 {% endblock %}
 
 {% block css %}
@@ -10,10 +12,26 @@
 
 {% block content %}
 
-<form method="post" action="">
-	{{ form.as_p }}
-	<input type="submit" value="Create the account">
+<form method="POST" action="" enctype="multipart/form-data">
 	{% csrf_token %}
+	{% for field in userform %}
+		{{ field.label_tag }}:<br/>
+		{{ field }}
+		{% for error in field.errors %}
+		<span class="error_msg">*{{ error }}</span>
+		{% endfor %}
+		<br/><br/>
+	{% endfor %}
+
+	{% for field in userprofileform %}
+		{{ field.label_tag }}:<br/>
+		{{ field }}
+		{% for error in field.errors %}
+		<span class="error_msg">*{{ error }}</span>
+		{% endfor %}
+		<br/><br/>
+	{% endfor %}
+	<input type="submit" value="Create the account">	
 </form>
 
 {% endblock %}

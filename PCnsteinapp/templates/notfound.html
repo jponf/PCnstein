@@ -3,21 +3,17 @@
 {% load staticfiles %}
 
 {% block css %}
-<link rel="stylesheet" type="text/css" 
-				href="{% static "css/error_pages.css" %}"/>
 <style type="text/css">
 
 p.italic {
 	font-style: italic;
 }
-
-
 </style>
 {% endblock %}
 
 {% block content %}
 
-<h1>404 Not Found</h1>
+<h1 class="error_msg">404 Not Found</h1>
 
 <p class="italic">
 	Resource: {{ resource }}	

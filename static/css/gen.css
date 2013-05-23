@@ -148,7 +148,12 @@ a:visited { color: #00FF22; }
 	font-weight: bold;
 }
 
+.error_msg {
+	color: red;
+}
+
 .modify_icon {
 	width: 32px;
 	height: 32px;
 }
+

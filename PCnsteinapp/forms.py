@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 from django import forms
+from django.contrib.auth.models import User
 
 import models
 
@@ -24,3 +25,10 @@ class CreateReviewForm(forms.ModelForm):
 	class Meta:
 		model = models.ComponentReview
 		exclude = ['user', 'component']
+
+#
+#
+class UserProfileForm(forms.ModelForm):
+	class Meta:
+		model = models.UserProfile
+		exclude = ['user']
