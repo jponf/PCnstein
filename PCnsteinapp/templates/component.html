@@ -61,9 +61,13 @@
 
 <div id="component_reviews">
 
-	<!-- Existend reviews -->
+	<!-- reviews -->
 	{% for review in component.reviews %}
-	<div id="component_review">
+		{% if forloop.counter|divisibleby:"2" %}
+	<div id="component_review_even">
+		{% else %}
+	<div id="component_review_odd">
+		{% endif %}
 		<p id="review_user">{{ review.user }}</p>
 		<p>Rating: {{ review.rating }}</p>
 		<p>{{ review.comment }}</p>

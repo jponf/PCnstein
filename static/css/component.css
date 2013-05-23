@@ -57,8 +57,15 @@
 	margin-top: 25px;
 }
 
-#component_review {
-	background-color: #999;
+#component_review_odd {
+	background-color: #777;
+	border-radius: 15px;
+	padding: 3px 3px 3px 10px;
+	margin: 10px 0px 10px 0px;
+}
+
+#component_review_even {
+	background-color: #AAA;
 	border-radius: 15px;
 	padding: 3px 3px 3px 10px;
 	margin: 10px 0px 10px 0px;

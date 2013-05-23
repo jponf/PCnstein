@@ -324,10 +324,16 @@ class CreateViewGroupRestriction(CreateView):
     groups=None
 
     def form_valid(self, form):
+        print 'Group Restriction'
         if self.groups is None:
             raise ImproperlyConfigured(
                 "CreateViewGroupRestriction requires 'groups' to be a list of "
                 "group names")
+
+        if not self.request.user.is_authenticated():
+            reason = 'User must be logged in'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Creation forbidden', self.request.user, reason)
 
         for g in self.groups:
             if not permscheck.isUserInGroup(self.request.user, g):
@@ -364,31 +370,6 @@ class UpdateViewGroupRestriction(UpdateView):
 
 #
 #
-class DeleteViewGroupRestriction(DeleteView):
-
-    groups=None
-
-    def form_valid(self, form):
-        if self.groups is None:
-            raise ImproperlyConfigured(
-                "DeleteViewGroupRestriction requires 'groups' to be a list of "
-                "group names")
-
-        if not self.request.user.is_authenticated():
-            reason = 'User must be logged in'
-            return responseutils.getHttpResponseForbiddenHTML(
-                'Deletion forbidden', self.request.user, reason)
-
-        for g in self.groups:
-            if not permscheck.isUserInGroup(self.request.user, g):
-                reason = 'User must be member of group: %s' % g
-                return responseutils.getHttpResponseForbiddenHTML(
-                    'Deletion forbidden', self.request.user, reason)
-
-        return super(DeleteViewGroupRestriction, self).form_valid(form) 
-
-#
-#
 class ComponentCreateView(CreateViewGroupRestriction):
     template_name = 'create.html'
     model = models.Component
@@ -398,7 +379,7 @@ class ComponentCreateView(CreateViewGroupRestriction):
 
     def form_valid(self, form):
         form.instance.createdby = self.request.user
-        return super(CreateViewGroupRestriction, self).form_valid(form)
+        return super(ComponentCreateView, self).form_valid(form)
 
 #
 #
@@ -411,11 +392,10 @@ class ComponentModifyView(UpdateViewGroupRestriction):
 
 #
 #
-class ComponentDeleteView(DeleteViewGroupRestriction):
+class ComponentDeleteView(DeleteView):
     template_name = 'delete_confirmation.html'
     model = models.Component
     success_url = '/%s' % globdata.API_COMPONENTS
-    groups = ['Vendor']
 
     def delete(self, request, *args, **kwargs):
         """
@@ -432,7 +412,7 @@ class ComponentDeleteView(DeleteViewGroupRestriction):
         success_url = self.get_success_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)
-        
+
 #
 #
 class UserCreateView(CreateView):
