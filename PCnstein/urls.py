@@ -51,7 +51,7 @@ urlpatterns = patterns('',
         OperatingSystemView.as_view()),
 
     url(r'^%s/$' % globdata.API_CREATE_COMPONENT,
-        ComponentCreateView.as_view()),
+        ComponentCreateView),
 
     url(r'^%s/(?P<pk>[\w\s\.]+)/$' % globdata.API_MODIFY_COMPONENT,
         ComponentModifyView.as_view()),

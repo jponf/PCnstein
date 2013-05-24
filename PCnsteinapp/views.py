@@ -372,16 +372,79 @@ class UpdateViewGroupRestriction(UpdateView):
 
 #
 #
-class ComponentCreateView(CreateViewGroupRestriction):
-    template_name = 'create.html'
-    model = models.Component
-    form_class = forms.CreateComponentForm
-    success_url = '/%s' % globdata.API_COMPONENTS
-    groups = ['Vendor']
+#class ComponentCreateView(CreateViewGroupRestriction):
+    # template_name = 'create.html'
+    # model = models.Component
+    # form_class = forms.CreateComponentForm
+    # success_url = '/%s' % globdata.API_COMPONENTS
+    # groups = ['Vendor']
 
-    def form_valid(self, form):
-        form.instance.createdby = self.request.user
-        return super(ComponentCreateView, self).form_valid(form)
+    # def form_valid(self, form):
+    #     form.instance.createdby = self.request.user
+    #     return super(ComponentCreateView, self).form_valid(form)
+def ComponentCreateView(request):
+    if request.method == 'POST':
+
+        component_form = forms.CreateComponentForm(request.POST, prefix='component')
+        supportedby_form = forms.SupportedByForm(request.POST, prefix='supportedby')
+        cmadeby_form = forms.CMadeByForm(request.POST, prefix='cmadeby')
+
+        if component_form.is_valid():
+            component = component_form.save(commit=False)
+            component.createdby = request.user
+            component.save()
+
+            try:
+                supportedby = supportedby_form.save(commit=False)
+                if supportedby.os:
+                    supportedby.component = component
+                    supportedby.save()
+            except:
+                pass
+
+            try:
+                cmadeby = cmadeby_form.save(commit=False)
+                if cmadeby.manufacturer:
+                    cmadeby.component = component
+                    cmadeby.save()
+            except:
+                pass
+                       
+            return HttpResponseRedirect(urlutils.getApiURL())
+        else:
+            context = {
+                'pagetitle' : 'New compoent',
+                'user' : request.user,
+                'componentform' :  component_form,
+                'supportedbyform' : supportedby_form,
+                'cmadebyform' : cmadeby_form,
+                'csrf_token' : csrf.get_token(request)
+            }
+            response_str = render_to_string('create.html', context)
+            return HttpResponse(response_str, content_type='text/html')
+
+    elif request.method == 'GET':
+
+        component_form = forms.CreateComponentForm(prefix='component')
+        supportedby_form = forms.SupportedByForm(prefix='supportedby')
+        cmadeby_form = forms.CMadeByForm(prefix='cmadeby')
+        
+        context = {
+            'pagetitle' : 'New component',
+            'user' : request.user,
+            'componentform' : component_form,
+            'supportedbyform' : supportedby_form,
+            'cmadebyform' : cmadeby_form,
+            'csrf_token' : csrf.get_token(request)
+        }
+
+        response_str = render_to_string('create.html', context)
+        return HttpResponse(response_str, content_type='text/html')
+
+    else:
+        return responseutils.getHttpResponseNotFoundHTML('WTF', request.user, 
+                                                        'YOU', 'JERK')
+
 
 #
 #
