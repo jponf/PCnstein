@@ -6,14 +6,19 @@ from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ComponentCreateView, ComponentModifyView, ComponentDeleteView,\
                         createReview, registerUser
 
+from PCnsteinapp.serializersviews import ComponentCreateAPIView, \
+                        ComponentUpdateDestroyAPIView
+
 from PCnsteinapp.ajaxhelper import getGeoInformationByIP
 
-
 from PCnsteinapp import globdata
+
+from rest_framework.urlpatterns import format_suffix_patterns
 
 # Uncomment the next two lines to enable the admin:
 from django.contrib import admin
 admin.autodiscover()
+##################################################
 
 urlpatterns = patterns('',
     # Examples:
@@ -60,11 +65,24 @@ urlpatterns = patterns('',
         ComponentDeleteView.as_view()),
 
     url(r'^%s/(?P<ref>[\w\s\.]+)$' % globdata.API_CREATE_COMPONENT_REVIEW,
-        createReview),
+        createReview)
+   
+)
 
-    #
-    # Ajax helpers
-    #
-
+# Ajax Helpers
+urlpatterns += patterns('',
     url(r'^geolocbyip/$', getGeoInformationByIP)
 )
+
+# REST API
+resturlpatterns = patterns('',
+    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
+    url(r'^api/components/$', ComponentCreateAPIView.as_view(), name='component-list'),
+    url(r'^api/components/(?P<pk>[\w\s\.]+)/$', 
+        ComponentUpdateDestroyAPIView.as_view(), name='component-detail'),
+)
+
+# Format suffixes
+resturlpatterns = format_suffix_patterns(resturlpatterns, allowed=['api' ,'json', 'xml'])
+
+urlpatterns += resturlpatterns

@@ -54,8 +54,6 @@ def isPrivateIP(ip):
 	private192 = re.compile('\b*192\.168\.\d{1,3}\.\d{1,3}\b*')
 	localhost = re.compile('\b*127.0.0.1\b*')
 
-	print ip
-
 	if private10.match(ip) or private172.match(ip) or private192.match(ip) or \
 		localhost.match(ip):
 		return True
