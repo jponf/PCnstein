@@ -105,7 +105,10 @@ class OSMadeBy(models.Model):
 #
 class UserProfile(models.Model):
 	user = models.OneToOneField(User, unique=True, primary_key=True)
-	country = models.CharField(max_length=45)
+	# There is a region in new zeland with a 105 letters name (But I don't care)
+	country = models.CharField(max_length=50)
+	region = models.CharField(max_length=50)
+	city = models.CharField(max_length=50)
 
 #
 # The following instructions will automatically create a new user profile

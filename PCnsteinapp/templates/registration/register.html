@@ -13,40 +13,47 @@
 <script type="text/javascript">
 	$(document).ready(
 		function() {
-			var countries = [
-				"Spain",
-				"España",
-				"LAPAO",
-				"United States",
-				"Patata",
-				"Col",
-				"Nap"
-			];
 
-			$("#id_userprofile-country").autocomplete( {source : countries});
-		}
-	);
+			// Autocomplete countries
+			getDataFromFile("{% static "data/countries.csv" %}", 
+							";",
+							function(countries) {
+								$("#id_userprofile-country").autocomplete(
+									{source : countries} );
+							});
 
-	$(document).ready(
-		function() {
-			getGeoInfoByIP( function(geodata) {
-				if( !geodata.hasOwnProperty('error') ){
-					$("#id_userprofile-country").val(geodata.country_name)
-				} 
+			// Autocomplete regions (Beta)
+			getDataFromFile("{% static "data/regions.csv" %}", 
+							";",
+							function(regions) {
+								$("#id_userprofile-region").autocomplete(
+									{source : regions} );
+							});
+
+			// Request geo info using client ip
+			getGeoInfoByIP( 
+				function(geodata) {
+					if( !geodata.hasOwnProperty('error') ) {
+						$("#id_userprofile-country").val(geodata.country_name);
+						$("#id_userprofile-region").val(geodata.region);
+						$("#id_userprofile-city").val(geodata.city);
+					} 
 				// Uncomment the following lines to notify connection errors
 				// else {
 				// 	alert(geodata.error)
-				// }				
-			});
+				// }
+				});
 		}
 	);
+
 </script>
 
 
 {% endblock %}
 
 {% block css %}
-<link rel="stylesheet" href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css" />
+<link rel="stylesheet" 
+	  href="http://code.jquery.com/ui/1.10.3/themes/smoothness/jquery-ui.css"/>
 {% endblock %}
 
 {% block content %}
