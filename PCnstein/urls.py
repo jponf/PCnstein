@@ -3,7 +3,7 @@ from django.conf.urls import patterns, include, url
 from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
                         CategoryView, OperatingSystemsView, OperatingSystemView,\
-                        ComponentCreateView, ComponentModifyView, ComponentDeleteView,\
+                        componentCreateView, ComponentModifyView, ComponentDeleteView,\
                         createReview, registerUser
 
 from PCnsteinapp.serializersviews import ComponentCreateAPIView, \
@@ -56,7 +56,7 @@ urlpatterns = patterns('',
         OperatingSystemView.as_view()),
 
     url(r'^%s/$' % globdata.API_CREATE_COMPONENT,
-        ComponentCreateView),
+        componentCreateView),
 
     url(r'^%s/(?P<pk>[\w\s\.]+)/$' % globdata.API_MODIFY_COMPONENT,
         ComponentModifyView.as_view()),

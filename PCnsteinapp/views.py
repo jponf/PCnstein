@@ -382,9 +382,21 @@ class UpdateViewGroupRestriction(UpdateView):
     # def form_valid(self, form):
     #     form.instance.createdby = self.request.user
     #     return super(ComponentCreateView, self).form_valid(form)
-def ComponentCreateView(request):
-    if request.method == 'POST':
+def componentCreateView(request):
 
+    if request.method == 'POST':
+        # Check user
+        if not request.user.is_authenticated():
+            reason = 'User must be logged in'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Creation forbidden', request.user, reason)
+
+        if not permscheck.isUserInGroup(request.user, 'Vendor'):
+            reason = 'User must be member of group: Vendor'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Creation forbidden', request.user, reason)
+
+        # Creation process
         component_form = forms.CreateComponentForm(request.POST, prefix='component')
         supportedby_form = forms.SupportedByForm(request.POST, prefix='supportedby')
         cmadeby_form = forms.CMadeByForm(request.POST, prefix='cmadeby')
