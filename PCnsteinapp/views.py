@@ -394,30 +394,37 @@ def ComponentCreateView(request):
             component.createdby = request.user
             component.save()
 
+            # Supported By
             try:
                 supportedby = supportedby_form.save(commit=False)
                 if supportedby.os:
                     supportedby.component = component
                     supportedby.save()
-            except:
+            except ObjectDoesNotExist, e:
                 pass
+            except Exception, e:
+                print str(e.__class__.__name__)
 
+            # Made By
             try:
                 cmadeby = cmadeby_form.save(commit=False)
                 if cmadeby.manufacturer:
                     cmadeby.component = component
                     cmadeby.save()
-            except:
+            except ValueError, e:
                 pass
+            except Exception, e:
+                print str(e.__class__.__name__)
+                
                        
-            return HttpResponseRedirect(urlutils.getApiURL())
+            return HttpResponseRedirect(urlutils.getComponentURL(component.ref))
         else:
             context = {
                 'pagetitle' : 'New compoent',
                 'user' : request.user,
                 'componentform' :  component_form,
-                'supportedbyform' : supportedby_form,
-                'cmadebyform' : cmadeby_form,
+                'supportedbyform' : forms.SupportedByForm(prefix='supportedby'),
+                'cmadebyform' : forms.CMadeByForm(prefix='cmadeby'),
                 'csrf_token' : csrf.get_token(request)
             }
             response_str = render_to_string('create.html', context)
