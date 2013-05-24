@@ -4,36 +4,36 @@
 <h1>INSERT TO DB</h1>
 
 <div class="ui-widget">
-	<form method="POST" action="" enctype="multipart/form-data">
-		{% csrf_token %}
-		{% for field in componentform %}
-			{{ field.label_tag }}:<br/>
-			{{ field }}
-			{% for error in field.errors %}
-			<span class="error_msg">*{{ error }}</span>
-			{% endfor %}
-			<br/><br/>
-		{% endfor %}
+    <form method="POST" action="" enctype="multipart/form-data">
+        {% csrf_token %}
+        {% for field in componentform %}
+            {{ field.label_tag }}:<br/>
+            {{ field }}
+            {% for error in field.errors %}
+            <span class="error_msg">*{{ error }}</span>
+            {% endfor %}
+            <br/><br/>
+        {% endfor %}
 
-		{% for field in cmadebyform %}
-			{{ field.label_tag }}:<br/>
-			{{ field }}
-			{% for error in field.errors %}
-			<span class="error_msg">*{{ error }}</span>
-			{% endfor %}
-			<br/><br/>
-		{% endfor %}
+        {% for field in cmadebyform %}
+            {{ field.label_tag }}:<br/>
+            {{ field }}
+            {% for error in field.errors %}
+            <span class="error_msg">*{{ error }}</span>
+            {% endfor %}
+            <br/><br/>
+        {% endfor %}
 
-		{% for field in supportedbyform %}
-			{{ field.label_tag }}:<br/>
-			{{ field }}
-			{% for error in field.errors %}
-			<span class="error_msg">*{{ error }}</span>
-			{% endfor %}
-			<br/><br/>
-		{% endfor %}
-		<input type="submit" value="Create component">	
-	</form>
+        {% for field in supportedbyform %}
+            {{ field.label_tag }}:<br/>
+            {{ field }}
+            {% for error in field.errors %}
+            <span class="error_msg">*{{ error }}</span>
+            {% endfor %}
+            <br/><br/>
+        {% endfor %}
+        <input type="submit" value="Create component">  
+    </form>
 </div>
 {% endblock %}
 
