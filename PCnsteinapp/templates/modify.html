@@ -5,7 +5,7 @@
 
 <h4>Choose what to modify.<h4>
 
-<form method="post" action="" enctype="multipart/form-data">
+<!--<form method="post" action="" enctype="multipart/form-data">
 	{% csrf_token %}
     {% for field in form %}
         {{ field.label_tag }}: <br>
@@ -14,6 +14,25 @@
         <br><br>
     {% endfor %}
     <p><input type="submit" value="Update" /></p>
+</form>!-->
+<form method="post" action="" enctype="multipart/form-data">
+		{% csrf_token %}
+		Name:<br><input type="text" name="name" id="name"></input><br><br>
+		Description:<br><textarea name="desc" id="desc" rows="5"></textarea><br><br>
+		Average price:<br><input type="text" name="avgprice" id="avgprice"></input><br><br>
+		Category:<br><select name="category" id="category">
+			{% for c in categories %}
+			<option>c</option>
+			{% endfor %}
+		</select><br><br>
+		Manufacturer:<br><select name="cmadeby" id="cmadeby">
+			{% for manu in manufacturers %}
+			<option>manu</option>
+			{% endfor %}
+		</select><br><br>
+		Image:<br><input type="file" name="image" id="image"></input><br><br>
+
+	<input type="submit" value="Modify component"/>
 </form>
 
 {% endblock %}

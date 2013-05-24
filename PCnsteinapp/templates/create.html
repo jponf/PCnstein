@@ -24,14 +24,14 @@
             <br/><br/>
         {% endfor %}
 
-        {% for field in supportedbyform %}
-            {{ field.label_tag }}:<br/>
-            {{ field }}
-            {% for error in field.errors %}
-            <span class="error_msg">*{{ error }}</span>
+            {% for field in supportedbyform %}
+                {{ field.label_tag }}:<br/>
+                {{ field }}
+                {% for error in field.errors %}
+                <span class="error_msg">*{{ error }}</span>
+                {% endfor %}
+                <br/><br/>
             {% endfor %}
-            <br/><br/>
-        {% endfor %}
         <input type="submit" value="Create component">  
     </form>
 </div>

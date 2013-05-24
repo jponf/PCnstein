@@ -26,7 +26,7 @@ class Component(models.Model):
 	ref = models.CharField(max_length=20, primary_key=True)
 	name = models.CharField(max_length=75)
 	desc = models.TextField(blank=True, null=True)
-	avgprice = models.DecimalField(max_digits=7, decimal_places=3, blank=True)
+	avgprice = models.DecimalField(max_digits=7, decimal_places=3, blank=True, null=False)
 	img = models.ImageField(upload_to='static/img', blank=True, null=True)
 	category = models.ForeignKey(Category, blank=True, null=True,
 													on_delete=models.SET_NULL)

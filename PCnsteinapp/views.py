@@ -384,44 +384,50 @@ class UpdateViewGroupRestriction(UpdateView):
     #     return super(ComponentCreateView, self).form_valid(form)
 def ComponentCreateView(request):
     if request.method == 'POST':
+        if request.user.is_authenticated():
 
-        component_form = forms.CreateComponentForm(request.POST, prefix='component')
-        supportedby_form = forms.SupportedByForm(request.POST, prefix='supportedby')
-        cmadeby_form = forms.CMadeByForm(request.POST, prefix='cmadeby')
+            component_form = forms.CreateComponentForm(request.POST, prefix='component')
+            supportedby_form = forms.SupportedByForm(request.POST, prefix='supportedby')
+            cmadeby_form = forms.CMadeByForm(request.POST, prefix='cmadeby')
 
-        if component_form.is_valid():
-            component = component_form.save(commit=False)
-            component.createdby = request.user
-            component.save()
+            if component_form.is_valid():
+                component = component_form.save(commit=False)
+                component.createdby = request.user
+                component.save()
 
-            try:
+                
+                
                 supportedby = supportedby_form.save(commit=False)
-                if supportedby.os:
-                    supportedby.component = component
-                    supportedby.save()
-            except:
-                pass
 
-            try:
-                cmadeby = cmadeby_form.save(commit=False)
-                if cmadeby.manufacturer:
-                    cmadeby.component = component
-                    cmadeby.save()
-            except:
-                pass
-                       
-            return HttpResponseRedirect(urlutils.getApiURL())
+                
+                supportedby.component = component
+                supportedby.save()
+                supportedby_form.save_m2m()
+                
+
+                try:
+                    cmadeby = cmadeby_form.save(commit=False)
+                    if cmadeby.manufacturer:
+                        cmadeby.component = component
+                        cmadeby.save()
+                except:
+                    pass
+                           
+                return HttpResponseRedirect(urlutils.getApiURL())
+            else:
+                context = {
+                    'pagetitle' : 'New compoent',
+                    'user' : request.user,
+                    'componentform' :  component_form,
+                    'supportedbyform' : supportedby_form,
+                    'cmadebyform' : cmadeby_form,
+                    'csrf_token' : csrf.get_token(request)
+                }
+                response_str = render_to_string('create.html', context)
+                return HttpResponse(response_str, content_type='text/html')
         else:
-            context = {
-                'pagetitle' : 'New compoent',
-                'user' : request.user,
-                'componentform' :  component_form,
-                'supportedbyform' : supportedby_form,
-                'cmadebyform' : cmadeby_form,
-                'csrf_token' : csrf.get_token(request)
-            }
-            response_str = render_to_string('create.html', context)
-            return HttpResponse(response_str, content_type='text/html')
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Creation forbidden', self.request.user, reason)
 
     elif request.method == 'GET':
 

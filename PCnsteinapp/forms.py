@@ -41,9 +41,21 @@ class SupportedByForm(forms.ModelForm):
         for field in self.fields:
             self.fields[field].required = False
 
+    def clean(stuff):
+        pass
+
     class Meta:
         model = models.SupportedBy
-        exclude = ['component', 'details']
+        exclude = ['component', 'os', 'minversion', 'maxversion', 'details']
+
+    #oss = forms.ModelMultipleChoiceField(queryset=models.OperatingSystem.objects.all())
+    oss = forms.ModelChoiceField(
+        queryset=models.OperatingSystem.objects.all(),
+        widget=forms.CheckboxSelectMultiple,
+        required=False,
+        #empty_label=None,
+        label='Supported by'
+    )
 
 #
 #
