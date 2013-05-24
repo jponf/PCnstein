@@ -12,6 +12,9 @@ API_MANUFACTURERS = 'manufacturers'
 # Api categories entry url
 API_CATEGORIES = 'categories'
 
+# Api supportedby url
+API_SUPPORTEDBY = 'supportedby'
+
 # Api operating systems entry url
 API_OS = 'os'
 
@@ -35,3 +38,7 @@ API_DELETE_COMPONENT = '%s/%s' % (API_DELETE, API_COMPONENTS)
 
 # Api create component review
 API_CREATE_COMPONENT_REVIEW = '%s/review' % (API_CREATE)
+
+API_ADD_SUPPORTEDBY = '%s/%s' % (API_CREATE, API_SUPPORTEDBY)
+
+API_DELETE_SUPPORTEDBY = '%s/%s' % (API_DELETE, API_SUPPORTEDBY)

@@ -32,6 +32,8 @@ class Component(models.Model):
 													on_delete=models.SET_NULL)
 	createdby = models.ForeignKey(User, blank=True, null=True, 
 													on_delete=models.SET_NULL)
+	manufacturer = models.ForeignKey(Manufacturer, blank=True, null=True,
+													on_delete=models.SET_NULL)
 
 	def __unicode__(self):
 		return self.name + ' - ' + self.ref
@@ -69,6 +71,7 @@ class OperatingSystem(models.Model):
 #
 #
 class SupportedBy(models.Model):
+	id = models.AutoField(primary_key=True, db_column='serial')
 	component = models.ForeignKey(Component)
 	os = models.ForeignKey(OperatingSystem)
 	minversion = models.CharField(max_length=20)
@@ -80,12 +83,12 @@ class SupportedBy(models.Model):
 
 #
 #
-class CMadeBy(models.Model):
-	component = models.ForeignKey(Component, blank=False, unique=True)
-	manufacturer = models.ForeignKey(Manufacturer, blank=False)
+# class CMadeBy(models.Model):
+# 	component = models.ForeignKey(Component, blank=False, unique=True)
+# 	manufacturer = models.ForeignKey(Manufacturer, blank=False)
 
-	def __unicode__(self):
-		return str(self.component) + ' made by ' + str(self.manufacturer)
+# 	def __unicode__(self):
+# 		return str(self.component) + ' made by ' + str(self.manufacturer)
 
 #
 #

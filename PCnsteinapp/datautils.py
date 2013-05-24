@@ -18,20 +18,19 @@ def getComponentsSummaryAsList():
     cinf = []
 
     for c in models.Component.objects.all():
-        cinfo = { 'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
-                  'avgprice' : str(c.avgprice), 
-                  'category' : { 'name' : str(c.category),
-                                 'link' : getCategoryURL(c.category.name)}  if c.category else '',
-                  'manufacturer' : {},
-                  'link' : { 'rel' : 'self', 
-                             'href': getComponentURL(c.ref) },                        
-                }
-
-        # Add manufacturer if it exists
-        manufacturer = getComponentManufacturer(c)
-        if manufacturer:
-            cinfo['manufacturer'] =  { 'name' :  manufacturer.name, 
-                                       'link' :  getManufacturerURL(manufacturer.name) }
+        cinfo = \
+            { 
+            'ref' : c.ref, 'name' : c.name, 'img' : str(c.img),
+            'avgprice' : str(c.avgprice), 
+            'category' : { 
+                'name' : str(c.category) if c.category else '',
+                'link' : getCategoryURL(c.category.name) if c.category else ''},
+            'manufacturer' : { 
+                'name' : str(c.manufacturer) if c.manufacturer else '',
+                'link' : getManufacturerURL(manufacturer.name) if c.manufacturer else ''},
+            'link' : {  'rel' : 'self', 
+                        'href': getComponentURL(c.ref) },                        
+            }
 
         # Append info to the list
         cinf.append(cinfo)
@@ -51,21 +50,18 @@ def getComponentInfo(ref):
         {   
             'ref': comp.ref, 'name' : comp.name, 'img' : str(comp.img),
             'avgprice' : str(comp.avgprice), 
-            'category' : { 'name' : str(comp.category), 
-                           'link' : getCategoryURL(comp.category.name)}  if comp.category else '',
+            'category' : { 
+                    'name' : str(comp.category) if comp.category else '',
+                    'link' : getCategoryURL(comp.category.name) if comp.category else ''},
             'desc' : comp.desc,
-            'manufacturer' : '',
+            'manufacturer' : { 
+                    'name' : str(comp.manufacturer) if comp.manufacturer else '',
+                    'link' : getManufacturerURL(manufacturer.name) if comp.manufacturer else ''},
             'supportedby' : [],
             'createdby' : str(comp.createdby),
             'link' : { 'rel' : 'self',
                        'href' : getComponentURL(comp.ref) } 
         }
-
-    # Add manufacturer if it exists
-    manufacturer = getComponentManufacturer(comp)
-    if manufacturer:
-        cinf['manufacturer'] =  { 'name' :  manufacturer.name, 
-                                  'link' :  getManufacturerURL(manufacturer.name) }
     
 
     # Add supported by list if exists (elements separed by ;)
@@ -73,7 +69,8 @@ def getComponentInfo(ref):
 
     if supportedby:
         for sb in supportedby:
-            cinf['supportedby'].append({ 'name' : sb['name'],
+            cinf['supportedby'].append({ 'id' : sb['id'],
+                                         'name' : sb['name'],
                                          'link' : getOperatingSystemURL(sb['name']),
                                          'minversion' : sb['minversion'],
                                          'maxversion' : sb['maxversion']})
@@ -85,23 +82,6 @@ def getComponentInfo(ref):
 
 #
 #
-def getComponentManufacturer(comp):
-    """
-    getComponentManufacturer(comp)-> Return the manufacturer instance associated
-                                with the specified component
-    """
-
-    # Try get the relation with the manufacturer
-    try:
-        madeby = models.CMadeBy.objects.get(component_id=comp)
-        return madeby.manufacturer
-    except ObjectDoesNotExist,e:
-        # sys.stderr.write('%s: No "Made By" relation for component: %s' % (
-        #                   e.__class__.__name__, str(comp)) )
-        return None
-
-#
-#
 def getComponentSupportedBy(comp):
     """
     getComponentSupportedBy(comp) -> Return the OS that support the specified
@@ -110,7 +90,8 @@ def getComponentSupportedBy(comp):
     try:
         return [ {'name': s.os.name, 
                   'minversion' : s.minversion if s.minversion else '',
-                  'maxversion' : s.maxversion if s.maxversion else ''} 
+                  'maxversion' : s.maxversion if s.maxversion else '',
+                  'id' : s.id} 
                 for s in models.SupportedBy.objects.filter(component_id=comp) ]
     except ObjectDoesNotExist:
         return None
@@ -171,8 +152,8 @@ def getManufacturerInfo(name):
 #
 #
 def getManufacturerComponents(manufacturer):
-    return [sb.component for sb in 
-                models.CMadeBy.objects.filter(manufacturer_id=manufacturer)]
+    return [sb for sb in 
+                models.Component.objects.filter(manufacturer_id=manufacturer)]
 
 #
 #
@@ -217,16 +198,12 @@ def getCategoryComponentsList(name):
                   'avgprice' : str(c.avgprice), 
                   'category' : { 'name' : str(c.category), 
                                  'link' : getCategoryURL(c.category.name)},
-                  'manufacturer' : '',
+                  'manufacturer' : { 
+                    'name' : str(c.manufacturer) if c.manufacturer else '',
+                    'link' : getManufacturerURL(manufacturer.name) if c.manufacturer else ''},
                   'link' : { 'rel' : 'self', 
                              'href': getComponentURL(c.ref) }                         
                 }
-
-        # Add manufacturer if it exists
-        manufacturer = getComponentManufacturer(c)
-        if manufacturer:
-            cinfo['manufacturer'] =  { 'name' :  manufacturer.name, 
-                                       'link' :  getManufacturerURL(manufacturer.name) }
 
         # Append info to the list
         cinf.append(cinfo)

@@ -325,6 +325,12 @@ class CreateViewGroupRestriction(CreateView):
 
     groups=None
 
+    def dispatch(self, *args, **kwargs):
+        self.kargs = kwargs
+        self.args = args
+
+        return super(CreateViewGroupRestriction, self).dispatch(*args, **kwargs) 
+
     def form_valid(self, form):
         print 'Group Restriction'
         if self.groups is None:
@@ -351,6 +357,12 @@ class UpdateViewGroupRestriction(UpdateView):
 
     groups=None
 
+    def dispatch(self, *args, **kwargs):
+        self.kargs = kwargs
+        self.args = args
+
+        return super(CreateViewGroupRestriction, self).dispatch(*args, **kwargs) 
+
     def form_valid(self, form):
         if self.groups is None:
             raise ImproperlyConfigured(
@@ -372,101 +384,41 @@ class UpdateViewGroupRestriction(UpdateView):
 
 #
 #
-#class ComponentCreateView(CreateViewGroupRestriction):
-    # template_name = 'create.html'
-    # model = models.Component
-    # form_class = forms.CreateComponentForm
-    # success_url = '/%s' % globdata.API_COMPONENTS
-    # groups = ['Vendor']
+class ComponentCreateView(CreateViewGroupRestriction):
+    template_name = 'create.html'
+    model = models.Component
+    form_class = forms.CreateComponentForm
+    success_url = '/%s' % globdata.API_COMPONENTS
+    groups = ['Vendor']
 
-    # def form_valid(self, form):
-    #     form.instance.createdby = self.request.user
-    #     return super(ComponentCreateView, self).form_valid(form)
-def componentCreateView(request):
-
-    if request.method == 'POST':
-        # Check user
-        if not request.user.is_authenticated():
-            reason = 'User must be logged in'
-            return responseutils.getHttpResponseForbiddenHTML(
-                'Creation forbidden', request.user, reason)
-
-        if not permscheck.isUserInGroup(request.user, 'Vendor'):
-            reason = 'User must be member of group: Vendor'
-            return responseutils.getHttpResponseForbiddenHTML(
-                'Creation forbidden', request.user, reason)
-
-        # Creation process
-        component_form = forms.CreateComponentForm(request.POST, prefix='component')
-        supportedby_form = forms.SupportedByForm(request.POST, prefix='supportedby')
-        cmadeby_form = forms.CMadeByForm(request.POST, prefix='cmadeby')
-
-        if component_form.is_valid():
-            component = component_form.save(commit=False)
-            component.createdby = request.user
-            component.save()
-
-            # Supported By
-            try:
-                supportedby = supportedby_form.save(commit=False)
-                if supportedby.os:
-                    supportedby.component = component
-                    supportedby.save()
-            except ObjectDoesNotExist, e:
-                pass
-            except Exception, e:
-                print str(e.__class__.__name__)
-
-            # Made By
-            try:
-                cmadeby = cmadeby_form.save(commit=False)
-                if cmadeby.manufacturer:
-                    cmadeby.component = component
-                    cmadeby.save()
-            except ValueError, e:
-                pass
-            except Exception, e:
-                print str(e.__class__.__name__)
-                
-                       
-            return HttpResponseRedirect(urlutils.getComponentURL(component.ref))
-        else:
-            context = {
-                'pagetitle' : 'New compoent',
-                'user' : request.user,
-                'componentform' :  component_form,
-                'supportedbyform' : forms.SupportedByForm(prefix='supportedby'),
-                'cmadebyform' : forms.CMadeByForm(prefix='cmadeby'),
-                'csrf_token' : csrf.get_token(request)
-            }
-            response_str = render_to_string('create.html', context)
-            return HttpResponse(response_str, content_type='text/html')
-
-    elif request.method == 'GET':
-
-        component_form = forms.CreateComponentForm(prefix='component')
-        supportedby_form = forms.SupportedByForm(prefix='supportedby')
-        cmadeby_form = forms.CMadeByForm(prefix='cmadeby')
-        
-        context = {
-            'pagetitle' : 'New component',
-            'user' : request.user,
-            'componentform' : component_form,
-            'supportedbyform' : supportedby_form,
-            'cmadebyform' : cmadeby_form,
-            'csrf_token' : csrf.get_token(request)
-        }
-
-        response_str = render_to_string('create.html', context)
-        return HttpResponse(response_str, content_type='text/html')
-
-    else:
-        return responseutils.getHttpResponseNotFoundHTML('WTF', request.user, 
-                                                        'YOU', 'JERK')
-
+    def form_valid(self, form):
+        form.instance.createdby = self.request.user
+        return super(ComponentCreateView, self).form_valid(form)
 
 #
 #
+class SupportedByView(CreateViewGroupRestriction):
+    template_name = 'create.html'
+    model = models.SupportedBy
+    form_class = forms.SupportedByForm
+    groups = ['Vendor']
+
+    def get_success_url(self):
+        return urlutils.getComponentURL(self.kwargs['ref'])
+
+    def form_valid(self, form):
+        comp = models.Component.objects.get(pk=self.kwargs['ref'])
+
+        if not self.request.user == comp.createdby:
+            reason = 'Only the One and Only Creator can modify his spawn'
+            return responseutils.getHttpResponseForbiddenHTML(
+                    'Creation forbidden', self.request.user, reason)
+
+        form.instance.component = comp
+        return super(SupportedByView, self).form_valid(form)
+
+#
+# 
 class ComponentModifyView(UpdateViewGroupRestriction):
     template_name = 'modify.html'
     model = models.Component
@@ -493,6 +445,33 @@ class ComponentDeleteView(DeleteView):
             return responseutils.getHttpResponseForbiddenHTML(
                 'Deletion forbidden', self.request.user, reason)
 
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
+#
+#
+class SupportedByDeleteView(DeleteView):
+    template_name = 'delete_confirmation.html'
+    model = models.SupportedBy
+    success_url = '/%s' % globdata.API_COMPONENTS
+
+    def get_success_url(self):
+        return urlutils.getComponentURL(self.object.component.ref)
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and then
+        redirects to the success URL.
+        """
+        self.object = self.get_object()
+
+        if not self.object.component.createdby == self.request.user:
+            reason = 'User must be the creator of the relation to delete it'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'Deletion forbidden', self.request.user, reason)
+
+        # In order to get the correct URL the order is important
         success_url = self.get_success_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)

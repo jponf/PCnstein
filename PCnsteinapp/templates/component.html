@@ -40,11 +40,11 @@
 		<li><span>Category: <a href="{{ component.category.link }}">{{ component.category.name }}</a></span></li>
 		<li><span>Manufacturer: <a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a></span></li>
 		<li><span>Average Price: {{ component.avgprice }} €</span></li>
-		<li><span>Supported By:</span></li>
+		<li><span><a href="/create/supportedby/{{ component.ref }}" >[ADD]</a> Supported By:</span></li>
 			<ul>
 				{% for sb in component.supportedby %}
 				<li><span>
-						  <a href="{{ sb.link }}">{{ sb.name }}</a>
+						  <a href="/delete/supportedby/{{ sb.id }}/">[DEL]</a><a href="{{ sb.link }}">{{ sb.name }}</a>
 						  </br>
 						  From version: {{ sb.minversion }} 
 						  to: {{ sb.maxversion }}

@@ -3,8 +3,9 @@ from django.conf.urls import patterns, include, url
 from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
                         CategoryView, OperatingSystemsView, OperatingSystemView,\
-                        componentCreateView, ComponentModifyView, ComponentDeleteView,\
-                        createReview, registerUser
+                        ComponentCreateView, ComponentModifyView, ComponentDeleteView,\
+                        SupportedByView, SupportedByDeleteView, createReview, \
+                        registerUser
 
 from PCnsteinapp.serializersviews import ComponentCreateAPIView, \
                         ComponentUpdateDestroyAPIView
@@ -56,7 +57,7 @@ urlpatterns = patterns('',
         OperatingSystemView.as_view()),
 
     url(r'^%s/$' % globdata.API_CREATE_COMPONENT,
-        componentCreateView),
+        ComponentCreateView.as_view()),
 
     url(r'^%s/(?P<pk>[\w\s\.]+)/$' % globdata.API_MODIFY_COMPONENT,
         ComponentModifyView.as_view()),
@@ -65,7 +66,13 @@ urlpatterns = patterns('',
         ComponentDeleteView.as_view()),
 
     url(r'^%s/(?P<ref>[\w\s\.]+)$' % globdata.API_CREATE_COMPONENT_REVIEW,
-        createReview)
+        createReview),
+
+    url(r'^%s/(?P<ref>[\w\s\.]+)/$' % globdata.API_ADD_SUPPORTEDBY,
+        SupportedByView.as_view()),
+
+    url(r'^%s/(?P<pk>[\w\s\.]+)/$' % globdata.API_DELETE_SUPPORTEDBY,
+        SupportedByDeleteView.as_view()),
    
 )
 
