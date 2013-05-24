@@ -6,6 +6,8 @@ from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ComponentCreateView, ComponentModifyView, ComponentDeleteView,\
                         createReview, registerUser
 
+from PCnsteinapp.ajaxhelper import getGeoInformationByIP
+
 
 from PCnsteinapp import globdata
 
@@ -58,5 +60,11 @@ urlpatterns = patterns('',
         ComponentDeleteView.as_view()),
 
     url(r'^%s/(?P<ref>[\w\s\.]+)$' % globdata.API_CREATE_COMPONENT_REVIEW,
-        createReview)
+        createReview),
+
+    #
+    # Ajax helpers
+    #
+
+    url(r'^geolocbyip/$', getGeoInformationByIP)
 )

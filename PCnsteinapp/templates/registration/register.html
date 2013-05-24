@@ -11,27 +11,26 @@
 		src="{% static "js/geodata.js" %}"></script>
 
 <script type="text/javascript">
-	// $(document).ready(
-	// 	function() {
-	// 		var countries = [
-	// 			"Spain",
-	// 			"España",
-	// 			"LAPAO",
-	// 			"United States",
-	// 			"Patata",
-	// 			"Col",
-	// 			"Nap"
-	// 		];
+	$(document).ready(
+		function() {
+			var countries = [
+				"Spain",
+				"España",
+				"LAPAO",
+				"United States",
+				"Patata",
+				"Col",
+				"Nap"
+			];
 
-	// 		$("#id_userprofile-country").autocomplete( {source : countries});
-	// 	}
-	// );
+			$("#id_userprofile-country").autocomplete( {source : countries});
+		}
+	);
 
 	$(document).ready(
 		function() {
 			getGeoInfoByIP( function(geodata) {
-				// $("#id_userprofile-country").val(geodata.countryName)
-				alert(geodata.countryName)
+				$("#id_userprofile-country").val(geodata.country_name)
 			});
 		}
 	);

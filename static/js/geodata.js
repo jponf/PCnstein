@@ -15,15 +15,14 @@ function getGeoInfoByIP(asinc_func) {
 			if( xmlhttp.readyState == 4 ) {
 				if(xmlhttp.responseText) {				
 					geoJSON = JSON.parse(xmlhttp.responseText);
-					alert(geoJSON.countryName);
 					asinc_func(geoJSON);
 				} else {
-					alert('Empty response');
+					alert('Empty geoloc response');
 				}
 			}
 		}
 
-		xmlhttp.open("GET", "http://smart-ip.net/geoip-json", true);
+		xmlhttp.open("GET", "/geolocbyip", true);
 		xmlhttp.withCredentials = "true";
 		xmlhttp.send();
 
