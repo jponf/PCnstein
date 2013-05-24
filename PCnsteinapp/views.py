@@ -438,8 +438,6 @@ def createReview(request, ref):
 #
 def registerUser(request):
 
-    #print datautils.getClientIP(request)
-
     if request.method == 'POST':
 
         uf = UserCreationForm(request.POST, prefix='user')

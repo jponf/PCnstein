@@ -10,26 +10,37 @@ GEO_LOCALIZATION_URL = 'http://smart-ip.net/geoip-json/'
 #
 # 
 def getGeoInformationByIP(request):
-	clientip = getClientIP(request)
-	con = None
-	if isPrivateIP(clientip):
-		con = urllib2.urlopen(GEO_LOCALIZATION_URL)
-	else:
-		print 'hello'
-		con = urllib2.urlopen(GEO_LOCALIZATION_URL + clientip)
-	
-	strdata = con.read()
-	data = simplejson.loads(strdata)
+	"""
+	getGeoInformationByIP(request) -> HttpResponse filled with request ip
+										localization data (country, region, city)
+
+	If the external service it is unreachable or returns an error the json
+	response only contains one field named error which contains the error reason
+	"""
 	responsedata = {}
+	clientip = getClientIP(request)
 
-	print strdata
+	try:
+		con = None
+		if isPrivateIP(clientip):
+			con = urllib2.urlopen(GEO_LOCALIZATION_URL)
+		else:
+			con = urllib2.urlopen(GEO_LOCALIZATION_URL + clientip)
+	
+		strdata = con.read()
+		data = simplejson.loads(strdata)
 
-	if data.has_key('error'):
-		responsedata['error'] = 'Cannot request host information'
-	else:
-		responsedata['country_name'] = data['countryName']
-		responsedata['region'] = data['region']
-		responsedata['city'] = data['city']
+		if data.has_key('error'):
+			responsedata['error'] = 'Cannot request host information'
+		else:
+			responsedata['country_name'] = data['countryName']
+			responsedata['region'] = data['region']
+			responsedata['city'] = data['city']
+
+	except urllib2.HTTPError, e:
+			responsedata['error'] = 'Http Error Code: ' + str(e.code)
+	except urllib2.URLError, e:
+			responsedata['error'] = 'URL Error: ' + str(e.reason)
 
 	return HttpResponse(simplejson.dumps(responsedata), 
 						content_type='application/json')
