@@ -1,0 +1,22 @@
+@charset "UTF-8";
+
+
+#username {
+	text-decoration: underline;
+	font-weight: bolder;
+}
+
+#uprofile li {
+	margin: 10px 0px 1px 0px;
+	color: #FF6600;
+}
+
+.attr_name {
+	font-size: 1.5em;
+	color: #FFF;
+}
+
+.attr_value {
+	font-size: 1.5em;
+	color: #FFF;
+}

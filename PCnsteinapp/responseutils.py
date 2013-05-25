@@ -30,3 +30,16 @@ def getHttpResponseNotFoundHTML(pagetitle, user, resource, resource_url):
 									  'url' : resource_url })
 
 	return HttpResponseNotFound(response_str)
+
+#
+#
+def getHttpResponseBadRequestHTML(pagetitle, user, reason):
+	"""
+	Returns the default bad request web page
+	"""
+	response_str = render_to_string('badrequest.html', 
+									{ 'pagetitle' : pagetitle,
+									  'user' : user,
+								  	  'reason' : reason })
+
+	return HttpResponseBadRequest(response_str)

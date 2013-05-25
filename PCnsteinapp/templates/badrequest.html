@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block css %}
+{% endblock %}
+
+{% block content %}
+
+<h1 class="error_msg">400 Bad Request</h1>
+<h3>Why?</h3>
+<p>
+	{{ reason }}
+</p>
+
+{% endblock %}

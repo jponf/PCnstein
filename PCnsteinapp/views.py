@@ -328,6 +328,35 @@ class OperatingSystemView(TemplateResponseMixin):
 
 #
 #
+class UserView(TemplateResponseMixin):
+    """
+    Handles the generation of a view for an specific user
+    """
+    template_name = 'userprofile.html'
+    context_key = 'userprofile'
+
+    #
+    # Overrides the get method from TemplateView
+    def get(self, request, *args, **kwargs):
+        if request.user.is_authenticated():
+            context = self.get_context_data(**kwargs)
+            return self.render_to_response(context)
+        else:
+            reason = "User must be logged in to see a user profile"
+            return responseutils.getHttpResponseBadRequestHTML(
+                                        'User Not Logged',
+                                        request.user,
+                                        reason)
+
+    #
+    # Overrides the get_context_data method from TemplateView
+    def get_context_data(self, **kwargs):
+        uinfo = datautils.getLoggedUserInfo(self.request.user)
+        return { 'pagetitle' : '%s Profile' % uinfo['username'],
+                  self.context_key : uinfo}
+
+#
+#
 class CreateViewGroupRestriction(CreateView):
 
     groups=None

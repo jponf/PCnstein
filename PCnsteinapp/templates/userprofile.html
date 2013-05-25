@@ -1,0 +1,44 @@
+{% extends "base.html" %}
+
+{% load staticfiles %}
+
+{% block js %}
+{% endblock %}
+
+{% block css %}
+<link rel="stylesheet" type="text/css" 
+				href="{% static "css/userprofile.css" %}"/>
+{% endblock %}
+
+{% block content %}
+
+<h1>User Profile</h1>
+
+<div id='uprofile'>
+	<ul>
+		<li><span class="attr_name">Username:</span>
+			<span class="attr_value">{{ userprofile.username }}</span>
+		</li>
+		
+		<li><span class="attr_name">Country:</span>
+			<span class="attr_value">{{ userprofile.country }}</span>
+		</li>
+		
+		<li><span class="attr_name">Region:</span>
+			<span class="attr_value">{{ userprofile.region }}</span>
+		</li>
+		
+		<li><span class="attr_name">City:</span>
+			<span class="attr_value">{{ userprofile.city }}</span>
+		</li>
+		
+		<li><span class="attr_value">Groups:</span>
+			<ul>
+				{% for g in userprofile.groups %}
+				<li><span class="attr_value">{{ g }}</span></li>
+				{% endfor %}
+			</ul>
+	</ul>
+</div>
+
+{% endblock %}

@@ -200,7 +200,7 @@ def getCategoryComponentsList(name):
                                  'link' : getCategoryURL(c.category.name)},
                   'manufacturer' : { 
                     'name' : str(c.manufacturer) if c.manufacturer else '',
-                    'link' : getManufacturerURL(manufacturer.name) if c.manufacturer else ''},
+                    'link' : getManufacturerURL(c.manufacturer.name) if c.manufacturer else ''},
                   'link' : { 'rel' : 'self', 
                              'href': getComponentURL(c.ref) }                         
                 }
@@ -297,6 +297,37 @@ def getComponentReviews(comp):
 
 #
 #
+def getLoggedUserInfo(user):
+    """
+    getLoggedUserInfo(user) -> Return a dictionary filled with user information
+
+    Fields:
+        username
+        country
+        region
+        city
+    """
+
+    uinfo = {}
+
+    uinfo['username'] = user.username
+    uinfo['groups'] = [g.name for g in user.groups.all()]
+
+    try:
+        userprofile = models.UserProfile.objects.get(pk=user)
+        
+        uinfo['country'] = userprofile.country
+        uinfo['region'] = userprofile.region
+        uinfo['city'] = userprofile.city
+
+    except ObjectDoesNotExist:
+        pass
+
+    return uinfo
+
+
+#
+#
 def createComponentReview(ref, user, form_rating, form_comment):
     """
     createComponentReview(ref, user, form_rating, form_comment) ->
@@ -311,4 +342,3 @@ def createComponentReview(ref, user, form_rating, form_comment):
                                     component=component,
                                     user=user)
     review.save()
-        

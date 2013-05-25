@@ -18,6 +18,9 @@ API_SUPPORTEDBY = 'supportedby'
 # Api operating systems entry url
 API_OS = 'os'
 
+# Api user entry url
+API_USER = 'user'
+
 # Api element creation entry point
 API_CREATE = 'create'
 

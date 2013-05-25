@@ -113,6 +113,10 @@ class UserProfile(models.Model):
 	region = models.CharField(max_length=50)
 	city = models.CharField(max_length=50)
 
+	def __unicode__(self):
+		return str(self.country) + ' - ' + str(self.region) + ' - ' + \
+				str(self.city)
+
 #
 # The following instructions will automatically create a new user profile
 # when a user it's created

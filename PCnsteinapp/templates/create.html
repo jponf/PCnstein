@@ -1,8 +1,6 @@
 {% extends "base.html" %}
 
 
-<h1>INSERT TO DB</h1>
-
 <!--<div class="ui-widget">
     <form method="POST" action="" enctype="multipart/form-data">
         {% csrf_token %}
@@ -36,6 +34,8 @@
     </form>
 </div>!-->
 {% block content %}
+<h1>INSERT TO DB</h1>
+
 <form method="post" action="" enctype="multipart/form-data">
     {% csrf_token %}
     {% for field in form %}
