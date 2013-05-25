@@ -48,7 +48,7 @@
 	</table>
 	{% endif %}
 
-	{% if user.username %}
+	{% if can_create %}
 	<br>
 	<a href="{{ create_url }}"> CREATE COMPONENT</a>
 	{% endif %}

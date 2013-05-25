@@ -44,18 +44,23 @@
 		<li><span>Average Price: {{ component.avgprice }} €</span></li>
 
 		<li><span>Supported By:
+			{% if is_creator %}
 			<a href="{{ add_supportedby_url }}">
 				<img class="modify_icon_small" src="{% static "icons/add.png" %}" 
 				     alt="Add supported by relation"/>
 			</a>
+			{% endif %}
 			</span></li>
 			<ul>
 				{% for sb in component.supportedby %}
 				<li><span>
 						  <!-- delete icon -->
+						  {% if is_creator %}
 						  <a href="/delete/supportedby/{{ sb.id }}/">
 						  	<img class="modify_icon_small" src="{% static "icons/del.png" %}" alt="Delete supported by relation"/>
 						  </a>
+						  {% endif %}
+						  
 						  <!-- OS -->
 						  <a href="{{ sb.link }}">{{ sb.name }}</a>
 						  <!-- Version info -->					  

@@ -125,6 +125,7 @@ class ComponentsView(TemplateResponseMixin):
     """
     template_name = 'components.html'
     context_key = 'components'
+    permitted = ['Vendor']
 
     #
     # Overrides get_context_data method from TemplateView
@@ -132,6 +133,12 @@ class ComponentsView(TemplateResponseMixin):
         context = super(ComponentsView, self).get_context_data(**kwargs)
         context['pagetitle'] = 'Components'
         context['create_url'] = urlutils.getCreateComponentURL()
+        context['can_create'] = False 
+        for g in self.permitted:
+            if permscheck.isUserInGroup(self.request.user, g):
+                context['can_create'] = True
+                break
+
         context[self.context_key] = datautils.getComponentsSummaryAsList()
         return context
 
