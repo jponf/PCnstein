@@ -58,6 +58,22 @@ def getDeleteComponentURL(ref):
 
 #
 #
+def getAddSupportedByURL(ref):
+	if ref:
+		return getApiURL(globdata.API_ADD_SUPPORTEDBY, pathname2url(ref))
+	else:
+		return ''
+
+#
+#
+def getDeleteSupportedByURL(id):
+	if id:
+		return getApiURL(globdata.API_DELETE_SUPPORTEDBY, pathname2url(str(id)))
+	else:
+		return ''
+
+#
+#
 def getCreateComponentReviewURL(ref):
 	if ref:
 		return getApiURL(globdata.API_CREATE_COMPONENT_REVIEW, ref)

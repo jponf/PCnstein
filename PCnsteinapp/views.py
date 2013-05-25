@@ -148,7 +148,6 @@ class ComponentView(TemplateResponseMixin):
     # Overrides the get method from TemplateView
     def get(self, request, *args, **kwargs):
         try:
-            print 'hi'
             context = self.get_context_data(**kwargs)
             return self.render_to_response(context)
 
@@ -170,6 +169,7 @@ class ComponentView(TemplateResponseMixin):
         context['pagetitle'] = 'Components'
         context['modify_url'] = urlutils.getModifyComponentURL(ref)
         context['delete_url'] = urlutils.getDeleteComponentURL(ref)
+        context['add_supportedby_url'] = urlutils.getAddSupportedByURL(ref)
         context['is_creator'] = cinfo['createdby'] == str(self.request.user)
         context['RATING_CHOICES'] = models.Review.RATING_CHOICES
         context['create_review_url'] = urlutils.getCreateComponentReviewURL(ref)
@@ -392,8 +392,10 @@ class ComponentCreateView(CreateViewGroupRestriction):
     groups = ['Vendor']
 
     def form_valid(self, form):
-        form.instance.createdby = self.request.user
+        if self.request.user.is_authenticated():
+            form.instance.createdby = self.request.user
         return super(ComponentCreateView, self).form_valid(form)
+
 
 #
 #

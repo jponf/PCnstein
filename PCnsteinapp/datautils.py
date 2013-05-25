@@ -27,7 +27,7 @@ def getComponentsSummaryAsList():
                 'link' : getCategoryURL(c.category.name) if c.category else ''},
             'manufacturer' : { 
                 'name' : str(c.manufacturer) if c.manufacturer else '',
-                'link' : getManufacturerURL(manufacturer.name) if c.manufacturer else ''},
+                'link' : getManufacturerURL(c.manufacturer.name) if c.manufacturer else ''},
             'link' : {  'rel' : 'self', 
                         'href': getComponentURL(c.ref) },                        
             }
@@ -56,7 +56,7 @@ def getComponentInfo(ref):
             'desc' : comp.desc,
             'manufacturer' : { 
                     'name' : str(comp.manufacturer) if comp.manufacturer else '',
-                    'link' : getManufacturerURL(manufacturer.name) if comp.manufacturer else ''},
+                    'link' : getManufacturerURL(comp.manufacturer.name) if comp.manufacturer else ''},
             'supportedby' : [],
             'createdby' : str(comp.createdby),
             'link' : { 'rel' : 'self',

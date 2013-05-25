@@ -11,6 +11,32 @@
 		src="{% static "js/geodata.js" %}"></script>
 
 <script type="text/javascript">
+	
+	function computeClientPosition() {
+		// Disable button
+		$("#geolocbtn").attr("disabled", "disabled");
+		$("#geolocbtn").val('Processing...');
+
+
+		// Request geo info using client ip
+		getGeoInfoByIP( 
+			function(geodata) {
+				if( !geodata.hasOwnProperty('error') ) {
+					$("#id_userprofile-country").val(geodata.country_name);
+					$("#id_userprofile-region").val(geodata.region);
+					$("#id_userprofile-city").val(geodata.city);
+				} 
+			// Uncomment the following lines to notify connection errors
+			// else {
+			// 	alert(geodata.error)
+			// }
+
+				// Enable button again
+				$("#geolocbtn").removeAttr("disabled");
+				$("#geolocbtn").val('Locate me');
+			});
+	}
+
 	$(document).ready(
 		function() {
 
@@ -30,19 +56,9 @@
 									{source : regions} );
 							});
 
-			// Request geo info using client ip
-			getGeoInfoByIP( 
-				function(geodata) {
-					if( !geodata.hasOwnProperty('error') ) {
-						$("#id_userprofile-country").val(geodata.country_name);
-						$("#id_userprofile-region").val(geodata.region);
-						$("#id_userprofile-city").val(geodata.city);
-					} 
-				// Uncomment the following lines to notify connection errors
-				// else {
-				// 	alert(geodata.error)
-				// }
-				});
+			// Uncoment the next line to autofill localization fields
+			// computeClientPosition();
+			
 		}
 	);
 
@@ -78,6 +94,8 @@
 			<br/><br/>
 		{% endfor %}
 		<input type="submit" value="Create the account">	
+		<input id="geolocbtn" type="button" value="Locate me"
+				onclick=computeClientPosition();>
 	</form>
 </div>
 

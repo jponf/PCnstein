@@ -26,8 +26,8 @@
 			Name: {{ component.name }}
 			<br/>
 			{% if is_creator %}
-			<a href="{{ modify_url }}"><img class="modify_icon" src="{% static "icons/edit.png" %}" alt="Edit component"/></a>
-			<a href="{{ delete_url }}"><img class="modify_icon" src="{% static "icons/delete.png" %}" alt="Delete component"/></a>
+			<a href="{{ modify_url }}"><img class="modify_icon_medium" src="{% static "icons/edit.png" %}" alt="Edit component"/></a>
+			<a href="{{ delete_url }}"><img class="modify_icon_medium" src="{% static "icons/delete.png" %}" alt="Delete component"/></a>
 			{% endif %}
 		</p>
 		
@@ -38,13 +38,27 @@
 <div id="component_desc">
 	<ul>
 		<li><span>Category: <a href="{{ component.category.link }}">{{ component.category.name }}</a></span></li>
+		
 		<li><span>Manufacturer: <a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a></span></li>
+		
 		<li><span>Average Price: {{ component.avgprice }} €</span></li>
-		<li><span><a href="/create/supportedby/{{ component.ref }}" >[ADD]</a> Supported By:</span></li>
+
+		<li><span>Supported By:
+			<a href="{{ add_supportedby_url }}">
+				<img class="modify_icon_small" src="{% static "icons/add.png" %}" 
+				     alt="Add supported by relation"/>
+			</a>
+			</span></li>
 			<ul>
 				{% for sb in component.supportedby %}
 				<li><span>
-						  <a href="/delete/supportedby/{{ sb.id }}/">[DEL]</a><a href="{{ sb.link }}">{{ sb.name }}</a>
+						  <!-- delete icon -->
+						  <a href="/delete/supportedby/{{ sb.id }}/">
+						  	<img class="modify_icon_small" src="{% static "icons/del.png" %}" alt="Delete supported by relation"/>
+						  </a>
+						  <!-- OS -->
+						  <a href="{{ sb.link }}">{{ sb.name }}</a>
+						  <!-- Version info -->					  
 						  </br>
 						  From version: {{ sb.minversion }} 
 						  to: {{ sb.maxversion }}

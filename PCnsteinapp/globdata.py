@@ -39,6 +39,8 @@ API_DELETE_COMPONENT = '%s/%s' % (API_DELETE, API_COMPONENTS)
 # Api create component review
 API_CREATE_COMPONENT_REVIEW = '%s/review' % (API_CREATE)
 
+# Api add supported by relation
 API_ADD_SUPPORTEDBY = '%s/%s' % (API_CREATE, API_SUPPORTEDBY)
 
+# Api delete supported by relation
 API_DELETE_SUPPORTEDBY = '%s/%s' % (API_DELETE, API_SUPPORTEDBY)
