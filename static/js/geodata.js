@@ -77,5 +77,4 @@ function getDataFromFile(file_url, separator, async_func) {
 	} else {
 		alert('It was impossible to create an XMLHttpRequest object')
 	}
-
 }

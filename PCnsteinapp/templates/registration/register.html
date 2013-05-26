@@ -26,10 +26,10 @@
 					$("#id_userprofile-region").val(geodata.region);
 					$("#id_userprofile-city").val(geodata.city);
 				} 
-			// Uncomment the following lines to notify connection errors
-			// else {
-			// 	alert(geodata.error)
-			// }
+				// Uncomment the following lines to notify connection errors
+				else {
+					alert(geodata.error)
+				}
 
 				// Enable button again
 				$("#geolocbtn").removeAttr("disabled");
@@ -41,27 +41,96 @@
 		function() {
 
 			// Autocomplete countries
-			getDataFromFile("{% static "data/countries.csv" %}", 
-							";",
-							function(countries) {
-								$("#id_userprofile-country").autocomplete(
-									{source : countries} );
-							});
+			// getDataFromFile("{% static "data/countries.csv" %}", 
+			// 				";",
+			// 				function(countries) {
+			// 					$("#id_userprofile-country").autocomplete(
+			// 						{source : countries} );
+			// 				});
 
 			// Autocomplete regions (Beta)
-			getDataFromFile("{% static "data/regions.csv" %}", 
-							";",
-							function(regions) {
-								$("#id_userprofile-region").autocomplete(
-									{source : regions} );
-							});
+			// getDataFromFile("{% static "data/regions.csv" %}", 
+			// 				";",
+			// 				function(regions) {
+			// 					$("#id_userprofile-region").autocomplete(
+			// 						{source : regions} );
+			// 				});
 
 			// Uncoment the next line to autofill localization fields
 			// computeClientPosition();
-			
-		}
-	);
 
+			// Country autocomplete
+			$("#id_userprofile-country").autocomplete({
+				source: function( request, response ) {
+					$.ajax({
+						url: "http://ws.geonames.org/searchJSON",
+						dataType: "jsonp",
+						data: {
+							featureClass: "A",	// A for countries and regions
+							style: "medium",
+							maxRows: 12,
+							name_startsWith: request.term
+						},
+						success: function( data ) {
+							response( $.map( data.geonames, function( item ) {
+									return {
+										value: item.name
+									}
+							}));
+						}
+					});
+				},
+				minLength: 2
+			});
+
+			// Region autocomplete
+			$("#id_userprofile-region").autocomplete({
+				source: function( request, response ) {
+					$.ajax({
+						url: "http://ws.geonames.org/searchJSON",
+						dataType: "jsonp",
+						data: {
+							featureClass: "A",	// A for countries and regions
+							style: "medium",
+							maxRows: 12,
+							name_startsWith: request.term
+						},
+						success: function( data ) {
+							response( $.map( data.geonames, function( item ) {
+									return {
+										value: item.name
+									}
+							}));
+						}
+					});
+				},
+				minLength: 2
+			});
+
+			// City autocomplete
+			$("#id_userprofile-city").autocomplete({
+				source: function( request, response ) {
+					$.ajax({
+						url: "http://ws.geonames.org/searchJSON",
+						dataType: "jsonp",
+						data: {
+							featureClass: "P",	// P for cities
+							style: "medium",
+							maxRows: 12,
+							name_startsWith: request.term
+						},
+						success: function( data ) {
+							response( $.map( data.geonames, function( item ) {
+									return {
+										value: item.name
+									}
+							}));
+						}
+					});
+				},
+				minLength: 2
+			});
+	});
 </script>
 
 
