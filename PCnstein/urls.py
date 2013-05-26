@@ -4,7 +4,7 @@ from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         ManufacturersView, ManufacturerView, CategoriesView, \
                         CategoryView, OperatingSystemsView, OperatingSystemView,\
                         UserView, ComponentCreateView, ComponentModifyView, \
-                        ComponentDeleteView, SupportedByView, \
+                        ComponentDeleteView, SupportedByView, UserDeleteView, \
                         SupportedByDeleteView, createReview, \
                         registerUser
 
@@ -38,6 +38,8 @@ urlpatterns = patterns('',
                      { 'next_page' : '/'}),
 
     url(r'^register/$', registerUser ),
+    url(r'^%s/(?P<pk>[\d])$' % globdata.API_DELETE_USER,
+        UserDeleteView.as_view()),
 
     url(r'^$', MainPageView.as_view()),
 

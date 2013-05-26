@@ -47,3 +47,6 @@ API_ADD_SUPPORTEDBY = '%s/%s' % (API_CREATE, API_SUPPORTEDBY)
 
 # Api delete supported by relation
 API_DELETE_SUPPORTEDBY = '%s/%s' % (API_DELETE, API_SUPPORTEDBY)
+
+# Api user drop out url
+API_DELETE_USER = '%s/%s' % (API_DELETE, API_USER)

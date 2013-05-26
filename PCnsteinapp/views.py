@@ -11,6 +11,7 @@ from django.views.generic.base import TemplateView
 from django.views.generic.edit import CreateView, UpdateView, DeleteView
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import logout, login, authenticate
 from django.middleware import csrf
 
 from PCnsteinapp import globdata
@@ -351,9 +352,14 @@ class UserView(TemplateResponseMixin):
     #
     # Overrides the get_context_data method from TemplateView
     def get_context_data(self, **kwargs):
+        context = super(UserView, self).get_context_data(**kwargs)
         uinfo = datautils.getLoggedUserInfo(self.request.user)
-        return { 'pagetitle' : '%s Profile' % uinfo['username'],
-                  self.context_key : uinfo}
+
+        context['pagetitle'] = '%s Profile' % uinfo['username']
+        context['delete_url'] = urlutils.getDeleteUserURL(uinfo['id'])
+        context[self.context_key] = uinfo
+
+        return context
 
 #
 #
@@ -481,7 +487,7 @@ class ComponentDeleteView(DeleteView):
         if not self.object.createdby == self.request.user:
             reason = 'User must be the create of the component to delete it'
             return responseutils.getHttpResponseForbiddenHTML(
-                'Deletion forbidden', self.request.user, reason)
+                'Component Deletion forbidden', self.request.user, reason)
 
         success_url = self.get_success_url()
         self.object.delete()
@@ -507,9 +513,39 @@ class SupportedByDeleteView(DeleteView):
         if not self.object.component.createdby == self.request.user:
             reason = 'User must be the creator of the relation to delete it'
             return responseutils.getHttpResponseForbiddenHTML(
-                'Deletion forbidden', self.request.user, reason)
+                'Supported By Deletion forbidden', self.request.user, reason)
 
         # In order to get the correct URL the order is important
+        success_url = self.get_success_url()
+        self.object.delete()
+        return HttpResponseRedirect(success_url)
+
+#
+#
+class UserDeleteView(DeleteView):
+    template_name = 'delete_confirmation.html'
+    model = User
+    success_url = '/'
+
+    def delete(self, request, *args, **kwargs):
+        """
+        Calls the delete() method on the fetched object and then
+        redirects to the success URL.
+        """
+        authuser = self.request.user
+        self.object = self.get_object()
+
+        if authuser.is_authenticated():
+            if not authuser == self.object:
+                reason = 'You are not allowed to delete other users'
+                return responseutils.getHttpResponseForbiddenHTML(
+                    'User Deletion forbidden', self.request.user, reason)
+            logout(request)
+        else:
+            reason = 'You must be logged in to delete your user'
+            return responseutils.getHttpResponseForbiddenHTML(
+                'User Deletion forbidden', self.request.user, reason)
+
         success_url = self.get_success_url()
         self.object.delete()
         return HttpResponseRedirect(success_url)
@@ -547,7 +583,13 @@ def registerUser(request):
             userprofile = upf.save(commit=False)
             userprofile.user = user
             userprofile.save()
-            return HttpResponseRedirect(urlutils.getApiURL())
+
+            # Get form user data to automatically authenticate it
+            authuser = authenticate(username = request.POST['user-username'],
+                                    password = request.POST['user-password1'])
+            login(request, authuser)
+            return HttpResponseRedirect(urlutils.getUserURL())
+            
         else:
             context = {
                 'pagetitle' : 'New User Registration',

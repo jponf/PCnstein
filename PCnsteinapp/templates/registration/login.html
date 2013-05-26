@@ -18,7 +18,7 @@
 	<form method="post" action=".">
 		<p><label for="id_username">User:&nbsp;&nbsp;</label>{{ form.username }}</p>
 		<p><label for="id_password">Pass:&nbsp;&nbsp;</label>{{ form.password }}</p>
-		<input type="hidden" name="next" value="/" />
+		<input type="hidden" name="next" value="/user" />
 		<input type="submit" value="login" />
 		{% csrf_token %}
 	</form>

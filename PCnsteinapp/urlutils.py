@@ -82,5 +82,18 @@ def getCreateComponentReviewURL(ref):
 
 #
 #
+def getUserURL():
+	return getApiURL(globdata.API_USER)
+
+#
+#
+def getDeleteUserURL(id):
+	if id:
+		return getApiURL(globdata.API_DELETE_USER, str(id))
+	else:
+		return ''
+
+#
+#
 def getApiURL(*args):
 	return globdata.API_URL + '/' + "/".join(args)

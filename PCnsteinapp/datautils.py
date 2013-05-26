@@ -311,6 +311,7 @@ def getLoggedUserInfo(user):
     uinfo = {}
 
     uinfo['username'] = user.username
+    uinfo['id'] = user.id
     uinfo['groups'] = [g.name for g in user.groups.all()]
 
     try:
