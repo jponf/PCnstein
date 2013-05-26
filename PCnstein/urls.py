@@ -8,8 +8,13 @@ from PCnsteinapp.views import MainPageView, ComponentsView, ComponentView, \
                         SupportedByDeleteView, createReview, \
                         registerUser
 
-from PCnsteinapp.serializersviews import ComponentCreateAPIView, \
-                        ComponentUpdateDestroyAPIView
+from PCnsteinapp.serializersviews import ComponentListCreateAPIView, \
+                        ComponentUpdateDestroyAPIView, CategoryListAPIView, \
+                        CategoryRetrieveAPIView, UserListAPIView, \
+                        UserRetrieveAPIView, ManufacturerListAPIView, \
+                        ManufacturerRetrieveAPIView, OperatingSystemListAPIView,\
+                        OperatingSystemListAPIView, OperatingSystemRetrieveAPIView,\
+                        SupportedByListAPIView, SupportedByRetrieveAPIView
 
 from PCnsteinapp.ajaxhelper import getGeoInformationByIP
 
@@ -88,10 +93,37 @@ urlpatterns += patterns('',
 
 # REST API
 resturlpatterns = patterns('',
-    #url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework'))
-    url(r'^api/components/$', ComponentCreateAPIView.as_view(), name='component-list'),
-    url(r'^api/components/(?P<pk>[\w\s\.]+)/$', 
+    url(r'^api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+
+    url(r'^api/components/$', ComponentListCreateAPIView.as_view(), 
+        name='component-list'),
+    url(r'^api/components/(?P<pk>[\w\s\.-]+)/$', 
         ComponentUpdateDestroyAPIView.as_view(), name='component-detail'),
+
+    url(r'^api/users/$', UserListAPIView.as_view(), name='user-list'),
+    url(r'^api/users/(?P<pk>[\d])/$', UserRetrieveAPIView.as_view(),
+        name='user-detail'),
+
+    url(r'^api/categories/$', CategoryListAPIView.as_view(),
+        name='category-list'),
+    url(r'^api/categories/(?P<pk>[\w\s\.&]+)/$', 
+        CategoryRetrieveAPIView.as_view(), name='category-detail'),
+
+    url(r'^api/manufacturers/$', ManufacturerListAPIView.as_view(), 
+        name='manufactuer-list'),
+    url(r'^api/manufacturers/(?P<pk>[\w\s\.-]+)/$', 
+        ManufacturerRetrieveAPIView.as_view(), name='manufacturer-detail'),
+
+    url(r'^api/os/$', OperatingSystemListAPIView.as_view(),
+        name='operatingsystem-list'),
+    url(r'^api/os/(?P<pk>[\w\s\.]+)/$', OperatingSystemRetrieveAPIView.as_view(),
+        name='operatingsystem-detail'),
+
+    url(r'^api/supportedby/$', SupportedByListAPIView.as_view(), 
+        name='supportedby-list'),
+    url(r'^api/supportedby/(?P<pk>[\d])/$', SupportedByRetrieveAPIView.as_view(),
+        name='supportedby-detail')
+
 )
 
 # Format suffixes
