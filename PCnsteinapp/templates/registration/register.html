@@ -40,13 +40,13 @@
 	$(document).ready(
 		function() {
 
-			// Autocomplete countries
-			// getDataFromFile("{% static "data/countries.csv" %}", 
-			// 				";",
-			// 				function(countries) {
-			// 					$("#id_userprofile-country").autocomplete(
-			// 						{source : countries} );
-			// 				});
+			// Local country autocomplete
+			getDataFromFile("{% static "data/countries.csv" %}", 
+							";",
+							function(countries) {
+								$("#id_userprofile-country").autocomplete(
+									{source : countries} );
+							});
 
 			// Autocomplete regions (Beta)
 			// getDataFromFile("{% static "data/regions.csv" %}", 
@@ -59,29 +59,29 @@
 			// Uncoment the next line to autofill localization fields
 			// computeClientPosition();
 
-			// Country autocomplete
-			$("#id_userprofile-country").autocomplete({
-				source: function( request, response ) {
-					$.ajax({
-						url: "http://ws.geonames.org/searchJSON",
-						dataType: "jsonp",
-						data: {
-							featureClass: "A",	// A for countries and regions
-							style: "medium",
-							maxRows: 12,
-							name_startsWith: request.term
-						},
-						success: function( data ) {
-							response( $.map( data.geonames, function( item ) {
-									return {
-										value: item.name
-									}
-							}));
-						}
-					});
-				},
-				minLength: 2
-			});
+			// Remote Country autocomplete
+			// $("#id_userprofile-country").autocomplete({
+			// 	source: function( request, response ) {
+			// 		$.ajax({
+			// 			url: "http://ws.geonames.org/searchJSON",
+			// 			dataType: "jsonp",
+			// 			data: {
+			// 				featureClass: "A",	// A for countries and regions
+			// 				style: "medium",
+			// 				maxRows: 12,
+			// 				name_startsWith: request.term
+			// 			},
+			// 			success: function( data ) {
+			// 				response( $.map( data.geonames, function( item ) {
+			// 						return {
+			// 							value: item.name
+			// 						}
+			// 				}));
+			// 			}
+			// 		});
+			// 	},
+			// 	minLength: 2
+			// });
 
 			// Region autocomplete
 			$("#id_userprofile-region").autocomplete({
