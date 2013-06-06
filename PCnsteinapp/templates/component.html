@@ -51,27 +51,28 @@
                 </a>
                 {% endif %}
                 </span></li>
-                <span rel="supportedBy">
-                    <ul typeof="SupportedBy">
+                <ul>
+                    <span rel="supportedBy">
                         {% for sb in component.supportedby %}
-                        <li>
+                        <li  typeof="SupportedBy">
                                   <!-- delete icon -->
-                                  {% if is_creator %}
-                                  <a href="/delete/supportedby/{{ sb.id }}/">
-                                    <img class="modify_icon_small" src="{% static "icons/del.png" %}" alt="Delete supported by relation"/>
-                                  </a>
-                                  {% endif %}
-                                  
-                                  <!-- OS -->
-                                  <a href="{{ sb.link }}">{{ sb.name }}</a>
-                                  <!-- Version info -->                   
-                                  </br>
-                                  <span>From version: <span property="minVersion">{{ sb.minversion }}</span></span>
-                                  <span>to: <span property="maxVersion">{{ sb.maxversion }}</span></span>
+                                {% if is_creator %}
+                                <a href="/delete/supportedby/{{ sb.id }}/">
+                                  <img class="modify_icon_small" src="{% static "icons/del.png" %}" alt="Delete supported by relation"/>
+                                </a>
+                                {% endif %}
+                                
+                                <!-- OS -->
+                                <span property="operativeSystem"><a href="{{ sb.link }}">{{ sb.name }}</a></span>
+                                <!-- Version info -->                   
+                                </br>
+                                <span>From version: <span property="minVersion">{{ sb.minversion }}</span></span>
+                                <span>to: <span property="maxVersion">{{ sb.maxversion }}</span></span>
                         </li>
                         {% endfor %}
-                    </ul>
-                </span>
+                    </span>
+                </ul>
+               
             <li><span>Description:</span></li>
                 <ul>
                     <span property="description">{{ component.desc }}</span>
