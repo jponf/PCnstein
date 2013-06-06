@@ -13,7 +13,7 @@
 
 {% block content %}
     
-<span vocab="http://schema.org/" typeof="IndividualProduct">
+<span itemscope itemtype="http://schema.org/Product" vocab="http://schema.org/" typeof="IndividualProduct">
 
     <div id="component_head">
 
@@ -39,7 +39,7 @@
         <ul>
            <li><span>Category: </span><span property="category"><a href="{{ component.category.link }}">{{ component.category.name }}</a></span></li>
             
-            <li><span>Manufacturer: </span><span property="manufaturer"><a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a></span></li>
+            <li><span>Manufacturer: </span><span property="manufacturer"><a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a></span></li>
             
             <li><span>Average Price: </span><span property="price">{{ component.avgprice }}</span> <span property"priceCurrency" content="EUR">€</span></li>
 
@@ -86,13 +86,13 @@
     {% for review in component.reviews %}
     <span rel="review">
             {% if forloop.counter|divisibleby:"2" %}
-        <div id="component_review_even" typeof="Review">
+        <div id="component_review_even" itemprop="review" itemscope itemtype="http://schema.org/Review">
             {% else %}
-        <div id="component_review_odd" typeof="Review">
+        <div id="component_review_odd" itemprop="review" itemscope itemtype="http://schema.org/Review" >
             {% endif %}
             <p id="review_user"><span property="author">{{ review.user }}</span></p>
             <p>Rating: <span property="reviewRating">{{ review.rating }}</span></p>
-            <p><span property="comment">{{ review.comment }}</span></p>
+            <p><span property="reviewBody">{{ review.comment }}</span></p>
             <span property="about" content="{{ component.ref }}" />
         </div>
     </span>
