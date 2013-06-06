@@ -15,111 +15,112 @@
     
 <span vocab="http://schema.org/" typeof="IndividualProduct">
 
-<div id="component_head">
+    <div id="component_head">
 
-    <div id="component_img">
-        <img src="/{{ component.img }}"/>
+        <div id="component_img">
+            <img src="/{{ component.img }}"/>
+        </div>
+
+        <div id="component_ref">
+            <p>
+                Ref: <span property="serialNumber">{{ component.ref }}</span>
+                <br/>
+                Name: <span property="name">{{ component.name }}</span>
+                <br/>
+                {% if is_creator %}
+                <a href="{{ modify_url }}"><img class="modify_icon_medium" src="{% static "icons/edit.png" %}" alt="Edit component"/></a>
+                <a href="{{ delete_url }}"><img class="modify_icon_medium" src="{% static "icons/delete.png" %}" alt="Delete component"/></a>
+                {% endif %}
+            </p>            
+        </div>
     </div>
 
-    <div id="component_ref">
-        <p>
-            Ref: <span property="serialNumber">{{ component.ref }}</span>
-            <br/>
-            Name: <span property="name">{{ component.name }}</span>
-            <br/>
-            {% if is_creator %}
-            <a href="{{ modify_url }}"><img class="modify_icon_medium" src="{% static "icons/edit.png" %}" alt="Edit component"/></a>
-            <a href="{{ delete_url }}"><img class="modify_icon_medium" src="{% static "icons/delete.png" %}" alt="Delete component"/></a>
-            {% endif %}
-        </p>
-        
+    <div id="component_desc">
+        <ul>
+           <li><span>Category: </span><span property="category"><a href="{{ component.category.link }}">{{ component.category.name }}</a></span></li>
+            
+            <li><span>Manufacturer: </span><span property="manufaturer"><a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a></span></li>
+            
+            <li><span>Average Price: </span><span property="price">{{ component.avgprice }}</span> <span property"priceCurrency" content="EUR">€</span></li>
+
+            <li><span>Supported By:
+                {% if is_creator %}
+                <a href="{{ add_supportedby_url }}">
+                    <img class="modify_icon_small" src="{% static "icons/add.png" %}" 
+                         alt="Add supported by relation"/>
+                </a>
+                {% endif %}
+                </span></li>
+                <span rel="supportedBy">
+                    <ul typeof="SupportedBy">
+                        {% for sb in component.supportedby %}
+                        <li>
+                                  <!-- delete icon -->
+                                  {% if is_creator %}
+                                  <a href="/delete/supportedby/{{ sb.id }}/">
+                                    <img class="modify_icon_small" src="{% static "icons/del.png" %}" alt="Delete supported by relation"/>
+                                  </a>
+                                  {% endif %}
+                                  
+                                  <!-- OS -->
+                                  <a href="{{ sb.link }}">{{ sb.name }}</a>
+                                  <!-- Version info -->                   
+                                  </br>
+                                  <span>From version: <span property="minVersion">{{ sb.minversion }}</span></span>
+                                  <span>to: <span property="maxVersion">{{ sb.maxversion }}</span></span>
+                        </li>
+                        {% endfor %}
+                    </ul>
+                </span>
+            <li><span>Description:</span></li>
+                <ul>
+                    <span property="description">{{ component.desc }}</span>
+                </ul>
+        </ul>
     </div>
 
-</div>
-
-<div id="component_desc">
-    <ul>
-       <li><span>Category: </span><span property="category"><a href="{{ component.category.link }}">{{ component.category.name }}</a></span></li>
-        
-        <li><span>Manufacturer: </span><span property="manufaturer"><a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a></span></li>
-        
-        <li><span>Average Price: </span><span property="price">{{ component.avgprice }}</span> <span property"priceCurrency" content="EUR">€</span></li>
-
-        <li><span>Supported By:
-            {% if is_creator %}
-            <a href="{{ add_supportedby_url }}">
-                <img class="modify_icon_small" src="{% static "icons/add.png" %}" 
-                     alt="Add supported by relation"/>
-            </a>
-            {% endif %}
-            </span></li>
-            <ul><span typeof="SupportedBy">
-                {% for sb in component.supportedby %}
-                <li>
-                          <!-- delete icon -->
-                          {% if is_creator %}
-                          <a href="/delete/supportedby/{{ sb.id }}/">
-                            <img class="modify_icon_small" src="{% static "icons/del.png" %}" alt="Delete supported by relation"/>
-                          </a>
-                          {% endif %}
-                          
-                          <!-- OS -->
-                          <a href="{{ sb.link }}">{{ sb.name }}</a>
-                          <!-- Version info -->                   
-                          </br>
-                          <span>From version: <span property="minVersion">{{ sb.minversion }}</span></span>
-                          <span>to: <span property="maxVersion">{{ sb.maxversion }}</span></span>
-                </li>
-                {% endfor %}</span>
-            </ul>
-
-        <li><span>Description:</span></li>
-            <ul>
-                <span property="description">{{ component.desc }}</span>
-            </ul>
-    </ul>
-</div>
-
-<div id="component_reviews">
-<span vocab="http://schema.org/" typeof="Review">
-<!-- reviews -->
-{% for review in component.reviews %}
-    {% if forloop.counter|divisibleby:"2" %}
-<div id="component_review_even">
-    {% else %}
-<div id="component_review_odd">
-    {% endif %}
-    <p id="review_user"><span property="author">{{ review.user }}</span></p>
-    <p>Rating: <span property="reviewRating">{{ review.rating }}</span></p>
-    <p><span property="comment">{{ review.comment }}</span></p>
-    <span property="about" content="{{ component.ref }}" />
-</div>
-{% endfor %}
-</span>
-
-<!-- Reviews form -->
-{% if user.username %}
-<form action="{{ create_review_url }}" method="post">
-    {% csrf_token %}
-    <p>Rating:</p>
-    <div id="component_rating">
-        {% for rate in RATING_CHOICES %}
-
-            {% if forloop.counter == 3 %}
-        <input type="radio" name="rating" id="rating{{ forloop.counter }}" value="{{ rate.0 }}" checked="checked"/>
+    <div id="component_reviews">
+   
+    <!-- reviews -->
+    {% for review in component.reviews %}
+    <span rel="review">
+            {% if forloop.counter|divisibleby:"2" %}
+        <div id="component_review_even" typeof="Review">
             {% else %}
-        <input type="radio" name="rating" id="rating{{ forloop.counter }}" value="{{ rate.0 }}"/>
+        <div id="component_review_odd" typeof="Review">
             {% endif %}
+            <p id="review_user"><span property="author">{{ review.user }}</span></p>
+            <p>Rating: <span property="reviewRating">{{ review.rating }}</span></p>
+            <p><span property="comment">{{ review.comment }}</span></p>
+            <span property="about" content="{{ component.ref }}" />
+        </div>
+    </span>
+    {% endfor %}
+    
 
-        <label for="choice{{ forloop.counter }}">{{ rate.1 }} star{{ rate.0|pluralize }}</label>
-        {% endfor %}
-    </div>      
-    <p>Comment:</p>
-    <textarea name="comment" id="comment" rows="5"></textarea>
-    <input type="submit" value="Send Review"/>
-</form>
-{% endif %}
-</div>
+    <!-- Reviews form -->
+    {% if user.username %}
+    <form action="{{ create_review_url }}" method="post">
+        {% csrf_token %}
+        <p>Rating:</p>
+        <div id="component_rating">
+            {% for rate in RATING_CHOICES %}
+
+                {% if forloop.counter == 3 %}
+            <input type="radio" name="rating" id="rating{{ forloop.counter }}" value="{{ rate.0 }}" checked="checked"/>
+                {% else %}
+            <input type="radio" name="rating" id="rating{{ forloop.counter }}" value="{{ rate.0 }}"/>
+                {% endif %}
+
+            <label for="choice{{ forloop.counter }}">{{ rate.1 }} star{{ rate.0|pluralize }}</label>
+            {% endfor %}
+        </div>      
+        <p>Comment:</p>
+        <textarea name="comment" id="comment" rows="5"></textarea>
+        <input type="submit" value="Send Review"/>
+    </form>
+    {% endif %}
+    </div>
 
 </span>
 {% endblock %}  
