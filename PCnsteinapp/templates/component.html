@@ -90,6 +90,7 @@
             {% else %}
         <div id="component_review_odd" itemprop="review" itemscope itemtype="http://schema.org/Review" >
             {% endif %}
+            <span property="itemReviewed" content="{{ component.name }}"/>
             <p id="review_user"><span property="author">{{ review.user }}</span></p>
             <span rel="reviewRating">
                 <p itempscope itemtype="http://schema.org/Rating">
@@ -104,6 +105,7 @@
 
             <p><span property="reviewBody">{{ review.comment }}</span></p>
             <span property="about" content="{{ component.ref }}" />
+            <span property="dateCreated" content="{{ review.date }}"></span>
         </div>
     </span>
     {% endfor %}
