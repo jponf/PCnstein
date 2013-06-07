@@ -91,7 +91,17 @@
         <div id="component_review_odd" itemprop="review" itemscope itemtype="http://schema.org/Review" >
             {% endif %}
             <p id="review_user"><span property="author">{{ review.user }}</span></p>
-            <p>Rating: <span property="reviewRating">{{ review.rating }}</span></p>
+            <span rel="reviewRating">
+                <p itempscope itemtype="http://schema.org/Rating">
+                    Rating:
+                    <span property="ratingValue">
+                        {{ review.rating }}
+                    </span>
+                    <span property="bestRating" content="5"/>
+                    <span property="worstRating" content="1"/>
+                </p>
+            </span>
+
             <p><span property="reviewBody">{{ review.comment }}</span></p>
             <span property="about" content="{{ component.ref }}" />
         </div>
