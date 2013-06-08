@@ -38,10 +38,19 @@
 
     <div id="component_desc">
         <ul>
-           <li><span>Category: </span><span property="category"><a href="{{ component.category.link }}">{{ component.category.name }}</a></span></li>
+            <li><span>Category: </span><span property="category"><a href="{{ component.category.link }}">{{ component.category.name }}</a></span></li>
             
-            <li><span>Manufacturer: </span><span property="manufacturer"><a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a></span></li>
-            
+            <span rel="manufacturer">
+            <li>
+                <span itemprop="manufacturer" itemscope itemtype="http://schema.org/Organization">
+                    Manufacturer:
+                    <span property="name">
+                        <a href="{{ component.manufacturer.link }}">{{ component.manufacturer.name }}</a>
+                    </span>
+                </span>
+            </li>
+            </span>
+
             <li><span>Average Price: </span><span property="price">{{ component.avgprice }}</span> <span property"priceCurrency" content="EUR">€</span></li>
 
             <li><span>Supported By:
